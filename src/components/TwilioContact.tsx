@@ -14,6 +14,7 @@ const TwilioContact = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("sms");
 
   const handleSendSMS = () => {
     if (!phoneNumber) {
@@ -68,6 +69,11 @@ const TwilioContact = () => {
     }, 1500);
   };
 
+  // Handle tab change
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+  };
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="bg-food-primary/10 rounded-t-lg">
@@ -80,7 +86,12 @@ const TwilioContact = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6">
-        <Tabs defaultValue="sms" className="w-full">
+        <Tabs 
+          defaultValue="sms" 
+          className="w-full"
+          value={activeTab}
+          onValueChange={handleTabChange}
+        >
           <TabsList className="grid grid-cols-2 mb-4">
             <TabsTrigger value="sms" className="flex items-center">
               <MessageSquare className="mr-2" size={16} />
@@ -137,39 +148,33 @@ const TwilioContact = () => {
         </Tabs>
       </CardContent>
       <CardFooter className="flex justify-end border-t pt-4">
-        <Tabs.Consumer>
-          {(api) => (
-            <>
-              {api?.value === "sms" ? (
-                <Button 
-                  onClick={handleSendSMS} 
-                  disabled={loading}
-                  className="bg-food-primary hover:bg-food-primary/90"
-                >
-                  {loading ? "Sending..." : (
-                    <>
-                      <Send className="mr-2" size={16} />
-                      Send Message
-                    </>
-                  )}
-                </Button>
-              ) : (
-                <Button 
-                  onClick={handleMakeCall} 
-                  disabled={loading}
-                  className="bg-food-primary hover:bg-food-primary/90"
-                >
-                  {loading ? "Connecting..." : (
-                    <>
-                      <Phone className="mr-2" size={16} />
-                      Call Now
-                    </>
-                  )}
-                </Button>
-              )}
-            </>
-          )}
-        </Tabs.Consumer>
+        {activeTab === "sms" ? (
+          <Button 
+            onClick={handleSendSMS} 
+            disabled={loading}
+            className="bg-food-primary hover:bg-food-primary/90"
+          >
+            {loading ? "Sending..." : (
+              <>
+                <Send className="mr-2" size={16} />
+                Send Message
+              </>
+            )}
+          </Button>
+        ) : (
+          <Button 
+            onClick={handleMakeCall} 
+            disabled={loading}
+            className="bg-food-primary hover:bg-food-primary/90"
+          >
+            {loading ? "Connecting..." : (
+              <>
+                <Phone className="mr-2" size={16} />
+                Call Now
+              </>
+            )}
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
