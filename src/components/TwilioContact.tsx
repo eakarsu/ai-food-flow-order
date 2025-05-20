@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Phone, MessageSquare, Send } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -13,42 +14,12 @@ const TWILIO_ACCOUNT_SID = "YOUR_ACCOUNT_SID";
 const TWILIO_AUTH_TOKEN = "YOUR_AUTH_TOKEN";
 const TWILIO_PHONE_NUMBER = "YOUR_TWILIO_PHONE_NUMBER";
 
-// Food ordering templates
-const SMS_TEMPLATES = [
-  "Your order #[ORDER_ID] has been confirmed! Estimated delivery time: [TIME]",
-  "Your food is on the way! Delivery ETA: [TIME]",
-  "Your order has been delivered. Enjoy your meal!",
-  "Thank you for ordering with us! Your order will be ready for pickup in [TIME]"
-];
-
-const CALL_SCRIPTS = [
-  "Confirm order details and delivery address",
-  "Notify customer about delay in delivery",
-  "Confirm pickup time for takeout order",
-  "Follow up on customer satisfaction"
-];
-
 const TwilioContact = () => {
   const { toast } = useToast();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("sms");
-  const [selectedTemplate, setSelectedTemplate] = useState("");
-  const [orderDetails, setOrderDetails] = useState({
-    orderId: Math.floor(10000 + Math.random() * 90000).toString(),
-    estimatedTime: "30-45 minutes"
-  });
-
-  // Apply template to message
-  const applyTemplate = (template: string) => {
-    let formattedMessage = template
-      .replace("[ORDER_ID]", orderDetails.orderId)
-      .replace("[TIME]", orderDetails.estimatedTime);
-    
-    setMessage(formattedMessage);
-    setSelectedTemplate(template);
-  };
 
   const handleSendSMS = async () => {
     if (!phoneNumber) {
@@ -93,19 +64,18 @@ const TwilioContact = () => {
       }
       
       toast({
-        title: "Order Update Sent",
-        description: `SMS notification sent to ${phoneNumber}`,
+        title: "Message Sent",
+        description: `SMS sent to ${phoneNumber}`,
       });
       
-      // Clear the message but keep the phone number for potential follow-ups
       setMessage("");
     } catch (error) {
       console.error("Twilio API Error:", error);
       
       // Fall back to simulation mode if the API call fails
       toast({
-        title: "Order Update Sent (Simulated)",
-        description: `The message would be sent to ${phoneNumber}: "${message}"`,
+        title: "Message Sent (Simulated)",
+        description: `The message would be sent to ${phoneNumber}`,
       });
     } finally {
       setLoading(false);
@@ -135,10 +105,7 @@ const TwilioContact = () => {
         body: new URLSearchParams({
           'From': TWILIO_PHONE_NUMBER,
           'To': phoneNumber,
-          // This should be replaced with your own TwiML endpoint for food order communication
-          'Url': 'http://demo.twilio.com/docs/voice.xml',
-          'StatusCallback': 'https://your-server.com/call-status-callback',
-          'StatusCallbackEvent': 'initiated ringing answered completed'
+          'Url': 'http://demo.twilio.com/docs/voice.xml'
         })
       });
       
@@ -148,8 +115,8 @@ const TwilioContact = () => {
       }
       
       toast({
-        title: "Calling Customer",
-        description: `Initiating call to ${phoneNumber} regarding order #${orderDetails.orderId}`,
+        title: "Call Initiated",
+        description: `Calling ${phoneNumber}`,
       });
     } catch (error) {
       console.error("Twilio API Error:", error);
@@ -157,7 +124,7 @@ const TwilioContact = () => {
       // Fall back to simulation mode if the API call fails
       toast({
         title: "Call Initiated (Simulated)",
-        description: `A call would be placed to ${phoneNumber} regarding order #${orderDetails.orderId}`,
+        description: `A call would be placed to ${phoneNumber}`,
       });
     } finally {
       setLoading(false);
@@ -174,10 +141,10 @@ const TwilioContact = () => {
       <CardHeader className="bg-food-primary/10 rounded-t-lg">
         <CardTitle className="text-food-primary flex items-center">
           <Phone className="mr-2" size={20} />
-          Order Communications
+          Food Order Communications
         </CardTitle>
         <CardDescription>
-          Send updates or call customers about their food orders
+          Send SMS or call about your food order
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-6">
@@ -201,22 +168,6 @@ const TwilioContact = () => {
           <TabsContent value="sms">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="order-details">Order Details</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  <Input 
-                    placeholder="Order ID" 
-                    value={orderDetails.orderId}
-                    onChange={(e) => setOrderDetails({...orderDetails, orderId: e.target.value})}
-                  />
-                  <Input 
-                    placeholder="Estimated Time" 
-                    value={orderDetails.estimatedTime}
-                    onChange={(e) => setOrderDetails({...orderDetails, estimatedTime: e.target.value})}
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
                 <Label htmlFor="phone-sms">Customer Phone Number</Label>
                 <Input 
                   id="phone-sms"
@@ -228,23 +179,7 @@ const TwilioContact = () => {
               </div>
               
               <div className="space-y-2">
-                <div className="flex justify-between">
-                  <Label htmlFor="message">Message</Label>
-                  <span className="text-xs text-muted-foreground">Choose a template</span>
-                </div>
-                <div className="grid grid-cols-2 gap-2 mb-2">
-                  {SMS_TEMPLATES.map((template, index) => (
-                    <Button 
-                      key={index} 
-                      variant="outline" 
-                      size="sm"
-                      className={`text-xs justify-start h-auto py-1 ${selectedTemplate === template ? 'border-food-primary text-food-primary' : ''}`}
-                      onClick={() => applyTemplate(template)}
-                    >
-                      {template.substring(0, 30)}...
-                    </Button>
-                  ))}
-                </div>
+                <Label htmlFor="message">Message</Label>
                 <Textarea 
                   id="message"
                   placeholder="Enter your message here..." 
@@ -259,15 +194,6 @@ const TwilioContact = () => {
           <TabsContent value="call">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="order-details">Order Details</Label>
-                <Input 
-                  placeholder="Order #" 
-                  value={orderDetails.orderId}
-                  onChange={(e) => setOrderDetails({...orderDetails, orderId: e.target.value})}
-                />
-              </div>
-              
-              <div className="space-y-2">
                 <Label htmlFor="phone-call">Customer Phone Number</Label>
                 <Input 
                   id="phone-call"
@@ -278,20 +204,8 @@ const TwilioContact = () => {
                 />
               </div>
               
-              <div className="space-y-2">
-                <Label>Call Script</Label>
-                <div className="space-y-2">
-                  {CALL_SCRIPTS.map((script, index) => (
-                    <div key={index} className="flex items-center space-x-2 p-2 border rounded-md">
-                      <div className="h-4 w-4 rounded-full bg-food-primary/20" />
-                      <span>{script}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
               <p className="text-sm text-gray-500 mt-4">
-                When you click "Call Customer", a call will be initiated to connect the customer with your delivery team.
+                Click the "Call Customer" button to initiate a call about your food order.
               </p>
             </div>
           </TabsContent>
@@ -307,7 +221,7 @@ const TwilioContact = () => {
             {loading ? "Sending..." : (
               <>
                 <Send className="mr-2" size={16} />
-                Send Update
+                Send Message
               </>
             )}
           </Button>

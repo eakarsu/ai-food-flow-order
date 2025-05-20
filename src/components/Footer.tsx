@@ -20,19 +20,19 @@ const Footer = () => {
             <h4 className="font-semibold mb-4 text-food-accent">Quick Links</h4>
             <ul className="space-y-2 text-sm text-gray-300">
               <li><Link to="/" className="hover:text-food-primary transition-colors">Home</Link></li>
-              <li><Link to="/" className="hover:text-food-primary transition-colors">Restaurants</Link></li>
-              <li><Link to="/" className="hover:text-food-primary transition-colors">How It Works</Link></li>
-              <li><Link to="/" className="hover:text-food-primary transition-colors">About Us</Link></li>
+              <li><Link to="/restaurants" className="hover:text-food-primary transition-colors">Restaurants</Link></li>
+              <li><Link to="/how-it-works" className="hover:text-food-primary transition-colors">How It Works</Link></li>
+              <li><Link to="/about" className="hover:text-food-primary transition-colors">About Us</Link></li>
             </ul>
           </div>
           
           <div>
             <h4 className="font-semibold mb-4 text-food-accent">Support</h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link to="/" className="hover:text-food-primary transition-colors">Contact Us</Link></li>
-              <li><Link to="/" className="hover:text-food-primary transition-colors">FAQ</Link></li>
-              <li><Link to="/" className="hover:text-food-primary transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/" className="hover:text-food-primary transition-colors">Terms of Service</Link></li>
+              <li><Link to="/contact" className="hover:text-food-primary transition-colors">Contact Us</Link></li>
+              <li><Link to="/faq" className="hover:text-food-primary transition-colors">FAQ</Link></li>
+              <li><Link to="/privacy" className="hover:text-food-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="hover:text-food-primary transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
           

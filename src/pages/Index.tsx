@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
@@ -156,10 +155,7 @@ const Index = () => {
       {/* Twilio Contact Section */}
       <div className="container mx-auto px-4 py-8 bg-food-light">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-food-dark mb-3">Contact Us</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Need to reach out? Send us a text message or give us a call directly from your browser!
-          </p>
+          <h2 className="text-3xl font-bold text-food-dark mb-3">Food Ordering</h2>
         </div>
         <TwilioContact />
       </div>
