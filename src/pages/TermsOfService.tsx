@@ -19,14 +19,14 @@ const TermsOfService = () => {
           <section className="mb-8">
             <h2>Acceptance of Terms</h2>
             <p>
-              By accessing or using the BiteBot AI website, mobile application, or any other services provided by BiteBot AI (collectively, the "Services"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not access or use the Services.
+              By accessing or using the OrderlyBite AI website, mobile application, or any other services provided by OrderlyBite AI (collectively, the "Services"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not access or use the Services.
             </p>
           </section>
           
           <section className="mb-8">
             <h2>Use of Services</h2>
             <p>
-              BiteBot AI grants you a limited, non-exclusive, non-transferable, and revocable license to access and use the Services for personal, non-commercial purposes in accordance with these Terms.
+              OrderlyBite AI grants you a limited, non-exclusive, non-transferable, and revocable license to access and use the Services for personal, non-commercial purposes in accordance with these Terms.
             </p>
             <p>
               You agree not to:
@@ -44,10 +44,10 @@ const TermsOfService = () => {
           <section className="mb-8">
             <h2>User Accounts</h2>
             <p>
-              You may need to create an account to use certain features of the Services. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify BiteBot AI immediately of any unauthorized use of your account.
+              You may need to create an account to use certain features of the Services. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify OrderlyBite AI immediately of any unauthorized use of your account.
             </p>
             <p>
-              BiteBot AI reserves the right to suspend or terminate your account at any time for any reason without notice or liability.
+              OrderlyBite AI reserves the right to suspend or terminate your account at any time for any reason without notice or liability.
             </p>
           </section>
           
@@ -57,7 +57,7 @@ const TermsOfService = () => {
               By placing an order through our Services, you agree to pay all charges associated with your order, including the price of the items, delivery fees, service fees, and applicable taxes. Payment must be made using an approved payment method.
             </p>
             <p>
-              BiteBot AI reserves the right to refuse or cancel any order for any reason, including errors in product or pricing information. If we cancel an order for which you have already been charged, we will issue a refund.
+              OrderlyBite AI reserves the right to refuse or cancel any order for any reason, including errors in product or pricing information. If we cancel an order for which you have already been charged, we will issue a refund.
             </p>
           </section>
           
@@ -67,9 +67,9 @@ const TermsOfService = () => {
               If you have any questions about these Terms, please contact us at:
             </p>
             <p>
-              <strong>Email:</strong> legal@bitebot.com<br />
-              <strong>Address:</strong> 123 Food Street, Tasteville, TC 98765<br />
-              <strong>Phone:</strong> +1 (555) 123-4567
+              <strong>Email:</strong> eakarsu@orderlybite.com<br />
+              <strong>Address:</strong> 2807 Hampton Woods Dr Henrico 23233<br />
+              <strong>Phone:</strong> 1 (804) 360-1129
             </p>
           </section>
         </div>

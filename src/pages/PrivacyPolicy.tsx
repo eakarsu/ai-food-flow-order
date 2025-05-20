@@ -19,7 +19,7 @@ const PrivacyPolicy = () => {
           <section className="mb-8">
             <h2>Introduction</h2>
             <p>
-              BiteBot AI ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how your personal information is collected, used, and disclosed by BiteBot AI when you use our website, mobile application, and other online products and services (collectively, the "Services").
+              OrderlyBite AI ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how your personal information is collected, used, and disclosed by OrderlyBite AI when you use our website, mobile application, and other online products and services (collectively, the "Services").
             </p>
             <p>
               Please read this Privacy Policy carefully. By using our Services, you agree to the practices described in this policy. If you do not agree with our policies and practices, please do not use our Services.
@@ -69,9 +69,9 @@ const PrivacyPolicy = () => {
               If you have any questions about this Privacy Policy or our data practices, please contact us at:
             </p>
             <p>
-              <strong>Email:</strong> privacy@bitebot.com<br />
-              <strong>Address:</strong> 123 Food Street, Tasteville, TC 98765<br />
-              <strong>Phone:</strong> +1 (555) 123-4567
+              <strong>Email:</strong> eakarsu@orderlybite.com<br />
+              <strong>Address:</strong> 2807 Hampton Woods Dr Henrico 23233<br />
+              <strong>Phone:</strong> 1 (804) 360-1129
             </p>
           </section>
         </div>
