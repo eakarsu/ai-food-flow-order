@@ -5,6 +5,7 @@ import SearchBar from '../components/SearchBar';
 import RestaurantCard from '../components/RestaurantCard';
 import FoodItem from '../components/FoodItem';
 import AiRecommendation from '../components/AiRecommendation';
+import TwilioContact from '../components/TwilioContact';
 import Footer from '../components/Footer';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -150,6 +151,17 @@ const Index = () => {
       {/* AI Recommendation Section */}
       <div className="container mx-auto px-4 py-12">
         <AiRecommendation />
+      </div>
+      
+      {/* Twilio Contact Section */}
+      <div className="container mx-auto px-4 py-8 bg-food-light">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-food-dark mb-3">Contact Us</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Need to reach out? Send us a text message or give us a call directly from your browser!
+          </p>
+        </div>
+        <TwilioContact />
       </div>
       
       {/* Main Content */}
