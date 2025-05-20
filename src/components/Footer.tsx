@@ -1,5 +1,6 @@
 
 import { Link } from 'react-router-dom';
+import { Mail, Phone, MapPin } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -8,7 +9,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-xl font-bold mb-4 flex items-center">
-              <span className="text-food-primary">BiteBot</span>
+              <span className="text-food-primary">OrderlyBite</span>
               <span className="ml-1 text-xs bg-food-secondary text-white px-1 rounded">AI</span>
             </h3>
             <p className="text-gray-300 text-sm">
@@ -40,23 +41,23 @@ const Footer = () => {
             <h4 className="font-semibold mb-4 text-food-accent">Contact</h4>
             <ul className="space-y-2 text-sm text-gray-300">
               <li className="flex items-start">
-                <span className="mr-2">📧</span>
-                <span>support@bitebot.com</span>
+                <Mail size={16} className="mr-2 mt-1 flex-shrink-0" />
+                <span>eakarsu@orderlybite.com</span>
               </li>
               <li className="flex items-start">
-                <span className="mr-2">📱</span>
-                <span>+1 (555) 123-4567</span>
+                <Phone size={16} className="mr-2 mt-1 flex-shrink-0" />
+                <span>1 (804) 360-1129</span>
               </li>
               <li className="flex items-start">
-                <span className="mr-2">🏙️</span>
-                <span>123 Food Street, Tasteville, TC 98765</span>
+                <MapPin size={16} className="mr-2 mt-1 flex-shrink-0" />
+                <span>2807 Hampton Woods Dr Henrico 23233</span>
               </li>
             </ul>
           </div>
         </div>
         
         <div className="mt-8 pt-6 border-t border-gray-700 text-center text-sm text-gray-400">
-          <p>&copy; {new Date().getFullYear()} BiteBot AI. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} OrderlyBite AI. All rights reserved.</p>
         </div>
       </div>
     </footer>
