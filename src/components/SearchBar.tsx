@@ -1,0 +1,37 @@
+
+import { Search } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const SearchBar = () => {
+  return (
+    <div className="rounded-lg overflow-hidden shadow-md bg-white p-4">
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-grow">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+          <Input 
+            placeholder="Search for restaurants or dishes..." 
+            className="pl-10 border-gray-200 focus-visible:ring-food-primary"
+          />
+        </div>
+        <div className="w-full md:w-48">
+          <Select defaultValue="all">
+            <SelectTrigger className="border-gray-200 focus:ring-food-primary">
+              <SelectValue placeholder="Categories" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="italian">Italian</SelectItem>
+              <SelectItem value="chinese">Chinese</SelectItem>
+              <SelectItem value="indian">Indian</SelectItem>
+              <SelectItem value="mexican">Mexican</SelectItem>
+              <SelectItem value="japanese">Japanese</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SearchBar;
