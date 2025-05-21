@@ -48,21 +48,6 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
           rulesMatch = item.rules.some(rule => rule.toLowerCase().includes(query));
         }
         
-        // Special case for drink/beverage related searches
-        if (query.includes("drink") || query.includes("coffee") || query.includes("tea") || 
-            query.includes("bottle") || query.includes("lemonade")) {
-          // If the category title contains these keywords, show all items in the category
-          const categoryLower = title.toLowerCase();
-          if (categoryLower.includes("drink") || 
-              categoryLower.includes("coffee") || 
-              categoryLower.includes("tea") ||
-              categoryLower.includes("iced") ||
-              categoryLower.includes("lemonade") ||
-              categoryLower.includes("bottle")) {
-            return true;
-          }
-        }
-        
         return nameMatch || descMatch || rulesMatch;
       })
     : items;

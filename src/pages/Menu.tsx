@@ -1,11 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import MenuCategory, { MenuItem } from '../components/MenuCategory';
 import SearchBar from '../components/SearchBar';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 // Rules data structure
 const rulesData = {
@@ -918,21 +916,15 @@ const menuData: Array<{
 const Menu = () => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
   
   // Parse URL parameters on load
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const searchParam = queryParams.get('search');
-    const categoryParam = queryParams.get('category');
     
     if (searchParam) {
       setSearchQuery(searchParam);
-    }
-    
-    if (categoryParam) {
-      setSelectedCategory(categoryParam);
     }
     
     // Initialize all categories as open
@@ -943,14 +935,9 @@ const Menu = () => {
     setOpenCategories(initialOpenState);
   }, [location.search]);
   
-  // Filter menu items based on search query and category
+  // Filter menu items based on search query
   const filteredCategories = menuData
     .map(category => {
-      // If we have a category filter and it's not "all", only include that category
-      if (selectedCategory !== "all" && selectedCategory.toLowerCase() !== category.category.toLowerCase()) {
-        return { ...category, items: [] };
-      }
-      
       // If search query is empty, include all items
       if (!searchQuery) {
         return category;
@@ -978,13 +965,18 @@ const Menu = () => {
         const nameMatch = item.name.toLowerCase().includes(searchLower);
         const descMatch = item.description && item.description.toLowerCase().includes(searchLower);
         
-        // Check rules if they exist
+        // Check for matches in rules if they exist
         let rulesMatch = false;
         if (item.rules) {
           rulesMatch = item.rules.some(rule => {
-            const ruleInfo = rulesData[category.category]?.[rule];
-            return rule.toLowerCase().includes(searchLower) || 
-                  (ruleInfo && JSON.stringify(ruleInfo).toLowerCase().includes(searchLower));
+            // Look in rules data for this category
+            const ruleData = rulesData[category.category]?.[rule];
+            if (ruleData) {
+              // Search in rule description and options
+              const ruleTextToSearch = JSON.stringify(ruleData).toLowerCase();
+              return ruleTextToSearch.includes(searchLower);
+            }
+            return rule.toLowerCase().includes(searchLower);
           });
         }
         
@@ -1004,10 +996,6 @@ const Menu = () => {
     }
   };
 
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-  };
-
   const toggleCategory = (category: string) => {
     setOpenCategories(prev => ({
       ...prev,
@@ -1025,10 +1013,7 @@ const Menu = () => {
           <p className="text-gray-600 mb-6">Explore our delicious offerings</p>
           
           <div className="max-w-4xl mx-auto mb-8">
-            <SearchBar 
-              onSearch={handleSearch} 
-              onCategoryChange={handleCategoryChange}
-            />
+            <SearchBar onSearch={handleSearch} />
           </div>
         </div>
       </div>
@@ -1067,10 +1052,7 @@ const Menu = () => {
           <div className="text-center py-10">
             <p className="text-lg text-gray-500">No menu items found matching "{searchQuery}"</p>
             <button 
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedCategory("all");
-              }}
+              onClick={() => setSearchQuery("")}
               className="mt-2 text-food-primary hover:underline"
             >
               Clear search

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -9,7 +8,6 @@ import AiRecommendation from '../components/AiRecommendation';
 import TwilioContact from '../components/TwilioContact';
 import Footer from '../components/Footer';
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Single restaurant data
 const restaurantData = {
@@ -81,11 +79,6 @@ const Index = () => {
     // Navigate to menu page with search query
     navigate(`/menu?search=${encodeURIComponent(query)}`);
   };
-
-  // Handle category change
-  const handleCategoryChange = (category: string) => {
-    navigate(`/menu?category=${encodeURIComponent(category)}`);
-  };
   
   if (isLoading) {
     return (
@@ -114,7 +107,7 @@ const Index = () => {
             Fresh, delicious meals made just for you
           </p>
           <div className="max-w-xl mx-auto">
-            <SearchBar onSearch={handleSearch} onCategoryChange={handleCategoryChange} />
+            <SearchBar onSearch={handleSearch} />
           </div>
         </div>
       </div>
