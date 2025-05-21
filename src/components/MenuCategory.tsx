@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, ChevronDown, ChevronUp, ImageOff } from "lucide-react";
@@ -24,8 +23,9 @@ interface MenuCategoryProps {
 
 const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQuery = "" }: MenuCategoryProps) => {
   const { toast } = useToast();
-  // Always set isOpen to true initially to show items by default
-  const [isOpen, setIsOpen] = useState(true);
+  // Set isOpen to false initially to keep categories collapsed by default
+  // Unless there's a search query, then keep them open for visibility
+  const [isOpen, setIsOpen] = useState(searchQuery ? true : false);
   
   // Don't render category if no items are available
   if (items.length === 0) {
@@ -85,8 +85,7 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
           </CollapsibleTrigger>
         )}
         
-        {/* Always display items, regardless of collapse state */}
-        <div className="pt-4">
+        <CollapsibleContent className="pt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {items.map((item, index) => {
               const placeholderImage = getPlaceholderImage(item.name);
@@ -139,7 +138,7 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
               );
             })}
           </div>
-        </div>
+        </CollapsibleContent>
       </Collapsible>
     </div>
   );
