@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from '../components/Navbar';
@@ -926,6 +927,9 @@ const Menu = () => {
       setSearchQuery(searchParam);
     }
   }, [location.search]);
+  
+  // Convert searchQuery to lowercase for case-insensitive comparison
+  const searchLower = searchQuery.toLowerCase();
   
   // Filter menu items based on search query
   const filteredCategories = menuData.map(category => {
