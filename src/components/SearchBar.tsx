@@ -20,11 +20,6 @@ const SearchBar = ({ onSearch, initialQuery = "" }: SearchBarProps) => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
-    
-    // Optional: Clear search when input is emptied
-    if (value === "" && onSearch) {
-      onSearch("");
-    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -50,7 +45,7 @@ const SearchBar = ({ onSearch, initialQuery = "" }: SearchBarProps) => {
             value={searchQuery}
             onChange={handleSearchChange}
             onKeyDown={handleKeyDown}
-            style={{ color: '#333' }} // Ensure text is visible
+            style={{ color: '#333' }}
           />
         </div>
         <Button 

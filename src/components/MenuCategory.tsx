@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,28 +24,20 @@ interface MenuCategoryProps {
 
 const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQuery = "" }: MenuCategoryProps) => {
   const { toast } = useToast();
-  // When searching, we want to keep categories collapsed by default
-  const [isOpen, setIsOpen] = useState(!searchQuery);
+  // Always set isOpen to true initially to show items by default
+  const [isOpen, setIsOpen] = useState(true);
   
-  useEffect(() => {
-    // When search query changes, update the open state
-    // Keep categories closed when searching, open when not searching
-    setIsOpen(!searchQuery);
-  }, [searchQuery]);
-  
+  // Don't render category if no items are available
+  if (items.length === 0) {
+    return null;
+  }
+
   const handleAddToCart = (itemName: string) => {
     toast({
       title: "Added to cart",
       description: `${itemName} has been added to your cart`,
     });
   };
-
-  const displayItems = items;
-  
-  // Don't render category if no items are available
-  if (displayItems.length === 0) {
-    return null;
-  }
 
   // Specific placeholder images for different item types
   const getPlaceholderImage = (itemName: string) => {
@@ -92,9 +85,10 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
           </CollapsibleTrigger>
         )}
         
-        <CollapsibleContent className="pt-4">
+        {/* Always display items, regardless of collapse state */}
+        <div className="pt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayItems.map((item, index) => {
+            {items.map((item, index) => {
               const placeholderImage = getPlaceholderImage(item.name);
               
               return (
@@ -145,7 +139,7 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
               );
             })}
           </div>
-        </CollapsibleContent>
+        </div>
       </Collapsible>
     </div>
   );
