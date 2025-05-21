@@ -15,7 +15,17 @@ const rulesData = {
         { name: "Cinnamon Raisin (Small)", price: 1.50 },
         { name: "Egg (Small)", price: 1.50 },
         { name: "Egg Everything (Small)", price: 1.50 },
-        // ... keep existing code (remaining Bagel Options)
+        { name: "Everything (Small)", price: 1.50 },
+        { name: "Garlic (Small)", price: 1.50 },
+        { name: "Multigrain (Small)", price: 1.50 },
+        { name: "Onion (Small)", price: 1.50 },
+        { name: "Plain (Small)", price: 1.50 },
+        { name: "Poppy (Small)", price: 1.50 },
+        { name: "Pumpernickel (Small)", price: 1.50 },
+        { name: "Salt (Small)", price: 1.50 },
+        { name: "Sesame (Small)", price: 1.50 },
+        { name: "Wheat (Small)", price: 1.50 },
+        { name: "Whole Wheat (Small)", price: 1.50 }
       ]
     },
     "Bagel Spreads": {
@@ -23,10 +33,145 @@ const rulesData = {
       options: [
         { name: "Bacon (Small)", price: 4.00 },
         { name: "Butter (Small)", price: 1.00 },
-        // ... keep existing code (remaining Bagel Spreads)
+        { name: "Cream Cheese (Small)", price: 2.00 },
+        { name: "Cream Cheese Bacon Scallion (Small)", price: 3.00 },
+        { name: "Cream Cheese Blueberry (Small)", price: 3.00 },
+        { name: "Cream Cheese Chive (Small)", price: 3.00 },
+        { name: "Cream Cheese Honey Walnut (Small)", price: 3.00 },
+        { name: "Cream Cheese Jalapeno (Small)", price: 3.00 },
+        { name: "Cream Cheese Lite (Small)", price: 3.00 },
+        { name: "Cream Cheese Lox Spread (Small)", price: 3.00 },
+        { name: "Cream Cheese Olive (Small)", price: 3.00 },
+        { name: "Cream Cheese Scallion (Small)", price: 3.00 },
+        { name: "Cream Cheese Strawberry (Small)", price: 3.00 },
+        { name: "Cream Cheese Sundried Tomato (Small)", price: 3.00 },
+        { name: "Cream Cheese Vegetable (Small)", price: 3.00 },
+        { name: "Egg Salad (Small)", price: 3.00 },
+        { name: "Grape Jelly (Small)", price: 1.00 },
+        { name: "Ham (Small)", price: 4.00 },
+        { name: "Honey (Small)", price: 1.00 },
+        { name: "Hummus (Small)", price: 2.00 },
+        { name: "Peanut Butter (Small)", price: 2.00 },
+        { name: "Sausage (Small)", price: 4.00 },
+        { name: "Strawberry Jelly (Small)", price: 1.00 },
+        { name: "Turkey (Small)", price: 4.00 }
       ]
     },
-    // ... keep existing code (remaining BYO Breakfast categories)
+    "Breakfast Add-ons": {
+      rule: "Select up to 10",
+      options: [
+        { name: "Avocado (Medium)", price: 2.00 },
+        { name: "Bacon (Medium)", price: 2.00 },
+        { name: "Banana Peppers (Medium)", price: 0.50 },
+        { name: "Black Olives (Medium)", price: 0.50 },
+        { name: "Broccoli (Medium)", price: 0.50 },
+        { name: "Carrots (Medium)", price: 0.50 },
+        { name: "Cheddar Cheese (Medium)", price: 1.00 },
+        { name: "Chicken Cutlet (Medium)", price: 3.00 },
+        { name: "Cucumbers (Medium)", price: 0.50 },
+        { name: "Feta Cheese (Medium)", price: 1.00 },
+        { name: "Green Peppers (Medium)", price: 0.50 },
+        { name: "Grilled Chicken (Medium)", price: 3.00 },
+        { name: "Ham (Medium)", price: 2.00 },
+        { name: "Hot Peppers (Medium)", price: 0.50 },
+        { name: "Jalapenos (Medium)", price: 0.50 },
+        { name: "Lettuce (Medium)", price: 0.50 },
+        { name: "Mozzarella Cheese (Medium)", price: 1.00 },
+        { name: "Mushrooms (Medium)", price: 0.50 },
+        { name: "Onions (Medium)", price: 0.50 },
+        { name: "Pepperoni (Medium)", price: 2.00 },
+        { name: "Pickles (Medium)", price: 0.50 },
+        { name: "Provolone Cheese (Medium)", price: 1.00 },
+        { name: "Red Onions (Medium)", price: 0.50 },
+        { name: "Red Peppers (Medium)", price: 0.50 },
+        { name: "Roast Beef (Medium)", price: 2.00 },
+        { name: "Salami (Medium)", price: 2.00 },
+        { name: "Sausage (Medium)", price: 2.00 },
+        { name: "Spinach (Medium)", price: 0.50 },
+        { name: "Swiss Cheese (Medium)", price: 1.00 },
+        { name: "Tomatoes (Medium)", price: 0.50 },
+        { name: "Turkey (Medium)", price: 2.00 }
+      ]
+    },
+    "Breakfast Bread": {
+      rule: "Select 1",
+      options: [
+        { name: "Bagel (Medium)", price: 0.00 },
+        { name: "Brioche Roll (Medium)", price: 0.00 },
+        { name: "Croissant (Medium)", price: 1.00 },
+        { name: "English Muffin (Medium)", price: 0.00 },
+        { name: "Hard Roll (Medium)", price: 0.00 },
+        { name: "Hero (Medium)", price: 1.00 },
+        { name: "Plain Wrap (Medium)", price: 0.00 },
+        { name: "Rye Bread (Medium)", price: 0.00 },
+        { name: "Sourdough Bread (Medium)", price: 0.00 },
+        { name: "White Bread (Medium)", price: 0.00 },
+        { name: "Whole Wheat Bread (Medium)", price: 0.00 },
+        { name: "Whole Wheat Wrap (Medium)", price: 0.00 }
+      ]
+    },
+    "Breakfast Cheese": {
+      rule: "Select up to 2",
+      options: [
+        { name: "American Cheese (Medium)", price: 1.00 },
+        { name: "Cheddar Cheese (Medium)", price: 1.00 },
+        { name: "Feta Cheese (Medium)", price: 1.00 },
+        { name: "Mozzarella Cheese (Medium)", price: 1.00 },
+        { name: "Pepper Jack Cheese (Medium)", price: 1.00 },
+        { name: "Provolone Cheese (Medium)", price: 1.00 },
+        { name: "Swiss Cheese (Medium)", price: 1.00 }
+      ]
+    },
+    "Breakfast Dressing": {
+      rule: "Select up to 2",
+      options: [
+        { name: "BBQ Sauce (Medium)", price: 0.00 },
+        { name: "Blue Cheese (Medium)", price: 0.00 },
+        { name: "Chipotle Mayo (Medium)", price: 0.00 },
+        { name: "Honey Mustard (Medium)", price: 0.00 },
+        { name: "Hot Sauce (Medium)", price: 0.00 },
+        { name: "Italian (Medium)", price: 0.00 },
+        { name: "Ketchup (Medium)", price: 0.00 },
+        { name: "Mayo (Medium)", price: 0.00 },
+        { name: "Mustard (Medium)", price: 0.00 },
+        { name: "Ranch (Medium)", price: 0.00 },
+        { name: "Russian (Medium)", price: 0.00 },
+        { name: "Salsa (Medium)", price: 0.00 },
+        { name: "Spicy Mayo (Medium)", price: 0.00 }
+      ]
+    },
+    "Breakfast Egg Option": {
+      rule: "Select 1",
+      options: [
+        { name: "Egg (Medium)", price: 0.00 },
+        { name: "Egg Whites (Medium)", price: 1.00 },
+        { name: "No Egg (Medium)", price: 0.00 }
+      ]
+    },
+    "Breakfast Egg Quantity": {
+      rule: "Select 1",
+      options: [
+        { name: "1 Egg (Medium)", price: 0.00 },
+        { name: "2 Eggs (Medium)", price: 1.00 },
+        { name: "3 Eggs (Medium)", price: 2.00 },
+        { name: "4 Eggs (Medium)", price: 3.00 },
+        { name: "5 Eggs (Medium)", price: 4.00 }
+      ]
+    },
+    "Breakfast Meat": {
+      rule: "Select up to 3",
+      options: [
+        { name: "Bacon (Medium)", price: 2.00 },
+        { name: "Chicken Cutlet (Medium)", price: 3.00 },
+        { name: "Grilled Chicken (Medium)", price: 3.00 },
+        { name: "Ham (Medium)", price: 2.00 },
+        { name: "Pepperoni (Medium)", price: 2.00 },
+        { name: "Roast Beef (Medium)", price: 2.00 },
+        { name: "Salami (Medium)", price: 2.00 },
+        { name: "Sausage (Medium)", price: 2.00 },
+        { name: "Turkey (Medium)", price: 2.00 }
+      ]
+    }
   },
   "BYO Sandwiches": {
     "Bread": {
@@ -34,7 +179,29 @@ const rulesData = {
       options: [
         { name: "Cinnamon Raisin Bagel (Medium)", price: 0.50 },
         { name: "Croissant (Medium)", price: 2.00 },
-        // ... keep existing code (remaining Bread options)
+        { name: "Egg Bagel (Medium)", price: 0.50 },
+        { name: "Egg Everything Bagel (Medium)", price: 0.50 },
+        { name: "Everything Bagel (Medium)", price: 0.50 },
+        { name: "Garlic Bagel (Medium)", price: 0.50 },
+        { name: "Garlic Hero (Medium)", price: 0.00 },
+        { name: "Gluten Free Bread (Medium)", price: 2.00 },
+        { name: "Hard Roll (Medium)", price: 0.00 },
+        { name: "Hero (Medium)", price: 0.00 },
+        { name: "Multigrain Bagel (Medium)", price: 0.50 },
+        { name: "Onion Bagel (Medium)", price: 0.50 },
+        { name: "Plain Bagel (Medium)", price: 0.50 },
+        { name: "Plain Wrap (Medium)", price: 0.00 },
+        { name: "Poppy Bagel (Medium)", price: 0.50 },
+        { name: "Pumpernickel Bagel (Medium)", price: 0.50 },
+        { name: "Rye Bread (Medium)", price: 0.00 },
+        { name: "Salt Bagel (Medium)", price: 0.50 },
+        { name: "Sesame Bagel (Medium)", price: 0.50 },
+        { name: "Sourdough Bread (Medium)", price: 0.00 },
+        { name: "Wheat Bagel (Medium)", price: 0.50 },
+        { name: "White Bread (Medium)", price: 0.00 },
+        { name: "Whole Wheat Bagel (Medium)", price: 0.50 },
+        { name: "Whole Wheat Bread (Medium)", price: 0.00 },
+        { name: "Whole Wheat Wrap (Medium)", price: 0.00 }
       ]
     },
     "Cheese": {
@@ -42,10 +209,72 @@ const rulesData = {
       options: [
         { name: "American Cheese (Medium)", price: 1.00 },
         { name: "Blue Cheese Crumble (Medium)", price: 1.00 },
-        // ... keep existing code (remaining Cheese options)
+        { name: "Cheddar Cheese (Medium)", price: 1.00 },
+        { name: "Feta Cheese (Medium)", price: 1.00 },
+        { name: "Fresh Mozzarella (Medium)", price: 2.00 },
+        { name: "Mozzarella Cheese (Medium)", price: 1.00 },
+        { name: "Muenster Cheese (Medium)", price: 1.00 },
+        { name: "Parmesan Cheese (Medium)", price: 1.00 },
+        { name: "Pepper Jack Cheese (Medium)", price: 1.00 },
+        { name: "Provolone Cheese (Medium)", price: 1.00 },
+        { name: "Swiss Cheese (Medium)", price: 1.00 }
       ]
     },
-    // ... keep existing code (remaining BYO Sandwiches categories)
+    "Protein": {
+      rule: "Select up to 5",
+      options: [
+        { name: "Bacon (Medium)", price: 2.00 },
+        { name: "Boar's Head Bologna (Medium)", price: 2.00 },
+        { name: "Boar's Head Buffalo Chicken (Medium)", price: 2.00 },
+        { name: "Boar's Head Cajun Roast Beef (Medium)", price: 2.00 },
+        { name: "Boar's Head Chicken (Medium)", price: 2.00 },
+        { name: "Boar's Head Corned Beef (Medium)", price: 2.00 },
+        { name: "Boar's Head Genoa Salami (Medium)", price: 2.00 },
+        { name: "Boar's Head Ham (Medium)", price: 2.00 },
+        { name: "Boar's Head Honey Ham (Medium)", price: 2.00 },
+        { name: "Boar's Head Honey Turkey (Medium)", price: 2.00 },
+        { name: "Boar's Head Liverwurst (Medium)", price: 2.00 },
+        { name: "Boar's Head Pastrami (Medium)", price: 2.00 },
+        { name: "Boar's Head Pepperoni (Medium)", price: 2.00 },
+        { name: "Boar's Head Prosciutto (Medium)", price: 3.00 },
+        { name: "Boar's Head Roast Beef (Medium)", price: 2.00 },
+        { name: "Boar's Head Salami (Medium)", price: 2.00 },
+        { name: "Boar's Head Sopressata (Medium)", price: 3.00 },
+        { name: "Boar's Head Turkey (Medium)", price: 2.00 },
+        { name: "Chicken Cutlet (Medium)", price: 3.00 },
+        { name: "Chicken Salad (Medium)", price: 2.00 },
+        { name: "Egg Salad (Medium)", price: 2.00 },
+        { name: "Grilled Chicken (Medium)", price: 3.00 },
+        { name: "Tuna Salad (Medium)", price: 2.00 }
+      ]
+    },
+    "Toppings": {
+      rule: "Select up to 10",
+      options: [
+        { name: "Avocado (Medium)", price: 2.00 },
+        { name: "Banana Peppers (Medium)", price: 0.50 },
+        { name: "Black Olives (Medium)", price: 0.50 },
+        { name: "Carrots (Medium)", price: 0.50 },
+        { name: "Coleslaw (Medium)", price: 1.00 },
+        { name: "Cucumbers (Medium)", price: 0.50 },
+        { name: "Fried Onions (Medium)", price: 0.50 },
+        { name: "Green Peppers (Medium)", price: 0.50 },
+        { name: "Hot Peppers (Medium)", price: 0.50 },
+        { name: "Jalapenos (Medium)", price: 0.50 },
+        { name: "Lettuce (Medium)", price: 0.50 },
+        { name: "Macaroni Salad (Medium)", price: 1.00 },
+        { name: "Mushrooms (Medium)", price: 0.50 },
+        { name: "Oil & Vinegar (Medium)", price: 0.00 },
+        { name: "Onions (Medium)", price: 0.50 },
+        { name: "Pickles (Medium)", price: 0.50 },
+        { name: "Potato Salad (Medium)", price: 1.00 },
+        { name: "Red Onions (Medium)", price: 0.50 },
+        { name: "Roasted Red Peppers (Medium)", price: 1.00 },
+        { name: "Salt & Pepper (Medium)", price: 0.00 },
+        { name: "Spinach (Medium)", price: 0.50 },
+        { name: "Tomatoes (Medium)", price: 0.50 }
+      ]
+    }
   },
   "Chopped Salad": {
     "Salad Add-ons": {
@@ -53,10 +282,47 @@ const rulesData = {
       options: [
         { name: "Almonds (Small)", price: 2.00 },
         { name: "Black olives (Small)", price: 0.50 },
-        // ... keep existing code (remaining Salad Add-ons)
+        { name: "Broccoli (Small)", price: 0.50 },
+        { name: "Carrots (Small)", price: 0.50 },
+        { name: "Cheddar cheese (Small)", price: 1.00 },
+        { name: "Chicken cutlet (Small)", price: 3.00 },
+        { name: "Craisins (Small)", price: 1.00 },
+        { name: "Croutons (Small)", price: 0.50 },
+        { name: "Cucumbers (Small)", price: 0.50 },
+        { name: "Feta cheese (Small)", price: 1.00 },
+        { name: "Grilled chicken (Small)", price: 3.00 },
+        { name: "Hard boiled egg (Small)", price: 1.00 },
+        { name: "Mozzarella cheese (Small)", price: 1.00 },
+        { name: "Mushrooms (Small)", price: 0.50 },
+        { name: "Parmesan cheese (Small)", price: 1.00 },
+        { name: "Peppers (Small)", price: 0.50 },
+        { name: "Red onions (Small)", price: 0.50 },
+        { name: "Roasted red peppers (Small)", price: 1.00 },
+        { name: "Tomatoes (Small)", price: 0.50 },
+        { name: "Walnuts (Small)", price: 2.00 }
       ]
     },
-    // ... keep existing code (remaining Chopped Salad categories)
+    "Salad Base": {
+      rule: "Select 1",
+      options: [
+        { name: "Chopped romaine lettuce (Small)", price: 0.00 },
+        { name: "Mixed greens (Small)", price: 0.00 },
+        { name: "Spinach (Small)", price: 0.00 }
+      ]
+    },
+    "Salad Dressing": {
+      rule: "Select 1",
+      options: [
+        { name: "Balsamic vinaigrette (Small)", price: 0.00 },
+        { name: "Blue cheese (Small)", price: 0.00 },
+        { name: "Caesar (Small)", price: 0.00 },
+        { name: "Honey mustard (Small)", price: 0.00 },
+        { name: "Italian (Small)", price: 0.00 },
+        { name: "Oil & vinegar (Small)", price: 0.00 },
+        { name: "Ranch (Small)", price: 0.00 },
+        { name: "Russian (Small)", price: 0.00 }
+      ]
+    }
   },
   "Coffee": {
     "Coffee Creamers": {
@@ -64,7 +330,9 @@ const rulesData = {
       options: [
         { name: "Milk", price: 0.00 },
         { name: "Fat-Free Milk", price: 0.00 },
-        // ... keep existing code (remaining Coffee Creamers)
+        { name: "Half & Half", price: 0.00 },
+        { name: "Oat Milk", price: 0.50 },
+        { name: "Almond Milk", price: 0.50 }
       ]
     }
   }
@@ -699,7 +967,7 @@ const menuData: Array<{
 ];
 
 const Menu = () => {
-  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [activeCategory, setActiveCategory] = useState<string>(menuData[0].category);
   const [searchQuery, setSearchQuery] = useState("");
   
   const filteredCategories = searchQuery 
@@ -741,10 +1009,9 @@ const Menu = () => {
       </div>
       
       <div className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="all" onValueChange={setActiveCategory} className="w-full">
+        <Tabs defaultValue={menuData[0].category} onValueChange={setActiveCategory} className="w-full">
           <div className="mb-6 overflow-x-auto">
             <TabsList className="inline-flex min-w-full">
-              <TabsTrigger value="all">All Categories</TabsTrigger>
               {menuData.map((category) => (
                 <TabsTrigger key={category.category} value={category.category}>
                   {category.category}
@@ -753,16 +1020,15 @@ const Menu = () => {
             </TabsList>
           </div>
           
-          <TabsContent value={activeCategory}>
-            {displayedCategories.map((category) => (
+          {menuData.map((category) => (
+            <TabsContent key={category.category} value={category.category}>
               <MenuCategory 
-                key={category.category} 
                 title={category.category} 
                 items={category.items}
                 categoryImage={category.categoryImage}
               />
-            ))}
-          </TabsContent>
+            </TabsContent>
+          ))}
         </Tabs>
       </div>
       
