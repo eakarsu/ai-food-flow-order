@@ -44,14 +44,6 @@ const Footer = () => {
                 <Mail size={16} className="mr-2 mt-1 flex-shrink-0" />
                 <span>eakarsu@orderlybite.com</span>
               </li>
-              <li className="flex items-start">
-                <Phone size={16} className="mr-2 mt-1 flex-shrink-0" />
-                <span>1 (804) 360-1129</span>
-              </li>
-              <li className="flex items-start">
-                <MapPin size={16} className="mr-2 mt-1 flex-shrink-0" />
-                <span>2807 Hampton Woods Dr Henrico 23233</span>
-              </li>
             </ul>
           </div>
         </div>

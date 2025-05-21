@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -19,40 +20,38 @@ const restaurantData = {
   deliveryTime: "15-25",
   featured: true,
   description: "Your local deli serving breakfast, sandwiches, and more. Fresh ingredients, made-to-order meals, and friendly service.",
-  address: "2807 Hampton Woods Dr, Henrico, VA 23233",
-  phone: "1 (804) 360-1129"
 };
 
-// Featured food items
+// Featured food items with rephrased descriptions
 const featuredFoodItems = [
   {
     id: "101",
-    name: "Beef Gyro",
-    description: "Lettuce, tomato, cucumbers, onions, gyro sauce",
+    name: "Gourmet Beef Gyro",
+    description: "Tender sliced beef wrapped in warm pita with fresh lettuce, juicy tomatoes, crisp cucumbers, red onions, and our signature tzatziki sauce",
     price: 12.94,
     imageUrl: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?q=80&w=1000",
     featured: true
   },
   {
     id: "102",
-    name: "Chicken Fiesta Hero",
-    description: "Fried chicken cutlet, fresh mozzarella, roasted red peppers and spicy mayo on a toasted hero",
+    name: "Signature Chicken Fiesta Hero",
+    description: "Crispy golden chicken cutlet layered with creamy fresh mozzarella and sweet roasted red peppers, finished with our house spicy mayo on a toasted artisan hero roll",
     price: 17.95,
     imageUrl: "https://images.unsplash.com/photo-1550507992-eb63ffee0847?q=80&w=1000",
     featured: true
   },
   {
     id: "103",
-    name: "BYO Salad",
-    description: "Build your own salad with your choice of base, add-ons, and dressing",
+    name: "Custom Garden Salad",
+    description: "Create your perfect salad with your choice of crisp greens, seasonal vegetables, premium proteins, artisanal cheeses, and housemade dressings",
     price: 9.95,
     imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000",
     featured: true
   },
   {
     id: "104",
-    name: "Acai Bowl",
-    description: "Acai, Banana, Blueberry, Strawberry, Granola, Coconut, Honey",
+    name: "Superfood Acai Bowl",
+    description: "Nutrient-rich acai blend topped with fresh banana slices, sweet blueberries, strawberries, crunchy granola, coconut flakes, and a drizzle of organic honey",
     price: 12.97,
     imageUrl: "https://images.unsplash.com/photo-1590301157890-4810ed352733?q=80&w=1000",
     featured: true
@@ -138,8 +137,6 @@ const Index = () => {
               <p className="mt-4 text-gray-700">{restaurantData.description}</p>
               
               <div className="mt-6 space-y-2 text-gray-600">
-                <p><span className="font-semibold">Address:</span> {restaurantData.address}</p>
-                <p><span className="font-semibold">Phone:</span> {restaurantData.phone}</p>
                 <p><span className="font-semibold">Delivery Time:</span> {restaurantData.deliveryTime} min</p>
               </div>
               

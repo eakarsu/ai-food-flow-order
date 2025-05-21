@@ -20,6 +20,18 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Input } from '@/components/ui/input';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 interface CartProps {
   open: boolean;
@@ -28,6 +40,30 @@ interface CartProps {
 
 type PaymentMethod = 'credit-card' | 'paypal' | 'apple';
 
+// Credit card form schema
+const creditCardSchema = z.object({
+  cardName: z.string().min(1, "Cardholder name is required"),
+  cardNumber: z.string().min(13, "Card number must be at least 13 digits").max(19, "Card number cannot exceed 19 digits").regex(/^\d+$/, "Card number must contain only digits"),
+  expiryDate: z.string().regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "Expiry date must be in MM/YY format"),
+  cvv: z.string().min(3, "CVV must be at least 3 digits").max(4, "CVV cannot exceed 4 digits").regex(/^\d+$/, "CVV must contain only digits"),
+  billingAddress: z.string().min(1, "Billing address is required"),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1, "State is required"),
+  zipCode: z.string().min(5, "Zip code must be at least 5 digits").regex(/^\d+$/, "Zip code must contain only digits"),
+});
+
+// PayPal form schema
+const paypalSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+// Apple Pay form schema
+const applePaySchema = z.object({
+  appleId: z.string().email("Please enter a valid Apple ID"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
 const Cart = ({ open, onOpenChange }: CartProps) => {
   const { items, removeFromCart, updateQuantity, clearCart, getTotalItems, getTotalPrice } = useCart();
   const { toast } = useToast();
@@ -35,6 +71,39 @@ const Cart = ({ open, onOpenChange }: CartProps) => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit-card');
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentComplete, setPaymentComplete] = useState(false);
+
+  // Credit card form
+  const creditCardForm = useForm<z.infer<typeof creditCardSchema>>({
+    resolver: zodResolver(creditCardSchema),
+    defaultValues: {
+      cardName: "",
+      cardNumber: "",
+      expiryDate: "",
+      cvv: "",
+      billingAddress: "",
+      city: "",
+      state: "",
+      zipCode: "",
+    },
+  });
+
+  // PayPal form
+  const paypalForm = useForm<z.infer<typeof paypalSchema>>({
+    resolver: zodResolver(paypalSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  // Apple Pay form
+  const applePayForm = useForm<z.infer<typeof applePaySchema>>({
+    resolver: zodResolver(applePaySchema),
+    defaultValues: {
+      appleId: "",
+      password: "",
+    },
+  });
 
   const handleCheckout = () => {
     if (items.length > 0) {
@@ -48,6 +117,29 @@ const Cart = ({ open, onOpenChange }: CartProps) => {
   };
 
   const processPayment = () => {
+    // Validate form based on payment method
+    if (paymentMethod === 'credit-card') {
+      creditCardForm.handleSubmit(onCreditCardSubmit)();
+    } else if (paymentMethod === 'paypal') {
+      paypalForm.handleSubmit(onPaypalSubmit)();
+    } else if (paymentMethod === 'apple') {
+      applePayForm.handleSubmit(onApplePaySubmit)();
+    }
+  };
+
+  const onCreditCardSubmit = () => {
+    startPaymentProcess();
+  };
+
+  const onPaypalSubmit = () => {
+    startPaymentProcess();
+  };
+
+  const onApplePaySubmit = () => {
+    startPaymentProcess();
+  };
+
+  const startPaymentProcess = () => {
     setIsProcessing(true);
     
     // Simulate payment processing
@@ -87,6 +179,196 @@ const Cart = ({ open, onOpenChange }: CartProps) => {
         <Check size={16} className="ml-auto" />
       )}
     </Button>
+  );
+
+  // Credit Card Form Component
+  const CreditCardForm = () => (
+    <Form {...creditCardForm}>
+      <form className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={creditCardForm.control}
+            name="cardName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cardholder Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="John Doe" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={creditCardForm.control}
+            name="cardNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Card Number</FormLabel>
+                <FormControl>
+                  <Input placeholder="1234 5678 9012 3456" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={creditCardForm.control}
+            name="expiryDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Expiry Date</FormLabel>
+                <FormControl>
+                  <Input placeholder="MM/YY" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={creditCardForm.control}
+            name="cvv"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>CVV</FormLabel>
+                <FormControl>
+                  <Input placeholder="123" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <FormField
+          control={creditCardForm.control}
+          name="billingAddress"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Billing Address</FormLabel>
+              <FormControl>
+                <Input placeholder="123 Street Name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={creditCardForm.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>City</FormLabel>
+                <FormControl>
+                  <Input placeholder="City" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={creditCardForm.control}
+            name="state"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>State</FormLabel>
+                <FormControl>
+                  <Input placeholder="State" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <FormField
+          control={creditCardForm.control}
+          name="zipCode"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Zip Code</FormLabel>
+              <FormControl>
+                <Input placeholder="12345" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </form>
+    </Form>
+  );
+
+  // PayPal Form Component
+  const PayPalForm = () => (
+    <Form {...paypalForm}>
+      <form className="space-y-4">
+        <FormField
+          control={paypalForm.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>PayPal Email</FormLabel>
+              <FormControl>
+                <Input placeholder="email@example.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={paypalForm.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>PayPal Password</FormLabel>
+              <FormControl>
+                <Input type="password" placeholder="••••••••" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </form>
+    </Form>
+  );
+
+  // Apple Pay Form Component
+  const ApplePayForm = () => (
+    <Form {...applePayForm}>
+      <form className="space-y-4">
+        <FormField
+          control={applePayForm.control}
+          name="appleId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Apple ID</FormLabel>
+              <FormControl>
+                <Input placeholder="apple.id@icloud.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={applePayForm.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input type="password" placeholder="••••••••" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </form>
+    </Form>
   );
 
   return (
@@ -205,6 +487,12 @@ const Cart = ({ open, onOpenChange }: CartProps) => {
                 <PaymentMethodButton type="apple" label="Apple Pay" />
               </div>
               
+              <div className="max-h-[300px] overflow-y-auto">
+                {paymentMethod === 'credit-card' && <CreditCardForm />}
+                {paymentMethod === 'paypal' && <PayPalForm />}
+                {paymentMethod === 'apple' && <ApplePayForm />}
+              </div>
+              
               <div className="border-t pt-4">
                 <div className="flex justify-between mb-2">
                   <span>Total Amount:</span>
@@ -249,4 +537,3 @@ const Cart = ({ open, onOpenChange }: CartProps) => {
 };
 
 export default Cart;
-
