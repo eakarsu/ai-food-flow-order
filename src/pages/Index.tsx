@@ -63,6 +63,7 @@ const featuredFoodItems = [
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   
   // Simulate page loading
@@ -73,6 +74,18 @@ const Index = () => {
     
     return () => clearTimeout(timer);
   }, []);
+  
+  // Handle search from the home page
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    // Navigate to menu page with search query
+    navigate(`/menu?search=${encodeURIComponent(query)}`);
+  };
+
+  // Handle category change
+  const handleCategoryChange = (category: string) => {
+    navigate(`/menu?category=${encodeURIComponent(category)}`);
+  };
   
   if (isLoading) {
     return (
@@ -101,7 +114,7 @@ const Index = () => {
             Fresh, delicious meals made just for you
           </p>
           <div className="max-w-xl mx-auto">
-            <SearchBar />
+            <SearchBar onSearch={handleSearch} onCategoryChange={handleCategoryChange} />
           </div>
         </div>
       </div>

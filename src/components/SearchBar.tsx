@@ -70,6 +70,7 @@ const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
             value={searchQuery}
             onChange={handleSearchChange}
             onKeyDown={handleKeyDown}
+            style={{ color: '#333' }} // Ensure text is visible
           />
         </div>
         <div className="flex gap-4">

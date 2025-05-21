@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import MenuCategory, { MenuItem } from '../components/MenuCategory';
@@ -915,18 +916,32 @@ const menuData: Array<{
 ];
 
 const Menu = () => {
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
   
-  // Initialize all categories as open
+  // Parse URL parameters on load
   useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const searchParam = queryParams.get('search');
+    const categoryParam = queryParams.get('category');
+    
+    if (searchParam) {
+      setSearchQuery(searchParam);
+    }
+    
+    if (categoryParam) {
+      setSelectedCategory(categoryParam);
+    }
+    
+    // Initialize all categories as open
     const initialOpenState = menuData.reduce((acc, category) => ({ 
       ...acc, 
       [category.category]: true 
     }), {});
     setOpenCategories(initialOpenState);
-  }, []);
+  }, [location.search]);
   
   // Filter menu items based on search query and category
   const filteredCategories = menuData
@@ -947,12 +962,14 @@ const Menu = () => {
       if ((searchLower.includes("drink") || 
           searchLower.includes("coffee") || 
           searchLower.includes("tea") || 
-          searchLower.includes("bottle")) && 
+          searchLower.includes("bottle") || 
+          searchLower.includes("lemonade")) && 
           (category.category.toLowerCase().includes("drink") ||
           category.category.toLowerCase().includes("coffee") ||
           category.category.toLowerCase().includes("tea") ||
           category.category.toLowerCase().includes("iced") ||
-          category.category.toLowerCase().includes("bottle"))) {
+          category.category.toLowerCase().includes("bottle") ||
+          category.category.toLowerCase().includes("lemonade"))) {
         return category; // Show entire category for drink-related searches
       }
       
