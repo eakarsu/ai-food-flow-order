@@ -19,11 +19,12 @@ interface MenuCategoryProps {
   items: MenuItem[];
   categoryImage?: string;
   showTitle?: boolean;
+  searchQuery?: string;
 }
 
-const MenuCategory = ({ title, items, categoryImage, showTitle = true }: MenuCategoryProps) => {
+const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQuery = "" }: MenuCategoryProps) => {
   const { toast } = useToast();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   
   const handleAddToCart = (itemName: string) => {
     toast({
@@ -31,6 +32,19 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true }: MenuCat
       description: `${itemName} has been added to your cart`,
     });
   };
+
+  // Filter items based on search query
+  const filteredItems = searchQuery
+    ? items.filter(item => 
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : items;
+  
+  // Don't render category if no items match search query
+  if (searchQuery && filteredItems.length === 0) {
+    return null;
+  }
   
   return (
     <div className="mb-8">
@@ -55,7 +69,7 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true }: MenuCat
         
         <CollapsibleContent className="pt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {items.map((item, index) => (
+            {filteredItems.map((item, index) => (
               <Card key={`${title}-${index}`} className="overflow-hidden hover:shadow-md transition-all duration-300">
                 {item.imageUrl && (
                   <div className="h-48 overflow-hidden relative">

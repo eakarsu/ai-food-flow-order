@@ -4,6 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
@@ -12,6 +18,16 @@ interface SearchBarProps {
 
 const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  
+  const categories = [
+    { value: "all", label: "All Categories" },
+    { value: "italian", label: "Italian" },
+    { value: "chinese", label: "Chinese" },
+    { value: "indian", label: "Indian" },
+    { value: "mexican", label: "Mexican" },
+    { value: "japanese", label: "Japanese" },
+  ];
   
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -19,6 +35,7 @@ const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
   };
   
   const handleCategoryChange = (value: string) => {
+    setSelectedCategory(value);
     if (onCategoryChange) {
       onCategoryChange(value);
     }
@@ -51,19 +68,28 @@ const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
         </div>
         <div className="flex gap-4">
           <div className="w-full md:w-48">
-            <Select defaultValue="all" onValueChange={handleCategoryChange}>
-              <SelectTrigger className="border-gray-200 focus:ring-food-primary">
-                <SelectValue placeholder="Categories" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="italian">Italian</SelectItem>
-                <SelectItem value="chinese">Chinese</SelectItem>
-                <SelectItem value="indian">Indian</SelectItem>
-                <SelectItem value="mexican">Mexican</SelectItem>
-                <SelectItem value="japanese">Japanese</SelectItem>
-              </SelectContent>
-            </Select>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-between border-gray-200 bg-white text-gray-700"
+                >
+                  {categories.find(c => c.value === selectedCategory)?.label || "Categories"}
+                  <Search className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-full min-w-[200px] bg-white">
+                {categories.map((category) => (
+                  <DropdownMenuItem 
+                    key={category.value}
+                    onClick={() => handleCategoryChange(category.value)}
+                    className="cursor-pointer"
+                  >
+                    {category.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <Button 
             onClick={handleSearchClick}
