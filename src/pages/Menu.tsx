@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -940,6 +941,8 @@ const Menu = () => {
         return category;
       }
 
+      const searchLower = searchQuery.toLowerCase();
+      
       // Special handling for drink-related searches at the category level
       if ((searchLower.includes("drink") || 
           searchLower.includes("coffee") || 
@@ -954,7 +957,6 @@ const Menu = () => {
       }
       
       // Filter individual items
-      const searchLower = searchQuery.toLowerCase();
       const filteredItems = category.items.filter(item => {
         const nameMatch = item.name.toLowerCase().includes(searchLower);
         const descMatch = item.description && item.description.toLowerCase().includes(searchLower);

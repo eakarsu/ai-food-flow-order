@@ -1,5 +1,5 @@
 
-import { Search, Coffee, Bottle } from 'lucide-react';
+import { Search, Coffee } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
