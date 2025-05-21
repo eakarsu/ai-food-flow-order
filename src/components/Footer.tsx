@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -43,10 +43,26 @@ const Footer = () => {
             <h4 className="font-semibold mb-4 text-food-accent">Contact</h4>
             <ul className="space-y-3 text-sm text-gray-300">
               <li className="flex items-start">
-                <Mail size={16} className="mr-2 mt-1 flex-shrink-0 text-food-primary" />
-                <span>eakarsu@orderlybite.com</span>
+                <MapPin size={16} className="mr-2 mt-1 flex-shrink-0 text-food-primary" />
+                <span>123 Food Street, Tasteville, TC 98765</span>
               </li>
-              <li className="flex items-center">
+              <li className="flex items-start">
+                <Phone size={16} className="mr-2 mt-1 flex-shrink-0 text-food-primary" />
+                <span>+1 (555) 123-4567</span>
+              </li>
+              <li className="flex items-start">
+                <Mail size={16} className="mr-2 mt-1 flex-shrink-0 text-food-primary" />
+                <span>support@orderlybite.com</span>
+              </li>
+              <li className="flex items-start">
+                <Clock size={16} className="mr-2 mt-1 flex-shrink-0 text-food-primary" />
+                <div>
+                  <p>Monday-Friday: 9am-6pm</p>
+                  <p>Saturday: 10am-4pm</p>
+                  <p>Sunday: Closed</p>
+                </div>
+              </li>
+              <li className="flex items-start">
                 <div className="mt-4">
                   <div className="flex space-x-3">
                     <a href="#" className="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors">
