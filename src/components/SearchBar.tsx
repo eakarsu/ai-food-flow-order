@@ -3,6 +3,7 @@ import { Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from 'react';
+import { Button } from "@/components/ui/button";
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
@@ -15,9 +16,6 @@ const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
-    if (onSearch) {
-      onSearch(value);
-    }
   };
   
   const handleCategoryChange = (value: string) => {
@@ -28,6 +26,12 @@ const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && onSearch) {
+      onSearch(searchQuery);
+    }
+  };
+  
+  const handleSearchClick = () => {
+    if (onSearch) {
       onSearch(searchQuery);
     }
   };
@@ -45,20 +49,28 @@ const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
             onKeyDown={handleKeyDown}
           />
         </div>
-        <div className="w-full md:w-48">
-          <Select defaultValue="all" onValueChange={handleCategoryChange}>
-            <SelectTrigger className="border-gray-200 focus:ring-food-primary">
-              <SelectValue placeholder="Categories" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="italian">Italian</SelectItem>
-              <SelectItem value="chinese">Chinese</SelectItem>
-              <SelectItem value="indian">Indian</SelectItem>
-              <SelectItem value="mexican">Mexican</SelectItem>
-              <SelectItem value="japanese">Japanese</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="flex gap-4">
+          <div className="w-full md:w-48">
+            <Select defaultValue="all" onValueChange={handleCategoryChange}>
+              <SelectTrigger className="border-gray-200 focus:ring-food-primary">
+                <SelectValue placeholder="Categories" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="italian">Italian</SelectItem>
+                <SelectItem value="chinese">Chinese</SelectItem>
+                <SelectItem value="indian">Indian</SelectItem>
+                <SelectItem value="mexican">Mexican</SelectItem>
+                <SelectItem value="japanese">Japanese</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button 
+            onClick={handleSearchClick}
+            className="bg-food-primary hover:bg-food-primary/90 text-white"
+          >
+            Search
+          </Button>
         </div>
       </div>
     </div>

@@ -18,9 +18,10 @@ interface MenuCategoryProps {
   title: string;
   items: MenuItem[];
   categoryImage?: string;
+  showTitle?: boolean;
 }
 
-const MenuCategory = ({ title, items, categoryImage }: MenuCategoryProps) => {
+const MenuCategory = ({ title, items, categoryImage, showTitle = true }: MenuCategoryProps) => {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   
@@ -34,21 +35,23 @@ const MenuCategory = ({ title, items, categoryImage }: MenuCategoryProps) => {
   return (
     <div className="mb-8">
       <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-        <CollapsibleTrigger className="w-full flex items-center justify-between bg-food-primary/10 p-4 rounded-lg shadow hover:bg-food-primary/20 transition-colors">
-          <div className="flex items-center space-x-4">
-            {categoryImage && (
-              <div className="w-16 h-16 rounded-full overflow-hidden">
-                <img 
-                  src={categoryImage} 
-                  alt={title} 
-                  className="w-full h-full object-cover" 
-                />
-              </div>
-            )}
-            <h2 className="text-2xl font-bold text-food-dark">{title}</h2>
-          </div>
-          {isOpen ? <ChevronUp className="text-food-dark" /> : <ChevronDown className="text-food-dark" />}
-        </CollapsibleTrigger>
+        {showTitle && title && (
+          <CollapsibleTrigger className="w-full flex items-center justify-between bg-food-primary/10 p-4 rounded-lg shadow hover:bg-food-primary/20 transition-colors">
+            <div className="flex items-center space-x-4">
+              {categoryImage && (
+                <div className="w-16 h-16 rounded-full overflow-hidden">
+                  <img 
+                    src={categoryImage} 
+                    alt={title} 
+                    className="w-full h-full object-cover" 
+                  />
+                </div>
+              )}
+              <h2 className="text-2xl font-bold text-food-dark">{title}</h2>
+            </div>
+            {isOpen ? <ChevronUp className="text-food-dark" /> : <ChevronDown className="text-food-dark" />}
+          </CollapsibleTrigger>
+        )}
         
         <CollapsibleContent className="pt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
