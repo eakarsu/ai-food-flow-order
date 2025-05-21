@@ -927,10 +927,10 @@ const Menu = () => {
       setSearchQuery(searchParam);
     }
     
-    // Initialize all categories as open
+    // Initialize all categories as closed when searching, open otherwise
     const initialOpenState = menuData.reduce((acc, category) => ({ 
       ...acc, 
-      [category.category]: true 
+      [category.category]: !searchParam 
     }), {});
     setOpenCategories(initialOpenState);
   }, [location.search]);
@@ -987,8 +987,12 @@ const Menu = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    // When searching, open all categories to make results visible
+    // When searching, close all categories to make results more scannable
     if (query) {
+      const allClosed = menuData.reduce((acc, category) => ({ ...acc, [category.category]: false }), {});
+      setOpenCategories(allClosed);
+    } else {
+      // When clearing search, open all categories
       const allOpen = menuData.reduce((acc, category) => ({ ...acc, [category.category]: true }), {});
       setOpenCategories(allOpen);
     }
@@ -1030,16 +1034,16 @@ const Menu = () => {
                   <span className="text-gray-500">{openCategories[category.category] ? '▲' : '▼'}</span>
                 </div>
                 
-                {openCategories[category.category] && (
-                  <div className="p-4">
-                    <MenuCategory 
-                      title="" 
-                      items={category.items}
-                      categoryImage={category.categoryImage}
-                      showTitle={false}
-                    />
-                  </div>
-                )}
+                {/* Pass the current search query to MenuCategory */}
+                <div className="p-4">
+                  <MenuCategory 
+                    title="" 
+                    items={category.items}
+                    categoryImage={category.categoryImage}
+                    showTitle={false}
+                    searchQuery={searchQuery}
+                  />
+                </div>
               </div>
             ))}
           </div>

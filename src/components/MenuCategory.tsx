@@ -1,8 +1,8 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, ChevronDown, ChevronUp } from "lucide-react";
+import { Plus, ChevronDown, ChevronUp, ImageOff } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -24,7 +24,12 @@ interface MenuCategoryProps {
 
 const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQuery = "" }: MenuCategoryProps) => {
   const { toast } = useToast();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(!searchQuery);
+  
+  // Update isOpen when searchQuery changes
+  useEffect(() => {
+    setIsOpen(!searchQuery);
+  }, [searchQuery]);
   
   const handleAddToCart = (itemName: string) => {
     toast({
@@ -40,6 +45,9 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
   if (displayItems.length === 0) {
     return null;
   }
+
+  // Placeholder image for items without images
+  const placeholderImage = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000";
   
   return (
     <div className="mb-8">
@@ -47,15 +55,18 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
         {showTitle && title && (
           <CollapsibleTrigger className="w-full flex items-center justify-between bg-food-primary/10 p-4 rounded-lg shadow hover:bg-food-primary/20 transition-colors">
             <div className="flex items-center space-x-4">
-              {categoryImage && (
+              {categoryImage ? (
                 <div className="w-16 h-16 rounded-full overflow-hidden">
                   <img 
                     src={categoryImage} 
                     alt={title} 
                     className="w-full h-full object-cover" 
+                    onError={(e) => {
+                      e.currentTarget.src = placeholderImage;
+                    }}
                   />
                 </div>
-              )}
+              ) : null}
               <h2 className="text-2xl font-bold text-food-dark">{title}</h2>
             </div>
             {isOpen ? <ChevronUp className="text-food-dark" /> : <ChevronDown className="text-food-dark" />}
@@ -66,15 +77,23 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {displayItems.map((item, index) => (
               <Card key={`${title}-${index}`} className="overflow-hidden hover:shadow-md transition-all duration-300">
-                {item.imageUrl && (
+                {item.imageUrl || placeholderImage ? (
                   <div className="h-48 overflow-hidden relative">
                     <img
-                      src={item.imageUrl}
+                      src={item.imageUrl || placeholderImage}
                       alt={item.name}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = placeholderImage;
+                      }}
                     />
+                    {!item.imageUrl && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-gray-100/50">
+                        <ImageOff className="text-gray-400" size={32} />
+                      </div>
+                    )}
                   </div>
-                )}
+                ) : null}
                 
                 <CardContent className={`p-4 flex flex-col ${!item.imageUrl ? "h-full" : ""}`}>
                   <div className="flex justify-between items-start mb-2">
