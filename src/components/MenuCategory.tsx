@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, ChevronDown, ChevronUp, ImageOff } from "lucide-react";
@@ -46,7 +46,7 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
     } else if (nameLower.includes("tea")) {
       return "https://images.unsplash.com/photo-1546877625-cb8c71916608?q=80&w=1000";
     } else if (nameLower.includes("juice") || nameLower.includes("drink") || nameLower.includes("soda")) {
-      return "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000";
+      return "https://images.unsplash.com/photo-1581006852262-e4307cf6283a?q=80&w=1000";
     } else if (nameLower.includes("bagel") || nameLower.includes("bread") || nameLower.includes("toast")) {
       return "https://images.unsplash.com/photo-1592321675774-3cbc1d00fb0c?q=80&w=1000";
     } else if (nameLower.includes("salad")) {
@@ -59,10 +59,12 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
     return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000";
   };
   
-  // Using Accordion instead of Collapsible for better user interaction
+  // We'll set a stable value for the accordion to prevent re-rendering issues
+  const accordionValue = searchQuery ? title : undefined;
+  
   return (
     <div className="mb-8">
-      <Accordion type="single" collapsible defaultValue={searchQuery ? title : undefined}>
+      <Accordion type="single" collapsible defaultValue={accordionValue}>
         <AccordionItem value={title} className="border-none">
           {showTitle && title && (
             <AccordionTrigger className="flex justify-between bg-food-primary/10 p-4 rounded-lg shadow hover:bg-food-primary/20 transition-colors">

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from '../components/Navbar';
@@ -938,25 +937,28 @@ const Menu = () => {
       return category;
     }
 
-    // Special handling for drink-related searches at the category level
-    if ((searchLower.includes("drink") || 
-        searchLower.includes("coffee") || 
-        searchLower.includes("tea") || 
-        searchLower.includes("bottle") || 
-        searchLower.includes("lemonade")) && 
-        (category.category.toLowerCase().includes("drink") ||
-        category.category.toLowerCase().includes("coffee") ||
-        category.category.toLowerCase().includes("tea") ||
-        category.category.toLowerCase().includes("iced") ||
-        category.category.toLowerCase().includes("bottle") ||
-        category.category.toLowerCase().includes("lemonade"))) {
-      return category; // Show entire category for drink-related searches
+    // Special handling for drink-related searches at the category level - more strict matching
+    const isDrinkCategory = 
+      category.category.toLowerCase().includes("drink") ||
+      category.category.toLowerCase().includes("coffee") ||
+      category.category.toLowerCase().includes("tea") ||
+      category.category.toLowerCase().includes("iced") ||
+      category.category.toLowerCase().includes("bottle");
+    
+    // Only match drink categories for drink-related searches
+    if ((searchLower.includes("drink") || searchLower.includes("beverage")) && isDrinkCategory) {
+      return category;
     }
     
     // Filter individual items
     const filteredItems = category.items.filter(item => {
       const nameMatch = item.name.toLowerCase().includes(searchLower);
       const descMatch = item.description && item.description.toLowerCase().includes(searchLower);
+      
+      // Special case: exclude cold cuts from drink searches
+      if (searchLower.includes("drink") && category.category.includes("Cold Cuts")) {
+        return false;
+      }
       
       // Check for matches in rules if they exist
       let rulesMatch = false;
