@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from '../components/Navbar';
@@ -937,7 +938,15 @@ const Menu = () => {
       return category;
     }
 
-    // Special handling for drink-related searches at the category level - more strict matching
+    // Special handling for drink-related searches
+    const isDrinkSearch = searchLower.includes("drink") || searchLower.includes("beverage");
+    
+    // Skip Sliced Cold Cuts entirely for drink searches
+    if (isDrinkSearch && category.category === "Sliced Cold Cuts") {
+      return { ...category, items: [] };
+    }
+    
+    // Special handling for drink-related searches at the category level
     const isDrinkCategory = 
       category.category.toLowerCase().includes("drink") ||
       category.category.toLowerCase().includes("coffee") ||
@@ -945,8 +954,8 @@ const Menu = () => {
       category.category.toLowerCase().includes("iced") ||
       category.category.toLowerCase().includes("bottle");
     
-    // Only match drink categories for drink-related searches
-    if ((searchLower.includes("drink") || searchLower.includes("beverage")) && isDrinkCategory) {
+    // Match drink categories for drink-related searches
+    if (isDrinkSearch && isDrinkCategory) {
       return category;
     }
     
@@ -954,11 +963,6 @@ const Menu = () => {
     const filteredItems = category.items.filter(item => {
       const nameMatch = item.name.toLowerCase().includes(searchLower);
       const descMatch = item.description && item.description.toLowerCase().includes(searchLower);
-      
-      // Special case: exclude cold cuts from drink searches
-      if (searchLower.includes("drink") && category.category.includes("Cold Cuts")) {
-        return false;
-      }
       
       // Check for matches in rules if they exist
       let rulesMatch = false;

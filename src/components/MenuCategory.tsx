@@ -42,11 +42,13 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
     const nameLower = itemName.toLowerCase();
     
     if (nameLower.includes("coffee") || nameLower.includes("cappuccino")) {
-      return "https://images.unsplash.com/photo-1503481766315-7a586b20f66d?q=80&w=1000";
+      return "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?q=80&w=1000";
     } else if (nameLower.includes("tea")) {
-      return "https://images.unsplash.com/photo-1546877625-cb8c71916608?q=80&w=1000";
-    } else if (nameLower.includes("juice") || nameLower.includes("drink") || nameLower.includes("soda")) {
-      return "https://images.unsplash.com/photo-1581006852262-e4307cf6283a?q=80&w=1000";
+      return "https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=1000";
+    } else if (nameLower.includes("juice")) {
+      return "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000";
+    } else if (nameLower.includes("soda") || nameLower.includes("drink") || nameLower.includes("coke") || nameLower.includes("sprite") || nameLower.includes("pepsi")) {
+      return "https://images.unsplash.com/photo-1629203432180-71e9b11626e6?q=80&w=1000";
     } else if (nameLower.includes("bagel") || nameLower.includes("bread") || nameLower.includes("toast")) {
       return "https://images.unsplash.com/photo-1592321675774-3cbc1d00fb0c?q=80&w=1000";
     } else if (nameLower.includes("salad")) {
