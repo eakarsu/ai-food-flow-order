@@ -4,6 +4,7 @@ import Footer from '../components/Footer';
 import MenuCategory, { MenuItem } from '../components/MenuCategory';
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 // Rules data structure
 const rulesData = {
@@ -915,7 +916,11 @@ const menuData: Array<{
 
 const Menu = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(
+    menuData.reduce((acc, category) => ({ ...acc, [category.category]: true }), {})
+  );
   
+  // Filter menu items based on search query
   const filteredCategories = searchQuery 
     ? menuData.map(category => ({
         ...category,
@@ -925,6 +930,17 @@ const Menu = () => {
         )
       })).filter(category => category.items.length > 0)
     : menuData;
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const toggleCategory = (category: string) => {
+    setOpenCategories(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }));
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -944,7 +960,7 @@ const Menu = () => {
               placeholder="Search for food items..."
               className="pl-10"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearch}
             />
           </div>
         </div>
@@ -952,14 +968,39 @@ const Menu = () => {
       
       <div className="container mx-auto px-4 py-8">
         <div className="space-y-6">
-          {filteredCategories.map((category) => (
-            <MenuCategory 
-              key={category.category}
-              title={category.category} 
-              items={category.items}
-              categoryImage={category.categoryImage}
-            />
-          ))}
+          {filteredCategories.length > 0 ? (
+            filteredCategories.map((category) => (
+              <Collapsible 
+                key={category.category}
+                open={openCategories[category.category]} 
+                onOpenChange={() => toggleCategory(category.category)}
+                className="border border-gray-200 rounded-lg overflow-hidden"
+              >
+                <CollapsibleTrigger className="flex justify-between items-center w-full p-4 bg-white hover:bg-gray-50 cursor-pointer">
+                  <h2 className="text-xl font-semibold text-food-dark">{category.category}</h2>
+                  <span className="text-gray-500">{openCategories[category.category] ? '▲' : '▼'}</span>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <MenuCategory 
+                    title="" 
+                    items={category.items}
+                    categoryImage={category.categoryImage}
+                    showTitle={false}
+                  />
+                </CollapsibleContent>
+              </Collapsible>
+            ))
+          ) : (
+            <div className="text-center py-10">
+              <p className="text-lg text-gray-500">No menu items found matching "{searchQuery}"</p>
+              <button 
+                onClick={() => setSearchQuery("")}
+                className="mt-2 text-food-primary hover:underline"
+              >
+                Clear search
+              </button>
+            </div>
+          )}
         </div>
       </div>
       

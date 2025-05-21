@@ -14,7 +14,6 @@ const restaurantData = {
   deliveryTime: "15-25",
   featured: true,
   description: "Your local deli serving breakfast, sandwiches, and more. Fresh ingredients, made-to-order meals, and friendly service.",
-  address: "2807 Hampton Woods Dr, Henrico, VA 23233",
   phone: "1 (804) 360-1129",
   hours: "Mon-Fri: 6:00 AM - 8:00 PM, Sat-Sun: 7:00 AM - 6:00 PM"
 };
@@ -56,12 +55,7 @@ const Restaurants = () => {
             
             <p className="text-gray-700 mb-6">{restaurantData.description}</p>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-gray-50 p-4 rounded">
-                <h3 className="font-semibold text-food-dark mb-2">Address</h3>
-                <p className="text-gray-600">{restaurantData.address}</p>
-              </div>
-              
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-gray-50 p-4 rounded">
                 <h3 className="font-semibold text-food-dark mb-2">Contact</h3>
                 <p className="text-gray-600">{restaurantData.phone}</p>

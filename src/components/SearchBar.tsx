@@ -2,8 +2,36 @@
 import { Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from 'react';
 
-const SearchBar = () => {
+interface SearchBarProps {
+  onSearch?: (query: string) => void;
+  onCategoryChange?: (category: string) => void;
+}
+
+const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    if (onSearch) {
+      onSearch(value);
+    }
+  };
+  
+  const handleCategoryChange = (value: string) => {
+    if (onCategoryChange) {
+      onCategoryChange(value);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && onSearch) {
+      onSearch(searchQuery);
+    }
+  };
+
   return (
     <div className="rounded-lg overflow-hidden shadow-md bg-white p-4">
       <div className="flex flex-col md:flex-row gap-4">
@@ -12,10 +40,13 @@ const SearchBar = () => {
           <Input 
             placeholder="Search for restaurants or dishes..." 
             className="pl-10 border-gray-200 focus-visible:ring-food-primary"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            onKeyDown={handleKeyDown}
           />
         </div>
         <div className="w-full md:w-48">
-          <Select defaultValue="all">
+          <Select defaultValue="all" onValueChange={handleCategoryChange}>
             <SelectTrigger className="border-gray-200 focus:ring-food-primary">
               <SelectValue placeholder="Categories" />
             </SelectTrigger>
