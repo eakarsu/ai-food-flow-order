@@ -2,7 +2,6 @@ import { useState } from "react";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import MenuCategory, { MenuItem } from '../components/MenuCategory';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
@@ -1009,27 +1008,42 @@ const Menu = () => {
       </div>
       
       <div className="container mx-auto px-4 py-8">
-        <Tabs defaultValue={menuData[0].category} onValueChange={setActiveCategory} className="w-full">
-          <div className="mb-6 overflow-x-auto">
-            <TabsList className="inline-flex min-w-full">
-              {menuData.map((category) => (
-                <TabsTrigger key={category.category} value={category.category}>
-                  {category.category}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Category sidebar */}
+          <div className="lg:w-1/4">
+            <div className="bg-white rounded-lg shadow-md p-4 sticky top-4">
+              <h2 className="text-xl font-semibold mb-4 text-food-dark border-b pb-2">Categories</h2>
+              <ul className="space-y-2">
+                {menuData.map((category) => (
+                  <li key={category.category}>
+                    <button
+                      onClick={() => setActiveCategory(category.category)}
+                      className={`w-full text-left px-3 py-2 rounded-md transition-colors ${
+                        activeCategory === category.category
+                          ? "bg-food-primary text-white font-medium"
+                          : "hover:bg-food-primary/10 text-gray-700"
+                      }`}
+                    >
+                      {category.category}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
           
-          {menuData.map((category) => (
-            <TabsContent key={category.category} value={category.category}>
+          {/* Menu content */}
+          <div className="lg:w-3/4">
+            {displayedCategories.map((category) => (
               <MenuCategory 
+                key={category.category}
                 title={category.category} 
                 items={category.items}
                 categoryImage={category.categoryImage}
               />
-            </TabsContent>
-          ))}
-        </Tabs>
+            ))}
+          </div>
+        </div>
       </div>
       
       <Footer />
