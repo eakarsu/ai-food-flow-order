@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,17 +23,16 @@ interface MenuCategoryProps {
 
 const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQuery = "" }: MenuCategoryProps) => {
   const { toast } = useToast();
-  const [isOpen, setIsOpen] = useState(false);
+  // When searching, we want to keep categories collapsed but still show items
+  const [isOpen, setIsOpen] = useState(!searchQuery);
   
   // Update isOpen when searchQuery changes
   useEffect(() => {
-    // When there's a search query, ensure all categories are closed
-    if (searchQuery) {
-      setIsOpen(false);
-    } else {
-      // When no search query, categories can be open by default
+    if (!searchQuery) {
+      // When no search query, categories are open by default
       setIsOpen(true);
     }
+    // When searching, we don't auto-close categories that the user explicitly opened
   }, [searchQuery]);
   
   const handleAddToCart = (itemName: string) => {
@@ -54,6 +52,65 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
   // Placeholder image for items without images
   const placeholderImage = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000";
   
+  // When searching, we want to show items without requiring a click on the category header
+  if (searchQuery) {
+    return (
+      <div className="mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {displayItems.map((item, index) => (
+            <Card key={`${title}-${index}`} className="overflow-hidden hover:shadow-md transition-all duration-300">
+              {item.imageUrl || placeholderImage ? (
+                <div className="h-48 overflow-hidden relative">
+                  <img
+                    src={item.imageUrl || placeholderImage}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = placeholderImage;
+                    }}
+                  />
+                  {!item.imageUrl && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100/50">
+                      <ImageOff className="text-gray-400" size={32} />
+                    </div>
+                  )}
+                </div>
+              ) : null}
+              
+              <CardContent className={`p-4 flex flex-col ${!item.imageUrl ? "h-full" : ""}`}>
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-semibold text-food-dark">{item.name}</h3>
+                  <span className="font-bold text-food-primary">${item.price.toFixed(2)}</span>
+                </div>
+                
+                {item.description && (
+                  <p className="text-gray-500 text-sm mb-4">{item.description}</p>
+                )}
+
+                {item.rules && item.rules.length > 0 && (
+                  <div className="text-blue-600 text-xs mb-2">
+                    <span className="font-semibold">Rules:</span> {item.rules.join(", ")}
+                  </div>
+                )}
+                
+                <div className="mt-auto">
+                  <Button 
+                    size="sm" 
+                    onClick={() => handleAddToCart(item.name)}
+                    className="bg-food-secondary hover:bg-food-secondary/90 text-white w-full sm:w-auto"
+                  >
+                    <Plus size={16} className="mr-1" /> Add to cart
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  
+  // Regular collapsible view for non-search state
   return (
     <div className="mb-8">
       <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
