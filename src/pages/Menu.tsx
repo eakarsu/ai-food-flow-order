@@ -934,8 +934,6 @@ const Menu = () => {
       return category;
     }
 
-    const searchLower = searchQuery.toLowerCase();
-    
     // Special handling for drink-related searches at the category level
     if ((searchLower.includes("drink") || 
         searchLower.includes("coffee") || 
@@ -1004,16 +1002,12 @@ const Menu = () => {
                 key={category.category} 
                 className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm"
               >
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold text-food-dark mb-4">{category.category}</h2>
-                  <MenuCategory 
-                    title="" 
-                    items={category.items}
-                    categoryImage={category.categoryImage}
-                    showTitle={false}
-                    searchQuery={searchQuery}
-                  />
-                </div>
+                <MenuCategory 
+                  title={category.category} 
+                  items={category.items}
+                  categoryImage={category.categoryImage}
+                  searchQuery={searchQuery}
+                />
               </div>
             ))}
           </div>

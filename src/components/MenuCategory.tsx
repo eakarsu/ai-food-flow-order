@@ -1,9 +1,10 @@
+
 import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, ChevronDown, ChevronUp, ImageOff } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export interface MenuItem {
   name: string;
@@ -23,9 +24,6 @@ interface MenuCategoryProps {
 
 const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQuery = "" }: MenuCategoryProps) => {
   const { toast } = useToast();
-  // Set isOpen to false initially to keep categories collapsed by default
-  // Unless there's a search query, then keep them open for visibility
-  const [isOpen, setIsOpen] = useState(searchQuery ? true : false);
   
   // Don't render category if no items are available
   if (items.length === 0) {
@@ -61,85 +59,87 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
     return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000";
   };
   
+  // Using Accordion instead of Collapsible for better user interaction
   return (
     <div className="mb-8">
-      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-        {showTitle && title && (
-          <CollapsibleTrigger className="w-full flex items-center justify-between bg-food-primary/10 p-4 rounded-lg shadow hover:bg-food-primary/20 transition-colors">
-            <div className="flex items-center space-x-4">
-              {categoryImage ? (
-                <div className="w-16 h-16 rounded-full overflow-hidden">
-                  <img 
-                    src={categoryImage} 
-                    alt={title} 
-                    className="w-full h-full object-cover" 
-                    onError={(e) => {
-                      e.currentTarget.src = getPlaceholderImage(title);
-                    }}
-                  />
-                </div>
-              ) : null}
-              <h2 className="text-2xl font-bold text-food-dark">{title}</h2>
-            </div>
-            {isOpen ? <ChevronUp className="text-food-dark" /> : <ChevronDown className="text-food-dark" />}
-          </CollapsibleTrigger>
-        )}
-        
-        <CollapsibleContent className="pt-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {items.map((item, index) => {
-              const placeholderImage = getPlaceholderImage(item.name);
-              
-              return (
-                <Card key={`${title}-${index}`} className="overflow-hidden hover:shadow-md transition-all duration-300">
-                  <div className="h-48 overflow-hidden relative">
-                    <img
-                      src={item.imageUrl || placeholderImage}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
+      <Accordion type="single" collapsible defaultValue={searchQuery ? title : undefined}>
+        <AccordionItem value={title} className="border-none">
+          {showTitle && title && (
+            <AccordionTrigger className="flex justify-between bg-food-primary/10 p-4 rounded-lg shadow hover:bg-food-primary/20 transition-colors">
+              <div className="flex items-center space-x-4">
+                {categoryImage ? (
+                  <div className="w-16 h-16 rounded-full overflow-hidden">
+                    <img 
+                      src={categoryImage} 
+                      alt={title} 
+                      className="w-full h-full object-cover" 
                       onError={(e) => {
-                        e.currentTarget.src = placeholderImage;
+                        e.currentTarget.src = getPlaceholderImage(title);
                       }}
                     />
-                    {!item.imageUrl && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-gray-100/50">
-                        <ImageOff className="text-gray-400" size={32} />
-                      </div>
-                    )}
                   </div>
-                  
-                  <CardContent className={`p-4 flex flex-col`}>
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-semibold text-food-dark">{item.name}</h3>
-                      <span className="font-bold text-food-primary">${item.price.toFixed(2)}</span>
+                ) : null}
+                <h2 className="text-2xl font-bold text-food-dark">{title}</h2>
+              </div>
+            </AccordionTrigger>
+          )}
+          
+          <AccordionContent className="pt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {items.map((item, index) => {
+                const placeholderImage = getPlaceholderImage(item.name);
+                
+                return (
+                  <Card key={`${title}-${index}`} className="overflow-hidden hover:shadow-md transition-all duration-300">
+                    <div className="h-48 overflow-hidden relative">
+                      <img
+                        src={item.imageUrl || placeholderImage}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = placeholderImage;
+                        }}
+                      />
+                      {!item.imageUrl && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100/50">
+                          <ImageOff className="text-gray-400" size={32} />
+                        </div>
+                      )}
                     </div>
                     
-                    {item.description && (
-                      <p className="text-gray-500 text-sm mb-4">{item.description}</p>
-                    )}
-
-                    {item.rules && item.rules.length > 0 && (
-                      <div className="text-blue-600 text-xs mb-2">
-                        <span className="font-semibold">Rules:</span> {item.rules.join(", ")}
+                    <CardContent className={`p-4 flex flex-col`}>
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-semibold text-food-dark">{item.name}</h3>
+                        <span className="font-bold text-food-primary">${item.price.toFixed(2)}</span>
                       </div>
-                    )}
-                    
-                    <div className="mt-auto">
-                      <Button 
-                        size="sm" 
-                        onClick={() => handleAddToCart(item.name)}
-                        className="bg-food-secondary hover:bg-food-secondary/90 text-white w-full sm:w-auto"
-                      >
-                        <Plus size={16} className="mr-1" /> Add to cart
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+                      
+                      {item.description && (
+                        <p className="text-gray-500 text-sm mb-4">{item.description}</p>
+                      )}
+
+                      {item.rules && item.rules.length > 0 && (
+                        <div className="text-blue-600 text-xs mb-2">
+                          <span className="font-semibold">Rules:</span> {item.rules.join(", ")}
+                        </div>
+                      )}
+                      
+                      <div className="mt-auto">
+                        <Button 
+                          size="sm" 
+                          onClick={() => handleAddToCart(item.name)}
+                          className="bg-food-secondary hover:bg-food-secondary/90 text-white w-full sm:w-auto"
+                        >
+                          <Plus size={16} className="mr-1" /> Add to cart
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 };
