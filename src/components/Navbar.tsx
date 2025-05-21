@@ -30,7 +30,7 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-10">
             <Link to="/" className="text-gray-700 hover:text-food-primary transition-colors">Home</Link>
-            <Link to="/restaurants" className="text-gray-700 hover:text-food-primary transition-colors">Restaurants</Link>
+            <Link to="/restaurants" className="text-gray-700 hover:text-food-primary transition-colors">Restaurant</Link>
             <Link to="/about" className="text-gray-700 hover:text-food-primary transition-colors">About</Link>
             <Link to="/contact" className="text-gray-700 hover:text-food-primary transition-colors">Contact</Link>
           </div>
@@ -72,7 +72,7 @@ const Navbar = () => {
           <div className="md:hidden mt-4 pb-4 animate-fade-in">
             <div className="flex flex-col space-y-3">
               <Link to="/" className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md" onClick={toggleMenu}>Home</Link>
-              <Link to="/restaurants" className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md" onClick={toggleMenu}>Restaurants</Link>
+              <Link to="/restaurants" className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md" onClick={toggleMenu}>Restaurant</Link>
               <Link to="/about" className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md" onClick={toggleMenu}>About</Link>
               <Link to="/contact" className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md" onClick={toggleMenu}>Contact</Link>
             </div>
