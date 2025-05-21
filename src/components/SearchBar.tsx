@@ -1,19 +1,30 @@
 
 import { Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
+  initialQuery?: string;
 }
 
-const SearchBar = ({ onSearch }: SearchBarProps) => {
-  const [searchQuery, setSearchQuery] = useState("");
+const SearchBar = ({ onSearch, initialQuery = "" }: SearchBarProps) => {
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  
+  useEffect(() => {
+    // Update the search query when the initial query changes
+    setSearchQuery(initialQuery);
+  }, [initialQuery]);
   
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
+    
+    // Optional: Clear search when input is emptied
+    if (value === "" && onSearch) {
+      onSearch("");
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
