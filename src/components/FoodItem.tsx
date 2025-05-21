@@ -3,6 +3,7 @@ import { Plus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { useCart } from '@/context/CartContext';
 
 interface FoodItemProps {
   id: string;
@@ -22,8 +23,16 @@ const FoodItem = ({
   featured = false
 }: FoodItemProps) => {
   const { toast } = useToast();
+  const { addToCart } = useCart();
   
   const handleAddToCart = () => {
+    addToCart({
+      name,
+      description,
+      price,
+      imageUrl
+    });
+    
     toast({
       title: "Added to cart",
       description: `${name} has been added to your cart`,

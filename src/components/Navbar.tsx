@@ -3,28 +3,18 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Menu, X, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useCart } from '@/context/CartContext';
+import Cart from './Cart';
+import UserProfile from './UserProfile';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { toast } = useToast();
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { getTotalItems } = useCart();
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-  };
-  
-  const handleCartClick = () => {
-    toast({
-      title: "Coming Soon!",
-      description: "Cart functionality will be available soon.",
-    });
-  };
-  
-  const handleProfileClick = () => {
-    toast({
-      title: "Coming Soon!",
-      description: "User profiles will be available soon.",
-    });
   };
 
   return (
@@ -50,7 +40,7 @@ const Navbar = () => {
             <Button 
               variant="ghost" 
               size="icon"
-              onClick={handleProfileClick}
+              onClick={() => setIsProfileOpen(true)}
               className="text-gray-700 hover:text-food-primary hover:bg-gray-100"
             >
               <User size={20} />
@@ -58,12 +48,12 @@ const Navbar = () => {
             <Button 
               variant="ghost" 
               size="icon"
-              onClick={handleCartClick}
+              onClick={() => setIsCartOpen(true)}
               className="text-gray-700 hover:text-food-primary hover:bg-gray-100 relative"
             >
               <ShoppingCart size={20} />
               <span className="absolute -top-1 -right-1 bg-food-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                0
+                {getTotalItems()}
               </span>
             </Button>
             <Button 
@@ -89,6 +79,12 @@ const Navbar = () => {
           </div>
         )}
       </div>
+
+      {/* User Profile Sheet */}
+      <UserProfile open={isProfileOpen} onOpenChange={setIsProfileOpen} />
+      
+      {/* Shopping Cart Sheet */}
+      <Cart open={isCartOpen} onOpenChange={setIsCartOpen} />
     </nav>
   );
 };

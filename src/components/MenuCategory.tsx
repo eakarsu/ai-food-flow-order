@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, ChevronDown, ChevronUp, ImageOff } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useCart } from "@/context/CartContext";
 
 export interface MenuItem {
   name: string;
@@ -24,16 +25,18 @@ interface MenuCategoryProps {
 
 const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQuery = "" }: MenuCategoryProps) => {
   const { toast } = useToast();
+  const { addToCart } = useCart();
   
   // Don't render category if no items are available
   if (items.length === 0) {
     return null;
   }
 
-  const handleAddToCart = (itemName: string) => {
+  const handleAddToCart = (item: MenuItem) => {
+    addToCart(item);
     toast({
       title: "Added to cart",
-      description: `${itemName} has been added to your cart`,
+      description: `${item.name} has been added to your cart`,
     });
   };
 
@@ -130,7 +133,7 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
                       <div className="mt-auto">
                         <Button 
                           size="sm" 
-                          onClick={() => handleAddToCart(item.name)}
+                          onClick={() => handleAddToCart(item)}
                           className="bg-food-secondary hover:bg-food-secondary/90 text-white w-full sm:w-auto"
                         >
                           <Plus size={16} className="mr-1" /> Add to cart
