@@ -351,7 +351,7 @@ const menuData: Array<{
       {
         name: "Acai Bowl",
         price: 12.97,
-        description: "Acai, Banana, Blueberry, Strawberry, Granola, Coconut, Honey",
+        description: "Nutrient-rich acai blend topped with fresh banana slices, sweet blueberries, strawberries, crunchy granola, coconut flakes, and a drizzle of organic honey",
         imageUrl: "https://images.unsplash.com/photo-1590301157890-4810ed352733?q=80&w=1000"
       }
     ]
@@ -360,30 +360,30 @@ const menuData: Array<{
     category: "Bottled Drinks",
     categoryImage: "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000",
     items: [
-      { name: "Apple Juice", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000" },
-      { name: "Arizona Iced Cold Brew Green Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1620798018123-dce03e4a176b?q=80&w=1000" },
-      { name: "Arizona Iced Cold Brew Iced Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
-      { name: "Arizona Iced Cold Brew Sweet Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1500631886742-f049cd451bba?q=80&w=1000" },
-      { name: "Arizona Iced Cold Brew Unsweet Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1620031351283-d3d04e125745?q=80&w=1000" },
-      { name: "Arizona Iced Tea 16 oz Arnold Palmer", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1624372652234-74c3b9c1d36b?q=80&w=1000" },
-      { name: "Arizona Iced Tea 16 oz Diet Green Tea", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
-      { name: "Arizona Iced Tea 16 oz Diet Iced Tea", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
-      { name: "Arizona Iced Tea 16 oz Green Tea", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1565220847459-762ff497b38e?q=80&w=1000" },
-      { name: "Arizona Iced Tea 16 oz Iced Tea", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1572490151003-56ef25b05872?q=80&w=1000" },
-      { name: "Coke 20oz soda", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=1000" },
-      { name: "Cranberry Juice", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000" },
-      { name: "Diet Coke 20oz soda", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
-      { name: "Diet Dr. Pepper 20oz soda", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
-      { name: "Diet Pepsi 20oz soda", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
-      { name: "Diet Sprite 20oz soda", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
-      { name: "Dr. Pepper 20oz soda", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1629203432180-71e9b11626e6?q=80&w=1000" },
-      { name: "Essentia 1 L", price: 4.89, imageUrl: "https://images.unsplash.com/photo-1564419429381-98dbcf916478?q=80&w=1000" },
-      { name: "Gatorade Cool Blue", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?q=80&w=1000" },
-      { name: "Gatorade Frost", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?q=80&w=1000" },
-      { name: "Monster", price: 3.50, imageUrl: "https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=1000" },
-      { name: "Monster Rehab", price: 3.50, imageUrl: "https://images.unsplash.com/photo-1570526427001-9e695fdadd15?q=80&w=1000" },
-      { name: "Monster Zero Sugar", price: 3.50, imageUrl: "https://images.unsplash.com/photo-1611066527104-99d69e0c5333?q=80&w=1000" },
-      { name: "Orange Juice", price: 3.59, description: "OJ", imageUrl: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000" },
+      { name: "Apple Juice", price: 3.59, description: "Fresh-pressed apple juice, bottled daily for maximum flavor", imageUrl: "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000" },
+      { name: "Arizona Iced Cold Brew Green Tea", price: 4.09, description: "Refreshing cold brew green tea with subtle herbal notes", imageUrl: "https://images.unsplash.com/photo-1620798018123-dce03e4a176b?q=80&w=1000" },
+      { name: "Arizona Iced Cold Brew Iced Tea", price: 4.09, description: "Classic cold brew iced tea, perfectly steeped for smooth taste", imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
+      { name: "Arizona Iced Cold Brew Sweet Tea", price: 4.09, description: "Southern-inspired sweet tea with a cold brew process for less bitterness", imageUrl: "https://images.unsplash.com/photo-1500631886742-f049cd451bba?q=80&w=1000" },
+      { name: "Arizona Iced Cold Brew Unsweet Tea", price: 4.09, description: "Pure unsweetened cold brew tea, showcasing natural tea flavors", imageUrl: "https://images.unsplash.com/photo-1620031351283-d3d04e125745?q=80&w=1000" },
+      { name: "Arizona Iced Tea 16 oz Arnold Palmer", price: 3.59, description: "Perfect balance of lemonade and iced tea in the classic combination", imageUrl: "https://images.unsplash.com/photo-1624372652234-74c3b9c1d36b?q=80&w=1000" },
+      { name: "Arizona Iced Tea 16 oz Diet Green Tea", price: 3.59, description: "Light and refreshing green tea with zero calories", imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
+      { name: "Arizona Iced Tea 16 oz Diet Iced Tea", price: 3.59, description: "Sugar-free classic iced tea for guilt-free refreshment", imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
+      { name: "Arizona Iced Tea 16 oz Green Tea", price: 3.59, description: "Traditional green tea with gentle sweetness and antioxidant benefits", imageUrl: "https://images.unsplash.com/photo-1565220847459-762ff497b38e?q=80&w=1000" },
+      { name: "Arizona Iced Tea 16 oz Iced Tea", price: 3.59, description: "Classic iced tea with the perfect balance of flavor and sweetness", imageUrl: "https://images.unsplash.com/photo-1572490151003-56ef25b05872?q=80&w=1000" },
+      { name: "Coke 20oz soda", price: 3.59, description: "The world-famous cola with its secret recipe of natural flavors", imageUrl: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=1000" },
+      { name: "Cranberry Juice", price: 3.59, description: "Tart and tangy cranberry juice, perfect for refreshment or mixing", imageUrl: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000" },
+      { name: "Diet Coke 20oz soda", price: 3.59, description: "Zero-calorie version of the classic cola with the same great taste", imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
+      { name: "Diet Dr. Pepper 20oz soda", price: 3.59, description: "Sugar-free version of the distinctive 23-flavor blend", imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
+      { name: "Diet Pepsi 20oz soda", price: 3.59, description: "Light and refreshing zero-calorie cola alternative", imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
+      { name: "Diet Sprite 20oz soda", price: 3.59, description: "Sugar-free lemon-lime soda with a crisp, clean taste", imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
+      { name: "Dr. Pepper 20oz soda", price: 3.59, description: "Unique blend of 23 flavors creating an iconic sweet and spicy taste", imageUrl: "https://images.unsplash.com/photo-1629203432180-71e9b11626e6?q=80&w=1000" },
+      { name: "Essentia 1 L", price: 4.89, description: "Ionized alkaline water with a pH of 9.5+ for optimal hydration", imageUrl: "https://images.unsplash.com/photo-1564419429381-98dbcf916478?q=80&w=1000" },
+      { name: "Gatorade Cool Blue", price: 3.59, description: "Electrolyte-enhanced sports drink with refreshing blue flavor", imageUrl: "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?q=80&w=1000" },
+      { name: "Gatorade Frost", price: 3.59, description: "Light and crisp electrolyte beverage for quick hydration", imageUrl: "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?q=80&w=1000" },
+      { name: "Monster", price: 3.50, description: "High-energy drink blend with B-vitamins and taurine", imageUrl: "https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=1000" },
+      { name: "Monster Rehab", price: 3.50, description: "Tea and lemonade energy blend for recovery and hydration", imageUrl: "https://images.unsplash.com/photo-1570526427001-9e695fdadd15?q=80&w=1000" },
+      { name: "Monster Zero Sugar", price: 3.50, description: "Full energy boost without the sugar or calories", imageUrl: "https://images.unsplash.com/photo-1611066527104-99d69e0c5333?q=80&w=1000" },
+      { name: "Orange Juice", price: 3.59, description: "Freshly squeezed orange juice, packed with vitamin C", imageUrl: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000" },
     ]
   },
   {
@@ -393,37 +393,37 @@ const menuData: Array<{
       {
         name: "French Toast",
         price: 9.95,
-        description: "Texas style french toast served with butter and syrup",
+        description: "Thick-sliced Texas style French toast with a rich vanilla-cinnamon batter, served with whipped butter and pure maple syrup",
         imageUrl: "https://images.unsplash.com/photo-1484723091739-30a097e8f929?q=80&w=1000"
       },
       {
         name: "Healthy One",
         price: 11.64,
-        description: "Three egg whites, turkey, spinach, Alpine Lace Swiss, in a whole wheat wrap.",
+        description: "Light and nutritious breakfast featuring fluffy egg whites, lean turkey, fresh spinach, and Alpine Lace Swiss cheese wrapped in a whole wheat tortilla",
         imageUrl: "https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=1000"
       },
       {
         name: "Hungry Man",
         price: 12.95,
-        description: "Three eggs, ham, bacon, sausage, and cheese on a hero.",
+        description: "The ultimate breakfast sandwich with three eggs, savory ham, crispy bacon, juicy sausage, and melted cheese on a fresh hero roll",
         imageUrl: "https://images.unsplash.com/photo-1533920379810-6bedac961c2a?q=80&w=1000"
       },
       {
         name: "Melville Platter",
         price: 12.95,
-        description: "Two eggs, ham, bacon, sausage, home-fries, and toast.",
+        description: "Classic American breakfast featuring two eggs any style, ham, bacon, sausage, homestyle potatoes, and toast of your choice",
         imageUrl: "https://images.unsplash.com/photo-1529604278261-8bfcdb8a6f1d?q=80&w=1000"
       },
       {
         name: "Protein Slammer",
         price: 12.94,
-        description: "Five egg whites, extra turkey, Alpine Lace Swiss cheese, on a whole wheat wrap.",
+        description: "High-protein breakfast with five egg whites, extra turkey, and Alpine Lace Swiss cheese in a whole wheat wrap - perfect for fitness enthusiasts",
         imageUrl: "https://images.unsplash.com/photo-1613769049987-b31b641f25b1?q=80&w=1000"
       },
       {
         name: "Super Thing",
         price: 12.94,
-        description: "Two eggs, extra bacon, extra sausage, onions, and American cheese.",
+        description: "Indulgent breakfast featuring two eggs, double portions of bacon and sausage, sautéed onions, and melted American cheese",
         imageUrl: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1000"
       }
     ]
@@ -917,6 +917,7 @@ const menuData: Array<{
 const Menu = () => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   
   // Parse URL parameters on load
   useEffect(() => {
@@ -926,6 +927,13 @@ const Menu = () => {
     if (searchParam) {
       setSearchQuery(searchParam);
     }
+    
+    // Set initial load to false after a short delay
+    const timer = setTimeout(() => {
+      setIsInitialLoad(false);
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, [location.search]);
   
   // Convert searchQuery to lowercase for case-insensitive comparison
@@ -993,10 +1001,12 @@ const Menu = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
       
-      <div className="bg-food-primary/10 py-10">
+      <div className="bg-gradient-to-r from-food-primary/20 to-food-secondary/20 py-10 shadow-sm">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold text-food-dark mb-2">OrderlyBite Menu</h1>
-          <p className="text-gray-600 mb-6">Explore our delicious offerings</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-food-dark mb-2 animate-fade-in">
+            OrderlyBite Menu
+          </h1>
+          <p className="text-gray-600 mb-6 text-lg">Explore our delicious offerings crafted with care</p>
           
           <div className="max-w-4xl mx-auto mb-8">
             <SearchBar onSearch={handleSearch} />
@@ -1010,7 +1020,7 @@ const Menu = () => {
             {filteredCategories.map((category) => (
               <div 
                 key={category.category} 
-                className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm"
+                className={`border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm transition-all duration-300 ${isInitialLoad ? 'opacity-0' : 'opacity-100'}`}
               >
                 <MenuCategory 
                   title={category.category} 
@@ -1022,11 +1032,13 @@ const Menu = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-10">
-            <p className="text-lg text-gray-500">No menu items found matching "{searchQuery}"</p>
+          <div className="text-center py-16">
+            <div className="text-food-primary mb-4 text-5xl">😕</div>
+            <p className="text-xl text-gray-600 mb-2">No menu items found matching "{searchQuery}"</p>
+            <p className="text-md text-gray-500 mb-4">Try a different search term or browse our categories</p>
             <button 
               onClick={() => setSearchQuery("")}
-              className="mt-2 text-food-primary hover:underline"
+              className="mt-2 bg-food-primary text-white py-2 px-4 rounded-md hover:bg-food-primary/90 transition-colors"
             >
               Clear search
             </button>

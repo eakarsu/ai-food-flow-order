@@ -64,7 +64,7 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
     return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000";
   };
   
-  // We'll set a stable value for the accordion to prevent re-rendering issues
+  // Set a stable value for the accordion to prevent re-rendering issues
   const accordionValue = searchQuery ? title : undefined;
   
   return (
@@ -75,11 +75,12 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
             <AccordionTrigger className="flex justify-between bg-food-primary/10 p-4 rounded-lg shadow hover:bg-food-primary/20 transition-colors">
               <div className="flex items-center space-x-4">
                 {categoryImage ? (
-                  <div className="w-16 h-16 rounded-full overflow-hidden">
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100">
                     <img 
                       src={categoryImage} 
                       alt={title} 
                       className="w-full h-full object-cover" 
+                      loading="lazy"
                       onError={(e) => {
                         e.currentTarget.src = getPlaceholderImage(title);
                       }}
@@ -97,12 +98,13 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
                 const placeholderImage = getPlaceholderImage(item.name);
                 
                 return (
-                  <Card key={`${title}-${index}`} className="overflow-hidden hover:shadow-md transition-all duration-300">
-                    <div className="h-48 overflow-hidden relative">
+                  <Card key={`${title}-${index}`} className="overflow-hidden hover:shadow-md transition-all duration-300 group">
+                    <div className="h-48 overflow-hidden relative bg-gray-100">
                       <img
                         src={item.imageUrl || placeholderImage}
                         alt={item.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
                         onError={(e) => {
                           e.currentTarget.src = placeholderImage;
                         }}
@@ -121,20 +123,20 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
                       </div>
                       
                       {item.description && (
-                        <p className="text-gray-500 text-sm mb-4">{item.description}</p>
+                        <p className="text-gray-600 text-sm mb-4 line-clamp-3">{item.description}</p>
                       )}
 
                       {item.rules && item.rules.length > 0 && (
                         <div className="text-blue-600 text-xs mb-2">
-                          <span className="font-semibold">Rules:</span> {item.rules.join(", ")}
+                          <span className="font-semibold">Customizable:</span> {item.rules.join(", ")}
                         </div>
                       )}
                       
-                      <div className="mt-auto">
+                      <div className="mt-auto pt-2">
                         <Button 
                           size="sm" 
                           onClick={() => handleAddToCart(item)}
-                          className="bg-food-secondary hover:bg-food-secondary/90 text-white w-full sm:w-auto"
+                          className="bg-food-secondary hover:bg-food-secondary/90 text-white w-full sm:w-auto transition-all duration-300"
                         >
                           <Plus size={16} className="mr-1" /> Add to cart
                         </Button>

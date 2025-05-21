@@ -134,7 +134,7 @@ const Index = () => {
                 </div>
               </div>
               
-              <p className="mt-4 text-gray-700">{restaurantData.description}</p>
+              <p className="mt-4 text-gray-700 leading-relaxed">{restaurantData.description}</p>
               
               <div className="mt-6 space-y-2 text-gray-600">
                 <p><span className="font-semibold">Delivery Time:</span> {restaurantData.deliveryTime} min</p>
@@ -162,9 +162,10 @@ const Index = () => {
       </div>
       
       {/* Twilio Contact Section */}
-      <div className="container mx-auto px-4 py-8 bg-food-light">
+      <div className="container mx-auto px-4 py-8 bg-food-light rounded-lg my-4">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-food-dark mb-3">Food Ordering</h2>
+          <h2 className="text-3xl font-bold text-food-dark mb-3">Order Your Favorite Food</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">Contact us directly to place your order or inquire about our daily specials</p>
         </div>
         <TwilioContact />
       </div>
@@ -173,7 +174,7 @@ const Index = () => {
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold text-food-dark">Popular Menu Items</h2>
-          <p className="text-gray-600 mt-2">Our customers' favorite choices</p>
+          <p className="text-gray-600 mt-2">Our customers' favorite choices, crafted with care and quality ingredients</p>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -198,28 +199,28 @@ const Index = () => {
           <h2 className="text-3xl font-bold text-center mb-12 text-food-dark">How It Works</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+            <div className="text-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="h-16 w-16 bg-food-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-food-secondary text-2xl font-bold">1</span>
               </div>
               <h3 className="text-xl font-semibold mb-3 text-food-dark">Browse Our Menu</h3>
-              <p className="text-gray-600">Explore our full menu with categories from breakfast to desserts</p>
+              <p className="text-gray-600">Explore our extensive menu featuring everything from breakfast favorites to gourmet sandwiches and healthy options</p>
             </div>
             
-            <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+            <div className="text-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="h-16 w-16 bg-food-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-food-primary text-2xl font-bold">2</span>
               </div>
               <h3 className="text-xl font-semibold mb-3 text-food-dark">Place Your Order</h3>
-              <p className="text-gray-600">Select your favorite items and customize them to your liking</p>
+              <p className="text-gray-600">Select your favorite items, customize them to your preference, and complete your order with our easy checkout process</p>
             </div>
             
-            <div className="text-center p-6 bg-white rounded-lg shadow-sm">
+            <div className="text-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="h-16 w-16 bg-food-accent/30 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-food-dark text-2xl font-bold">3</span>
               </div>
               <h3 className="text-xl font-semibold mb-3 text-food-dark">Enjoy Your Meal</h3>
-              <p className="text-gray-600">Pick up your order or have it delivered straight to your door</p>
+              <p className="text-gray-600">Pick up your freshly prepared order at our location or have it delivered right to your doorstep</p>
             </div>
           </div>
         </div>
@@ -230,7 +231,7 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to order from OrderlyBite?</h2>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Fresh, delicious meals just a few clicks away
+            Delicious, freshly-prepared meals are just a few clicks away
           </p>
           <Button 
             className="bg-food-primary hover:bg-food-primary/90 text-white px-8 py-6 text-lg"
