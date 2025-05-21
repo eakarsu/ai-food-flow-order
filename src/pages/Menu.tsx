@@ -2,8 +2,7 @@ import { useState } from "react";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import MenuCategory, { MenuItem } from '../components/MenuCategory';
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import SearchBar from '../components/SearchBar';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 // Rules data structure
@@ -916,23 +915,69 @@ const menuData: Array<{
 
 const Menu = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(
     menuData.reduce((acc, category) => ({ ...acc, [category.category]: true }), {})
   );
   
-  // Filter menu items based on search query
-  const filteredCategories = searchQuery 
-    ? menuData.map(category => ({
-        ...category,
-        items: category.items.filter(item => 
-          item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-          (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()))
-        )
-      })).filter(category => category.items.length > 0)
-    : menuData;
+  // Filter menu items based on search query and category
+  const filteredCategories = menuData
+    .map(category => {
+      // If we have a category filter and it's not "all", only include that category
+      if (selectedCategory !== "all" && selectedCategory.toLowerCase() !== category.category.toLowerCase()) {
+        return { ...category, items: [] };
+      }
+      
+      // Filter items based on search query
+      const filteredItems = category.items.filter(item => {
+        // If no search query, include all items
+        if (!searchQuery) return true;
+        
+        // Otherwise, search in name, description, and rules
+        const searchLower = searchQuery.toLowerCase();
+        
+        // Check if name or description contains search term
+        const nameMatch = item.name.toLowerCase().includes(searchLower);
+        const descMatch = item.description && item.description.toLowerCase().includes(searchLower);
+        
+        // Special handling for drink-related searches
+        if (searchLower.includes("drink")) {
+          // Additional check for drink-related items
+          const isDrinkCategory = category.category.toLowerCase().includes("drink") || 
+                                category.category.toLowerCase().includes("bottled") || 
+                                category.category.toLowerCase().includes("tea") ||
+                                category.category.toLowerCase().includes("coffee");
+          if (isDrinkCategory) return true;
+        }
+        
+        // Check for matches in rules if they exist
+        let rulesMatch = false;
+        if (item.rules) {
+          rulesMatch = item.rules.some(rule => {
+            const ruleInfo = rulesData[category.category]?.[rule];
+            return rule.toLowerCase().includes(searchLower) || 
+                  (ruleInfo && JSON.stringify(ruleInfo).toLowerCase().includes(searchLower));
+          });
+        }
+        
+        return nameMatch || descMatch || rulesMatch;
+      });
+      
+      return { ...category, items: filteredItems };
+    })
+    .filter(category => category.items.length > 0);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    // When searching, open all categories to make results visible
+    if (query) {
+      const allOpen = menuData.reduce((acc, category) => ({ ...acc, [category.category]: true }), {});
+      setOpenCategories(allOpen);
+    }
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
   };
 
   const toggleCategory = (category: string) => {
@@ -951,25 +996,19 @@ const Menu = () => {
           <h1 className="text-3xl font-bold text-food-dark mb-2">OrderlyBite Menu</h1>
           <p className="text-gray-600 mb-6">Explore our delicious offerings</p>
           
-          <div className="relative max-w-md mx-auto mb-8">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
-            </div>
-            <Input 
-              type="text"
-              placeholder="Search for food items..."
-              className="pl-10"
-              value={searchQuery}
-              onChange={handleSearch}
+          <div className="max-w-4xl mx-auto mb-8">
+            <SearchBar 
+              onSearch={handleSearch} 
+              onCategoryChange={handleCategoryChange}
             />
           </div>
         </div>
       </div>
       
       <div className="container mx-auto px-4 py-8">
-        <div className="space-y-6">
-          {filteredCategories.length > 0 ? (
-            filteredCategories.map((category) => (
+        {filteredCategories.length > 0 ? (
+          <div className="space-y-6">
+            {filteredCategories.map((category) => (
               <Collapsible 
                 key={category.category}
                 open={openCategories[category.category]} 
@@ -986,22 +1025,26 @@ const Menu = () => {
                     items={category.items}
                     categoryImage={category.categoryImage}
                     showTitle={false}
+                    searchQuery={searchQuery}
                   />
                 </CollapsibleContent>
               </Collapsible>
-            ))
-          ) : (
-            <div className="text-center py-10">
-              <p className="text-lg text-gray-500">No menu items found matching "{searchQuery}"</p>
-              <button 
-                onClick={() => setSearchQuery("")}
-                className="mt-2 text-food-primary hover:underline"
-              >
-                Clear search
-              </button>
-            </div>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-10">
+            <p className="text-lg text-gray-500">No menu items found matching "{searchQuery}"</p>
+            <button 
+              onClick={() => {
+                setSearchQuery("");
+                setSelectedCategory("all");
+              }}
+              className="mt-2 text-food-primary hover:underline"
+            >
+              Clear search
+            </button>
+          </div>
+        )}
       </div>
       
       <Footer />

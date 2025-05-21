@@ -35,11 +35,22 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
 
   // Filter items based on search query - case insensitive
   const filteredItems = searchQuery
-    ? items.filter(item => 
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (item.rules && item.rules.some(rule => rule.toLowerCase().includes(searchQuery.toLowerCase())))
-      )
+    ? items.filter(item => {
+        const query = searchQuery.toLowerCase();
+        const nameMatch = item.name.toLowerCase().includes(query);
+        const descMatch = item.description && item.description.toLowerCase().includes(query);
+        const rulesMatch = item.rules && item.rules.some(rule => rule.toLowerCase().includes(query));
+        
+        // Special case for drink-related searches
+        if (query.includes("drink") && 
+            (title.toLowerCase().includes("drink") || 
+            title.toLowerCase().includes("coffee") || 
+            title.toLowerCase().includes("tea"))) {
+          return true;
+        }
+        
+        return nameMatch || descMatch || rulesMatch;
+      })
     : items;
   
   // Don't render category if no items match search query

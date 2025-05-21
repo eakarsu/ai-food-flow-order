@@ -27,6 +27,9 @@ const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
     { value: "mexican", label: "Mexican" },
     { value: "japanese", label: "Japanese" },
     { value: "drinks", label: "Drinks" },
+    { value: "bottled drinks", label: "Bottled Drinks" },
+    { value: "coffee", label: "Coffee" },
+    { value: "tea", label: "Tea" },
     { value: "desserts", label: "Desserts" },
   ];
   
@@ -79,7 +82,7 @@ const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
                   <Search className="ml-2 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-full min-w-[200px] bg-white">
+              <DropdownMenuContent className="w-full min-w-[200px] bg-white z-50">
                 {categories.map((category) => (
                   <DropdownMenuItem 
                     key={category.value}
