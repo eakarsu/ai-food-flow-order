@@ -42,11 +42,14 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
         const rulesMatch = item.rules && item.rules.some(rule => rule.toLowerCase().includes(query));
         
         // Special case for drink-related searches
-        if (query.includes("drink") && 
-            (title.toLowerCase().includes("drink") || 
-            title.toLowerCase().includes("coffee") || 
-            title.toLowerCase().includes("tea"))) {
-          return true;
+        if (query.includes("drink") || query.includes("coffee") || query.includes("tea")) {
+          // If the category title contains these keywords, show all items in the category
+          if (title.toLowerCase().includes("drink") || 
+              title.toLowerCase().includes("coffee") || 
+              title.toLowerCase().includes("tea") ||
+              title.toLowerCase().includes("iced")) {
+            return true;
+          }
         }
         
         return nameMatch || descMatch || rulesMatch;

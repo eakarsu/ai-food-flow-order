@@ -30,6 +30,7 @@ const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
     { value: "bottled drinks", label: "Bottled Drinks" },
     { value: "coffee", label: "Coffee" },
     { value: "tea", label: "Tea" },
+    { value: "iced tea", label: "Iced Tea and Lemonade" },
     { value: "desserts", label: "Desserts" },
   ];
   
