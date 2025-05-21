@@ -1,7 +1,6 @@
 
 import { Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { 
@@ -27,6 +26,8 @@ const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
     { value: "indian", label: "Indian" },
     { value: "mexican", label: "Mexican" },
     { value: "japanese", label: "Japanese" },
+    { value: "drinks", label: "Drinks" },
+    { value: "desserts", label: "Desserts" },
   ];
   
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,7 +84,7 @@ const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
                   <DropdownMenuItem 
                     key={category.value}
                     onClick={() => handleCategoryChange(category.value)}
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:bg-gray-100"
                   >
                     {category.label}
                   </DropdownMenuItem>

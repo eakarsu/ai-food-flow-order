@@ -33,11 +33,12 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
     });
   };
 
-  // Filter items based on search query
+  // Filter items based on search query - case insensitive
   const filteredItems = searchQuery
     ? items.filter(item => 
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()))
+        (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.rules && item.rules.some(rule => rule.toLowerCase().includes(searchQuery.toLowerCase())))
       )
     : items;
   
