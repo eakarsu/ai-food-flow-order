@@ -24,11 +24,17 @@ interface MenuCategoryProps {
 
 const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQuery = "" }: MenuCategoryProps) => {
   const { toast } = useToast();
-  const [isOpen, setIsOpen] = useState(!searchQuery);
+  const [isOpen, setIsOpen] = useState(false);
   
   // Update isOpen when searchQuery changes
   useEffect(() => {
-    setIsOpen(!searchQuery);
+    // When there's a search query, ensure all categories are closed
+    if (searchQuery) {
+      setIsOpen(false);
+    } else {
+      // When no search query, categories can be open by default
+      setIsOpen(true);
+    }
   }, [searchQuery]);
   
   const handleAddToCart = (itemName: string) => {
@@ -38,7 +44,6 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
     });
   };
 
-  // Don't filter items here anymore since filteredItems should be passed directly
   const displayItems = items;
   
   // Don't render category if no items are available

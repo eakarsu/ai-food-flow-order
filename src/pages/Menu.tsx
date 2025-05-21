@@ -916,7 +916,6 @@ const menuData: Array<{
 const Menu = () => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
   
   // Parse URL parameters on load
   useEffect(() => {
@@ -926,13 +925,6 @@ const Menu = () => {
     if (searchParam) {
       setSearchQuery(searchParam);
     }
-    
-    // Initialize all categories as closed when searching, open otherwise
-    const initialOpenState = menuData.reduce((acc, category) => ({ 
-      ...acc, 
-      [category.category]: !searchParam 
-    }), {});
-    setOpenCategories(initialOpenState);
   }, [location.search]);
   
   // Filter menu items based on search query
@@ -987,15 +979,6 @@ const Menu = () => {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    // When searching, close all categories to make results more scannable
-    if (query) {
-      const allClosed = menuData.reduce((acc, category) => ({ ...acc, [category.category]: false }), {});
-      setOpenCategories(allClosed);
-    } else {
-      // When clearing search, open all categories
-      const allOpen = menuData.reduce((acc, category) => ({ ...acc, [category.category]: true }), {});
-      setOpenCategories(allOpen);
-    }
   };
 
   return (
@@ -1021,21 +1004,8 @@ const Menu = () => {
                 key={category.category} 
                 className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm"
               >
-                <div 
-                  className="flex justify-between items-center w-full p-4 bg-white cursor-pointer"
-                  onClick={() => {
-                    setOpenCategories(prev => ({
-                      ...prev,
-                      [category.category]: !prev[category.category]
-                    }));
-                  }}
-                >
-                  <h2 className="text-xl font-semibold text-food-dark">{category.category}</h2>
-                  <span className="text-gray-500">{openCategories[category.category] ? '▲' : '▼'}</span>
-                </div>
-                
-                {/* Pass the current search query to MenuCategory */}
                 <div className="p-4">
+                  <h2 className="text-xl font-semibold text-food-dark mb-4">{category.category}</h2>
                   <MenuCategory 
                     title="" 
                     items={category.items}
