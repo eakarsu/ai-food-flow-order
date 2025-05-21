@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -7,10 +6,75 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
-// Menu data structure
+// Rules data structure
+const rulesData = {
+  "BYO Breakfast": {
+    "Bagel Options": {
+      rule: "Select 1",
+      options: [
+        { name: "Cinnamon Raisin (Small)", price: 1.50 },
+        { name: "Egg (Small)", price: 1.50 },
+        { name: "Egg Everything (Small)", price: 1.50 },
+        // ... keep existing code (remaining Bagel Options)
+      ]
+    },
+    "Bagel Spreads": {
+      rule: "select 1 to 6",
+      options: [
+        { name: "Bacon (Small)", price: 4.00 },
+        { name: "Butter (Small)", price: 1.00 },
+        // ... keep existing code (remaining Bagel Spreads)
+      ]
+    },
+    // ... keep existing code (remaining BYO Breakfast categories)
+  },
+  "BYO Sandwiches": {
+    "Bread": {
+      rule: "Select 1",
+      options: [
+        { name: "Cinnamon Raisin Bagel (Medium)", price: 0.50 },
+        { name: "Croissant (Medium)", price: 2.00 },
+        // ... keep existing code (remaining Bread options)
+      ]
+    },
+    "Cheese": {
+      rule: "Select up to 5",
+      options: [
+        { name: "American Cheese (Medium)", price: 1.00 },
+        { name: "Blue Cheese Crumble (Medium)", price: 1.00 },
+        // ... keep existing code (remaining Cheese options)
+      ]
+    },
+    // ... keep existing code (remaining BYO Sandwiches categories)
+  },
+  "Chopped Salad": {
+    "Salad Add-ons": {
+      rule: "select up to 10",
+      options: [
+        { name: "Almonds (Small)", price: 2.00 },
+        { name: "Black olives (Small)", price: 0.50 },
+        // ... keep existing code (remaining Salad Add-ons)
+      ]
+    },
+    // ... keep existing code (remaining Chopped Salad categories)
+  },
+  "Coffee": {
+    "Coffee Creamers": {
+      rule: "Select up to 1 item",
+      options: [
+        { name: "Milk", price: 0.00 },
+        { name: "Fat-Free Milk", price: 0.00 },
+        // ... keep existing code (remaining Coffee Creamers)
+      ]
+    }
+  }
+};
+
+// Menu data structure with category images
 const menuData = [
   {
     category: "Acai Bowls",
+    categoryImage: "https://images.unsplash.com/photo-1590301157890-4810ed352733?q=80&w=1000",
     items: [
       {
         name: "Acai Bowl",
@@ -22,6 +86,7 @@ const menuData = [
   },
   {
     category: "Bottled Drinks",
+    categoryImage: "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000",
     items: [
       { name: "Apple Juice", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000" },
       { name: "Arizona Iced Cold Brew Green Tea", price: 4.09 },
@@ -97,6 +162,7 @@ const menuData = [
   },
   {
     category: "Breakfast Combos",
+    categoryImage: "https://images.unsplash.com/photo-1484723091739-30a097e8f929?q=80&w=1000",
     items: [
       {
         name: "French Toast",
@@ -134,33 +200,39 @@ const menuData = [
   },
   {
     category: "BYO Breakfast",
+    categoryImage: "https://images.unsplash.com/photo-1592321675774-3cbc1d00fb0c?q=80&w=1000",
     items: [
       {
         name: "Bagel",
         price: 0.00,
         description: "Choose from our selection of bagels and spreads",
-        imageUrl: "https://images.unsplash.com/photo-1592321675774-3cbc1d00fb0c?q=80&w=1000"
+        imageUrl: "https://images.unsplash.com/photo-1592321675774-3cbc1d00fb0c?q=80&w=1000",
+        rules: ["Bagel Options", "Bagel Spreads"]
       },
       {
         name: "Breakfast",
         price: 2.60,
-        description: "Build your own breakfast with your choice of bread, cheese, egg options, and more"
+        description: "Build your own breakfast with your choice of bread, cheese, egg options, and more",
+        rules: ["Breakfast Add-ons", "Breakfast Bread", "Breakfast Cheese", "Breakfast Dressing", "Breakfast Egg Option", "Breakfast Egg Quantity", "Breakfast Meat"]
       }
     ]
   },
   {
     category: "BYO Sandwiches",
+    categoryImage: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=1000",
     items: [
       {
         name: "BYO Sandwiches",
         price: 16.00,
         description: "Build your own sandwich with your choice of bread, cheese, protein, and toppings",
-        imageUrl: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=1000"
+        imageUrl: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=1000",
+        rules: ["Bread", "Cheese", "Protein", "Toppings"]
       }
     ]
   },
   {
     category: "Chips",
+    categoryImage: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?q=80&w=1000",
     items: [
       { name: "Classic Lays", price: 3.24, imageUrl: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?q=80&w=1000" },
       { name: "Cool Ranch Doritos", price: 3.24 },
@@ -170,17 +242,20 @@ const menuData = [
   },
   {
     category: "Chopped Salad",
+    categoryImage: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000",
     items: [
       {
         name: "BYO Salad",
         price: 9.95,
         description: "Build your own salad with your choice of base, add-ons, and dressing",
-        imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000"
+        imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000",
+        rules: ["Salad Add-ons", "Salad Base", "Salad Dressing"]
       }
     ]
   },
   {
     category: "Coffee",
+    categoryImage: "https://images.unsplash.com/photo-1503481766315-7a586b20f66d?q=80&w=1000",
     items: [
       { name: "Cappuccino, Columbian Coffee, Large", price: 2.76 },
       { name: "Cappuccino, Columbian Coffee, Medium", price: 2.25 },
@@ -201,6 +276,7 @@ const menuData = [
   },
   {
     category: "Tea",
+    categoryImage: "https://images.unsplash.com/photo-1546877625-cb8c71916608?q=80&w=1000",
     items: [
       { name: "Green Decaf Tea, Large", price: 2.76 },
       { name: "Green Decaf Tea, Medium", price: 2.25 },
@@ -218,6 +294,7 @@ const menuData = [
   },
   {
     category: "Cold Sandwiches",
+    categoryImage: "https://images.unsplash.com/photo-1621800043295-a73fe8894df0?q=80&w=1000",
     items: [
       {
         name: "Balsamic Avocado Hero",
@@ -243,7 +320,7 @@ const menuData = [
       {
         name: "Dagwood Hero",
         price: 17.95,
-        description: "Roast beef, turkey, ham, American, Swiss, lettuce, tomato, and mayo."
+        description: "Roast beef, turkey, ham, American, Swiss, lettuce, tomato and mayo."
       },
       {
         name: "Grandpa Ted Hero",
@@ -335,6 +412,7 @@ const menuData = [
   },
   {
     category: "Hot Sandwiches",
+    categoryImage: "https://images.unsplash.com/photo-1550507992-eb63ffee0847?q=80&w=1000",
     items: [
       {
         name: "Chicken Fiesta Hero",
@@ -676,7 +754,8 @@ const Menu = () => {
               <MenuCategory 
                 key={category.category} 
                 title={category.category} 
-                items={category.items} 
+                items={category.items}
+                categoryImage={category.categoryImage}
               />
             ))}
           </TabsContent>
