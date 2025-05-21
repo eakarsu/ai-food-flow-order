@@ -33,27 +33,11 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
     });
   };
 
-  // Filter items based on search query - case insensitive
-  const filteredItems = searchQuery
-    ? items.filter(item => {
-        const query = searchQuery.toLowerCase();
-        
-        // Check if name or description contains search term
-        const nameMatch = item.name.toLowerCase().includes(query);
-        const descMatch = item.description && item.description.toLowerCase().includes(query);
-        
-        // Check for matches in rules if they exist
-        let rulesMatch = false;
-        if (item.rules) {
-          rulesMatch = item.rules.some(rule => rule.toLowerCase().includes(query));
-        }
-        
-        return nameMatch || descMatch || rulesMatch;
-      })
-    : items;
+  // Don't filter items here anymore since filteredItems should be passed directly
+  const displayItems = items;
   
-  // Don't render category if no items match search query
-  if (searchQuery && filteredItems.length === 0) {
+  // Don't render category if no items are available
+  if (displayItems.length === 0) {
     return null;
   }
   
@@ -80,7 +64,7 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
         
         <CollapsibleContent className="pt-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredItems.map((item, index) => (
+            {displayItems.map((item, index) => (
               <Card key={`${title}-${index}`} className="overflow-hidden hover:shadow-md transition-all duration-300">
                 {item.imageUrl && (
                   <div className="h-48 overflow-hidden relative">

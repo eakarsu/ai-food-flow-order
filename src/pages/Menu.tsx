@@ -362,7 +362,7 @@ const menuData: Array<{
       { name: "Apple Juice", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000" },
       { name: "Arizona Iced Cold Brew Green Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1620798018123-dce03e4a176b?q=80&w=1000" },
       { name: "Arizona Iced Cold Brew Iced Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
-      { name: "Arizona Iced Cold Brew Sweet Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1500631195312-e3a9a5819f92?q=80&w=1000" },
+      { name: "Arizona Iced Cold Brew Sweet Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1500631886742-f049cd451bba?q=80&w=1000" },
       { name: "Arizona Iced Cold Brew Unsweet Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1620031351283-d3d04e125745?q=80&w=1000" },
       { name: "Arizona Iced Tea 16 oz Arnold Palmer", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1624372652234-74c3b9c1d36b?q=80&w=1000" },
       { name: "Arizona Iced Tea 16 oz Diet Green Tea", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
@@ -745,7 +745,7 @@ const menuData: Array<{
         name: "American Omelet",
         price: 10.32,
         description: "ham, American cheese, and tomato.",
-        imageUrl: "https://images.unsplash.com/photo-1510693206972-df098062cb71?q=80&w=1000"
+        imageUrl: "https://images.unsplash.com/photo-1510693206972-df098062fc71?q=80&w=1000"
       },
       {
         name: "Mexican Omelet",
@@ -936,56 +936,54 @@ const Menu = () => {
   }, [location.search]);
   
   // Filter menu items based on search query
-  const filteredCategories = menuData
-    .map(category => {
-      // If search query is empty, include all items
-      if (!searchQuery) {
-        return category;
-      }
+  const filteredCategories = menuData.map(category => {
+    // If search query is empty, return all items
+    if (!searchQuery) {
+      return category;
+    }
 
-      const searchLower = searchQuery.toLowerCase();
+    const searchLower = searchQuery.toLowerCase();
+    
+    // Special handling for drink-related searches at the category level
+    if ((searchLower.includes("drink") || 
+        searchLower.includes("coffee") || 
+        searchLower.includes("tea") || 
+        searchLower.includes("bottle") || 
+        searchLower.includes("lemonade")) && 
+        (category.category.toLowerCase().includes("drink") ||
+        category.category.toLowerCase().includes("coffee") ||
+        category.category.toLowerCase().includes("tea") ||
+        category.category.toLowerCase().includes("iced") ||
+        category.category.toLowerCase().includes("bottle") ||
+        category.category.toLowerCase().includes("lemonade"))) {
+      return category; // Show entire category for drink-related searches
+    }
+    
+    // Filter individual items
+    const filteredItems = category.items.filter(item => {
+      const nameMatch = item.name.toLowerCase().includes(searchLower);
+      const descMatch = item.description && item.description.toLowerCase().includes(searchLower);
       
-      // Special handling for drink-related searches at the category level
-      if ((searchLower.includes("drink") || 
-          searchLower.includes("coffee") || 
-          searchLower.includes("tea") || 
-          searchLower.includes("bottle") || 
-          searchLower.includes("lemonade")) && 
-          (category.category.toLowerCase().includes("drink") ||
-          category.category.toLowerCase().includes("coffee") ||
-          category.category.toLowerCase().includes("tea") ||
-          category.category.toLowerCase().includes("iced") ||
-          category.category.toLowerCase().includes("bottle") ||
-          category.category.toLowerCase().includes("lemonade"))) {
-        return category; // Show entire category for drink-related searches
+      // Check for matches in rules if they exist
+      let rulesMatch = false;
+      if (item.rules) {
+        rulesMatch = item.rules.some(rule => {
+          // Look in rules data for this category
+          const ruleData = rulesData[category.category]?.[rule];
+          if (ruleData) {
+            // Search in rule description and options
+            const ruleTextToSearch = JSON.stringify(ruleData).toLowerCase();
+            return ruleTextToSearch.includes(searchLower);
+          }
+          return rule.toLowerCase().includes(searchLower);
+        });
       }
       
-      // Filter individual items
-      const filteredItems = category.items.filter(item => {
-        const nameMatch = item.name.toLowerCase().includes(searchLower);
-        const descMatch = item.description && item.description.toLowerCase().includes(searchLower);
-        
-        // Check for matches in rules if they exist
-        let rulesMatch = false;
-        if (item.rules) {
-          rulesMatch = item.rules.some(rule => {
-            // Look in rules data for this category
-            const ruleData = rulesData[category.category]?.[rule];
-            if (ruleData) {
-              // Search in rule description and options
-              const ruleTextToSearch = JSON.stringify(ruleData).toLowerCase();
-              return ruleTextToSearch.includes(searchLower);
-            }
-            return rule.toLowerCase().includes(searchLower);
-          });
-        }
-        
-        return nameMatch || descMatch || rulesMatch;
-      });
-      
-      return { ...category, items: filteredItems };
-    })
-    .filter(category => category.items.length > 0);
+      return nameMatch || descMatch || rulesMatch;
+    });
+    
+    return { ...category, items: filteredItems };
+  }).filter(category => category.items.length > 0);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -994,13 +992,6 @@ const Menu = () => {
       const allOpen = menuData.reduce((acc, category) => ({ ...acc, [category.category]: true }), {});
       setOpenCategories(allOpen);
     }
-  };
-
-  const toggleCategory = (category: string) => {
-    setOpenCategories(prev => ({
-      ...prev,
-      [category]: !prev[category]
-    }));
   };
 
   return (
@@ -1027,8 +1018,13 @@ const Menu = () => {
                 className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm"
               >
                 <div 
-                  className="flex justify-between items-center w-full p-4 bg-white hover:bg-gray-50 cursor-pointer"
-                  onClick={() => toggleCategory(category.category)}
+                  className="flex justify-between items-center w-full p-4 bg-white cursor-pointer"
+                  onClick={() => {
+                    setOpenCategories(prev => ({
+                      ...prev,
+                      [category.category]: !prev[category.category]
+                    }));
+                  }}
                 >
                   <h2 className="text-xl font-semibold text-food-dark">{category.category}</h2>
                   <span className="text-gray-500">{openCategories[category.category] ? '▲' : '▼'}</span>
@@ -1041,7 +1037,6 @@ const Menu = () => {
                       items={category.items}
                       categoryImage={category.categoryImage}
                       showTitle={false}
-                      searchQuery={searchQuery}
                     />
                   </div>
                 )}
