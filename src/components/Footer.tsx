@@ -44,11 +44,11 @@ const Footer = () => {
             <ul className="space-y-3 text-sm text-gray-300">
               <li className="flex items-start">
                 <MapPin size={16} className="mr-2 mt-1 flex-shrink-0 text-food-primary" />
-                <span>123 Food Street, Tasteville, TC 98765</span>
+                <span>2807 Hampton Woods Dr, Henrico, VA 23233</span>
               </li>
               <li className="flex items-start">
                 <Phone size={16} className="mr-2 mt-1 flex-shrink-0 text-food-primary" />
-                <span>+1 (555) 123-4567</span>
+                <span>+1 (804) 360-1129</span>
               </li>
               <li className="flex items-start">
                 <Mail size={16} className="mr-2 mt-1 flex-shrink-0 text-food-primary" />

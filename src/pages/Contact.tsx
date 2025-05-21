@@ -69,15 +69,15 @@ const Contact = () => {
               <div className="space-y-3">
                 <div className="flex items-start">
                   <span className="mr-3 text-food-primary">📍</span>
-                  <span>123 Food Street, Tasteville, TC 98765</span>
+                  <span>2807 Hampton Woods Dr, Henrico, VA 23233</span>
                 </div>
                 <div className="flex items-start">
                   <span className="mr-3 text-food-primary">📞</span>
-                  <span>+1 (555) 123-4567</span>
+                  <span>+1 (804) 360-1129</span>
                 </div>
                 <div className="flex items-start">
                   <span className="mr-3 text-food-primary">📧</span>
-                  <span>support@bitebot.com</span>
+                  <span>support@orderlybite.com</span>
                 </div>
                 <div className="flex items-start">
                   <span className="mr-3 text-food-primary">🕒</span>
