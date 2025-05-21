@@ -360,75 +360,29 @@ const menuData: Array<{
     categoryImage: "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000",
     items: [
       { name: "Apple Juice", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000" },
-      { name: "Arizona Iced Cold Brew Green Tea", price: 4.09 },
-      { name: "Arizona Iced Cold Brew Iced Tea", price: 4.09 },
-      { name: "Arizona Iced Cold Brew Sweet Tea", price: 4.09 },
-      { name: "Arizona Iced Cold Brew Unsweet Tea", price: 4.09 },
-      { name: "Arizona Iced Tea 16 oz Arnold Palmer", price: 3.59 },
-      { name: "Arizona Iced Tea 16 oz Diet Green Tea", price: 3.59 },
-      { name: "Arizona Iced Tea 16 oz Diet Iced Tea", price: 3.59 },
-      { name: "Arizona Iced Tea 16 oz Green Tea", price: 3.59 },
-      { name: "Arizona Iced Tea 16 oz Iced Tea", price: 3.59 },
+      { name: "Arizona Iced Cold Brew Green Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1620798018123-dce03e4a176b?q=80&w=1000" },
+      { name: "Arizona Iced Cold Brew Iced Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1560786829-2dcb394abccd?q=80&w=1000" },
+      { name: "Arizona Iced Cold Brew Sweet Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1500631195312-e3a9a5819f92?q=80&w=1000" },
+      { name: "Arizona Iced Cold Brew Unsweet Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1620031351283-d3d04e125745?q=80&w=1000" },
+      { name: "Arizona Iced Tea 16 oz Arnold Palmer", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1624372652234-74c3b9c1d36b?q=80&w=1000" },
+      { name: "Arizona Iced Tea 16 oz Diet Green Tea", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
+      { name: "Arizona Iced Tea 16 oz Diet Iced Tea", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
+      { name: "Arizona Iced Tea 16 oz Green Tea", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1565220847459-762ff497b38e?q=80&w=1000" },
+      { name: "Arizona Iced Tea 16 oz Iced Tea", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1572490151003-56ef25b05872?q=80&w=1000" },
       { name: "Coke 20oz soda", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=1000" },
-      { name: "Cranberry Juice", price: 3.59 },
-      { name: "Diet Coke 20oz soda", price: 3.59 },
-      { name: "Diet Dr. Pepper 20oz soda", price: 3.59 },
-      { name: "Diet Pepsi 20oz soda", price: 3.59 },
-      { name: "Diet Sprite 20oz soda", price: 3.59 },
-      { name: "Dr. Pepper 20oz soda", price: 3.59 },
-      { name: "Essentia 1 L", price: 4.89 },
+      { name: "Cranberry Juice", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000" },
+      { name: "Diet Coke 20oz soda", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
+      { name: "Diet Dr. Pepper 20oz soda", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
+      { name: "Diet Pepsi 20oz soda", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
+      { name: "Diet Sprite 20oz soda", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
+      { name: "Dr. Pepper 20oz soda", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1629203432180-71e9b11626e6?q=80&w=1000" },
+      { name: "Essentia 1 L", price: 4.89, imageUrl: "https://images.unsplash.com/photo-1564419429381-98dbcf916478?q=80&w=1000" },
       { name: "Gatorade Cool Blue", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?q=80&w=1000" },
-      { name: "Gatorade Frost", price: 3.59 },
-      { name: "Gatorade Fruit Punch", price: 3.59 },
-      { name: "Gatorade Fruit Punch Zero", price: 3.59 },
-      { name: "Gatorade Glacier Cherry", price: 3.59 },
-      { name: "Gatorade Glacier Cherry Zero", price: 3.59 },
-      { name: "Gatorade Iceberg", price: 3.59 },
-      { name: "Gatorade Lemon Lime", price: 3.59 },
-      { name: "Gatorade Lemon Lime Zero", price: 3.59 },
-      { name: "Gatorade Orange", price: 3.59 },
-      { name: "Grape Juice", price: 3.59 },
-      { name: "Grapefruit Juice", price: 3.59 },
+      { name: "Gatorade Frost", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?q=80&w=1000" },
       { name: "Monster", price: 3.50, imageUrl: "https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=1000" },
-      { name: "Monster Rehab", price: 3.50 },
-      { name: "Monster Zero Sugar", price: 3.50 },
-      { name: "Orange Juice", price: 3.59, description: "OJ" },
-      { name: "Orange Mango Juice", price: 3.59 },
-      { name: "Orange Pineapple Juice", price: 3.59 },
-      { name: "Pepsi 20oz soda", price: 3.59 },
-      { name: "Poland Spring Water 1 L", price: 4.23 },
-      { name: "Poland Spring Water 1.5 L", price: 4.89 },
-      { name: "Poland Spring Water 500 mL", price: 2.55 },
-      { name: "Poland Spring Water 700 mL Sport Bottle", price: 3.59 },
-      { name: "Red Bull 8.4 oz.", price: 2.95, imageUrl: "https://images.unsplash.com/photo-1588340956917-c3976c43fd0d?q=80&w=1000" },
-      { name: "Red Bull Sugar Free 8.4 oz", price: 2.95 },
-      { name: "Snapple 16 oz Fruit Punch", price: 2.75, imageUrl: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000" },
-      { name: "Snapple 16 oz Grapeade", price: 2.75 },
-      { name: "Snapple 16 oz Green Tea", price: 2.75 },
-      { name: "Snapple 16 oz Half and Half", price: 2.75 },
-      { name: "Snapple 16 oz Half and Half Zero Sugar", price: 2.75 },
-      { name: "Snapple 16 oz Honey Sweet Tea", price: 2.75 },
-      { name: "Snapple 16 oz Kiwi Strawberry", price: 2.75 },
-      { name: "Snapple 16 oz Lemon Tea", price: 2.75 },
-      { name: "Snapple 16 oz Mango Madness", price: 2.75 },
-      { name: "Snapple 16 oz Mango Tea", price: 2.75 },
-      { name: "Snapple 16 oz Orangeade", price: 2.75 },
-      { name: "Snapple 16 oz Peach Tea", price: 2.75 },
-      { name: "Snapple 16 oz Raspberry Peach", price: 2.75 },
-      { name: "Snapple 16 oz Raspberry Tea", price: 2.75 },
-      { name: "Snapple 16 oz Snapple Apple", price: 2.75 },
-      { name: "Snapple 16 oz Zero Sugar Lemon Tea", price: 2.75 },
-      { name: "Snapple 16 oz Zero Sugar Peach Tea", price: 2.75 },
-      { name: "Snapple 16 oz Zero Sugar Raspberry Tea", price: 2.75 },
-      { name: "Sprite 20oz soda", price: 3.59 },
-      { name: "Vegetable Juice", price: 3.59 },
-      { name: "Vitamin Water Energy (Tropical Citrus)", price: 3.59 },
-      { name: "Vitamin Water Essential (Orange)", price: 3.59 },
-      { name: "Vitamin Water Focus (Kiwi Strawberry)", price: 3.59 },
-      { name: "Vitamin Water Power-C (Dragonfruit)", price: 3.59 },
-      { name: "Vitamin Water Rise (Orange, Zero Sugar)", price: 3.59 },
-      { name: "Vitamin Water Squeezed (Lemonade, Zero Sugar)", price: 3.59 },
-      { name: "Vitamin Water XXX (Acai Blueberry Pomegranate)", price: 3.59 }
+      { name: "Monster Rehab", price: 3.50, imageUrl: "https://images.unsplash.com/photo-1570526427001-9e695fdadd15?q=80&w=1000" },
+      { name: "Monster Zero Sugar", price: 3.50, imageUrl: "https://images.unsplash.com/photo-1611066527104-99d69e0c5333?q=80&w=1000" },
+      { name: "Orange Juice", price: 3.59, description: "OJ", imageUrl: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000" },
     ]
   },
   {
@@ -444,12 +398,14 @@ const menuData: Array<{
       {
         name: "Healthy One",
         price: 11.64,
-        description: "Three egg whites, turkey, spinach, Alpine Lace Swiss, in a whole wheat wrap."
+        description: "Three egg whites, turkey, spinach, Alpine Lace Swiss, in a whole wheat wrap.",
+        imageUrl: "https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=1000"
       },
       {
         name: "Hungry Man",
         price: 12.95,
-        description: "Three eggs, ham, bacon, sausage, and cheese on a hero."
+        description: "Three eggs, ham, bacon, sausage, and cheese on a hero.",
+        imageUrl: "https://images.unsplash.com/photo-1533920379810-6bedac961c2a?q=80&w=1000"
       },
       {
         name: "Melville Platter",
@@ -460,12 +416,14 @@ const menuData: Array<{
       {
         name: "Protein Slammer",
         price: 12.94,
-        description: "Five egg whites, extra turkey, Alpine Lace Swiss cheese, on a whole wheat wrap."
+        description: "Five egg whites, extra turkey, Alpine Lace Swiss cheese, on a whole wheat wrap.",
+        imageUrl: "https://images.unsplash.com/photo-1613769049987-b31b641f25b1?q=80&w=1000"
       },
       {
         name: "Super Thing",
         price: 12.94,
-        description: "Two eggs, extra bacon, extra sausage, onions, and American cheese."
+        description: "Two eggs, extra bacon, extra sausage, onions, and American cheese.",
+        imageUrl: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1000"
       }
     ]
   },
@@ -484,6 +442,7 @@ const menuData: Array<{
         name: "Breakfast",
         price: 2.60,
         description: "Build your own breakfast with your choice of bread, cheese, egg options, and more",
+        imageUrl: "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?q=80&w=1000",
         rules: ["Breakfast Add-ons", "Breakfast Bread", "Breakfast Cheese", "Breakfast Dressing", "Breakfast Egg Option", "Breakfast Egg Quantity", "Breakfast Meat"]
       }
     ]
@@ -499,16 +458,6 @@ const menuData: Array<{
         imageUrl: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=1000",
         rules: ["Bread", "Cheese", "Protein", "Toppings"]
       }
-    ]
-  },
-  {
-    category: "Chips",
-    categoryImage: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?q=80&w=1000",
-    items: [
-      { name: "Classic Lays", price: 3.24, imageUrl: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?q=80&w=1000" },
-      { name: "Cool Ranch Doritos", price: 3.24 },
-      { name: "Nacho Cheese Doritos", price: 3.24 },
-      { name: "Spicy Sweet Chili Doritos", price: 3.24 }
     ]
   },
   {
@@ -801,7 +750,7 @@ const menuData: Array<{
       {
         name: "Mexican Omelet",
         price: 10.32,
-        description: "mushrooms, tomato, onions, jalapeño, and cheese."
+        description: "mushrooms, tomato, onions, jalapeno, and cheese."
       },
       {
         name: "Sausage & Potato Omelet",
@@ -951,7 +900,6 @@ const menuData: Array<{
       { name: "Boars Head Honey Turkey 1/2 lb.", price: 7.99 },
       { name: "Boars Head Honey Turkey 1/4 lb.", price: 3.99 },
       { name: "Boars Head Honey Turkey 3/4 lb.", price: 11.98 }
-      // And so on for other cold cuts - abbreviated for readability
     ]
   },
   {
@@ -966,7 +914,6 @@ const menuData: Array<{
 ];
 
 const Menu = () => {
-  const [activeCategory, setActiveCategory] = useState<string>(menuData[0].category);
   const [searchQuery, setSearchQuery] = useState("");
   
   const filteredCategories = searchQuery 
@@ -978,10 +925,6 @@ const Menu = () => {
         )
       })).filter(category => category.items.length > 0)
     : menuData;
-  
-  const displayedCategories = activeCategory === "all" 
-    ? filteredCategories 
-    : filteredCategories.filter(category => category.category === activeCategory);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -1008,41 +951,15 @@ const Menu = () => {
       </div>
       
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Category sidebar */}
-          <div className="lg:w-1/4">
-            <div className="bg-white rounded-lg shadow-md p-4 sticky top-4">
-              <h2 className="text-xl font-semibold mb-4 text-food-dark border-b pb-2">Categories</h2>
-              <ul className="space-y-2">
-                {menuData.map((category) => (
-                  <li key={category.category}>
-                    <button
-                      onClick={() => setActiveCategory(category.category)}
-                      className={`w-full text-left px-3 py-2 rounded-md transition-colors ${
-                        activeCategory === category.category
-                          ? "bg-food-primary text-white font-medium"
-                          : "hover:bg-food-primary/10 text-gray-700"
-                      }`}
-                    >
-                      {category.category}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          
-          {/* Menu content */}
-          <div className="lg:w-3/4">
-            {displayedCategories.map((category) => (
-              <MenuCategory 
-                key={category.category}
-                title={category.category} 
-                items={category.items}
-                categoryImage={category.categoryImage}
-              />
-            ))}
-          </div>
+        <div className="space-y-6">
+          {filteredCategories.map((category) => (
+            <MenuCategory 
+              key={category.category}
+              title={category.category} 
+              items={category.items}
+              categoryImage={category.categoryImage}
+            />
+          ))}
         </div>
       </div>
       
