@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import MenuCategory, { MenuItem } from '../components/MenuCategory';
@@ -361,7 +361,7 @@ const menuData: Array<{
     items: [
       { name: "Apple Juice", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000" },
       { name: "Arizona Iced Cold Brew Green Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1620798018123-dce03e4a176b?q=80&w=1000" },
-      { name: "Arizona Iced Cold Brew Iced Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1560786829-2dcb394abccd?q=80&w=1000" },
+      { name: "Arizona Iced Cold Brew Iced Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
       { name: "Arizona Iced Cold Brew Sweet Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1500631195312-e3a9a5819f92?q=80&w=1000" },
       { name: "Arizona Iced Cold Brew Unsweet Tea", price: 4.09, imageUrl: "https://images.unsplash.com/photo-1620031351283-d3d04e125745?q=80&w=1000" },
       { name: "Arizona Iced Tea 16 oz Arnold Palmer", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1624372652234-74c3b9c1d36b?q=80&w=1000" },
@@ -916,9 +916,16 @@ const menuData: Array<{
 const Menu = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(
-    menuData.reduce((acc, category) => ({ ...acc, [category.category]: true }), {})
-  );
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
+  
+  // Initialize all categories as open
+  useEffect(() => {
+    const initialOpenState = menuData.reduce((acc, category) => ({ 
+      ...acc, 
+      [category.category]: true 
+    }), {});
+    setOpenCategories(initialOpenState);
+  }, []);
   
   // Filter menu items based on search query and category
   const filteredCategories = menuData
@@ -928,29 +935,31 @@ const Menu = () => {
         return { ...category, items: [] };
       }
       
-      // Filter items based on search query
+      // If search query is empty, include all items
+      if (!searchQuery) {
+        return category;
+      }
+
+      // Special handling for drink-related searches at the category level
+      if ((searchLower.includes("drink") || 
+          searchLower.includes("coffee") || 
+          searchLower.includes("tea") || 
+          searchLower.includes("bottle")) && 
+          (category.category.toLowerCase().includes("drink") ||
+          category.category.toLowerCase().includes("coffee") ||
+          category.category.toLowerCase().includes("tea") ||
+          category.category.toLowerCase().includes("iced") ||
+          category.category.toLowerCase().includes("bottle"))) {
+        return category; // Show entire category for drink-related searches
+      }
+      
+      // Filter individual items
+      const searchLower = searchQuery.toLowerCase();
       const filteredItems = category.items.filter(item => {
-        // If no search query, include all items
-        if (!searchQuery) return true;
-        
-        // Otherwise, search in name, description, and rules
-        const searchLower = searchQuery.toLowerCase();
-        
-        // Check if name or description contains search term
         const nameMatch = item.name.toLowerCase().includes(searchLower);
         const descMatch = item.description && item.description.toLowerCase().includes(searchLower);
         
-        // Special handling for drink-related searches
-        if (searchLower.includes("drink")) {
-          // Additional check for drink-related items
-          const isDrinkCategory = category.category.toLowerCase().includes("drink") || 
-                                category.category.toLowerCase().includes("bottled") || 
-                                category.category.toLowerCase().includes("tea") ||
-                                category.category.toLowerCase().includes("coffee");
-          if (isDrinkCategory) return true;
-        }
-        
-        // Check for matches in rules if they exist
+        // Check rules if they exist
         let rulesMatch = false;
         if (item.rules) {
           rulesMatch = item.rules.some(rule => {
@@ -1009,26 +1018,30 @@ const Menu = () => {
         {filteredCategories.length > 0 ? (
           <div className="space-y-6">
             {filteredCategories.map((category) => (
-              <Collapsible 
-                key={category.category}
-                open={openCategories[category.category]} 
-                onOpenChange={() => toggleCategory(category.category)}
-                className="border border-gray-200 rounded-lg overflow-hidden"
+              <div 
+                key={category.category} 
+                className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm"
               >
-                <CollapsibleTrigger className="flex justify-between items-center w-full p-4 bg-white hover:bg-gray-50 cursor-pointer">
+                <div 
+                  className="flex justify-between items-center w-full p-4 bg-white hover:bg-gray-50 cursor-pointer"
+                  onClick={() => toggleCategory(category.category)}
+                >
                   <h2 className="text-xl font-semibold text-food-dark">{category.category}</h2>
                   <span className="text-gray-500">{openCategories[category.category] ? '▲' : '▼'}</span>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <MenuCategory 
-                    title="" 
-                    items={category.items}
-                    categoryImage={category.categoryImage}
-                    showTitle={false}
-                    searchQuery={searchQuery}
-                  />
-                </CollapsibleContent>
-              </Collapsible>
+                </div>
+                
+                {openCategories[category.category] && (
+                  <div className="p-4">
+                    <MenuCategory 
+                      title="" 
+                      items={category.items}
+                      categoryImage={category.categoryImage}
+                      showTitle={false}
+                      searchQuery={searchQuery}
+                    />
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         ) : (

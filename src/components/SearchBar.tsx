@@ -1,14 +1,15 @@
 
-import { Search } from 'lucide-react';
+import { Search, Coffee, Bottle } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 
 interface SearchBarProps {
   onSearch?: (query: string) => void;
@@ -65,7 +66,7 @@ const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
           <Input 
             placeholder="Search for restaurants or dishes..." 
-            className="pl-10 border-gray-200 focus-visible:ring-food-primary"
+            className="pl-10 border-gray-200 focus-visible:ring-food-primary text-gray-800" 
             value={searchQuery}
             onChange={handleSearchChange}
             onKeyDown={handleKeyDown}
@@ -73,28 +74,22 @@ const SearchBar = ({ onSearch, onCategoryChange }: SearchBarProps) => {
         </div>
         <div className="flex gap-4">
           <div className="w-full md:w-48">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-between border-gray-200 bg-white text-gray-700"
-                >
-                  {categories.find(c => c.value === selectedCategory)?.label || "Categories"}
-                  <Search className="ml-2 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-full min-w-[200px] bg-white z-50">
+            <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+              <SelectTrigger className="w-full border-gray-200 bg-white text-gray-700">
+                <SelectValue placeholder="Categories" />
+              </SelectTrigger>
+              <SelectContent className="bg-white z-50">
                 {categories.map((category) => (
-                  <DropdownMenuItem 
-                    key={category.value}
-                    onClick={() => handleCategoryChange(category.value)}
+                  <SelectItem 
+                    key={category.value} 
+                    value={category.value}
                     className="cursor-pointer hover:bg-gray-100"
                   >
                     {category.label}
-                  </DropdownMenuItem>
+                  </SelectItem>
                 ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </SelectContent>
+            </Select>
           </div>
           <Button 
             onClick={handleSearchClick}

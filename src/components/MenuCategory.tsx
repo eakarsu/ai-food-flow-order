@@ -37,17 +37,26 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
   const filteredItems = searchQuery
     ? items.filter(item => {
         const query = searchQuery.toLowerCase();
+        
+        // Check if name or description contains search term
         const nameMatch = item.name.toLowerCase().includes(query);
         const descMatch = item.description && item.description.toLowerCase().includes(query);
-        const rulesMatch = item.rules && item.rules.some(rule => rule.toLowerCase().includes(query));
         
-        // Special case for drink-related searches
-        if (query.includes("drink") || query.includes("coffee") || query.includes("tea")) {
+        // Check for matches in rules if they exist
+        let rulesMatch = false;
+        if (item.rules) {
+          rulesMatch = item.rules.some(rule => rule.toLowerCase().includes(query));
+        }
+        
+        // Special case for drink/beverage related searches
+        if (query.includes("drink") || query.includes("coffee") || query.includes("tea") || query.includes("bottle")) {
           // If the category title contains these keywords, show all items in the category
-          if (title.toLowerCase().includes("drink") || 
-              title.toLowerCase().includes("coffee") || 
-              title.toLowerCase().includes("tea") ||
-              title.toLowerCase().includes("iced")) {
+          const categoryLower = title.toLowerCase();
+          if (categoryLower.includes("drink") || 
+              categoryLower.includes("coffee") || 
+              categoryLower.includes("tea") ||
+              categoryLower.includes("iced") ||
+              categoryLower.includes("bottle")) {
             return true;
           }
         }
