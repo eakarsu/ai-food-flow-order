@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Phone } from 'lucide-react';
 
 const Contact = () => {
   const { toast } = useToast();
@@ -25,7 +26,11 @@ const Contact = () => {
       <div className="bg-food-primary/10 py-10">
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-bold text-food-dark mb-2">Contact Us</h1>
-          <p className="text-gray-600 mb-6">We'd love to hear from you</p>
+          <p className="text-gray-600 mb-2">We'd love to hear from you</p>
+          <p className="flex items-center text-food-primary font-medium">
+            <Phone size={16} className="mr-1" />
+            +1 (804) 360-1129
+          </p>
         </div>
       </div>
       

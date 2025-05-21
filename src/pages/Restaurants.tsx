@@ -57,11 +57,6 @@ const Restaurants = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-gray-50 p-4 rounded">
-                <h3 className="font-semibold text-food-dark mb-2">Contact</h3>
-                <p className="text-gray-600">{restaurantData.phone}</p>
-              </div>
-              
-              <div className="bg-gray-50 p-4 rounded">
                 <h3 className="font-semibold text-food-dark mb-2">Hours</h3>
                 <p className="text-gray-600">{restaurantData.hours}</p>
               </div>
