@@ -6,7 +6,7 @@ import { Plus, ChevronDown, ChevronUp } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
-interface MenuItem {
+export interface MenuItem {
   name: string;
   price: number;
   description?: string;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import MenuCategory from '../components/MenuCategory';
+import MenuCategory, { MenuItem } from '../components/MenuCategory';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -71,7 +71,11 @@ const rulesData = {
 };
 
 // Menu data structure with category images
-const menuData = [
+const menuData: Array<{
+  category: string;
+  categoryImage?: string;
+  items: MenuItem[];
+}> = [
   {
     category: "Acai Bowls",
     categoryImage: "https://images.unsplash.com/photo-1590301157890-4810ed352733?q=80&w=1000",
@@ -315,7 +319,7 @@ const menuData = [
       {
         name: "Chicken Knock Out Hero",
         price: 17.95,
-        description: "Fried chicken cutlet, hot cherry peppers, jalapeño Jack cheese, lettuce, tomato, and horseradish dressing."
+        description: "Fried chicken cutlet, hot cherry peppers, jalapeño Jack cheese, lettuce, tomato and horseradish dressing."
       },
       {
         name: "Dagwood Hero",
