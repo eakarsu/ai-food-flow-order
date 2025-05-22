@@ -64,15 +64,22 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
 
   // Format phone number for API consumption
   const formatPhoneNumber = (phone: string): string => {
-    // Remove all non-digit characters except the leading +
-    let formatted = phone.trim();
+    if (!phone || phone.trim() === "") {
+      return "+18001234567"; // Default fallback
+    }
+    
+    // Remove all quotes that might be causing the syntax error
+    let formatted = phone.replace(/['"]+/g, '');
+    
+    // Trim whitespace
+    formatted = formatted.trim();
     
     // If number doesn't start with +, add it
     if (!formatted.startsWith('+')) {
       formatted = '+' + formatted;
     }
     
-    // Remove any spaces, dashes, or parentheses
+    // Remove any spaces, dashes, parentheses, or other non-digit characters except for the leading +
     formatted = formatted.charAt(0) + formatted.substring(1).replace(/[^\d]/g, '');
     
     console.log("MessageForm: Formatted phone number:", formatted);
@@ -100,7 +107,7 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
     setLoading(true);
     
     try {
-      // Format phone number before sending
+      // Format phone number before sending - ensure it's a clean string without quotes
       const formattedPhone = formatPhoneNumber(currentPhone);
       console.log("Sending SMS request with formatted phone:", formattedPhone);
       
@@ -110,7 +117,7 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          to: formattedPhone,
+          to: formattedPhone, // Use the properly formatted phone number
           body: message
         })
       });
