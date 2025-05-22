@@ -16,59 +16,63 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
   const { toast } = useToast();
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  // Create local state to ensure phone number is preserved
-  const [localPhoneNumber, setLocalPhoneNumber] = useState(phoneNumber || "");
+  const [localPhoneNumber, setLocalPhoneNumber] = useState(phoneNumber);
 
-  // Sync with props and localStorage
+  // Log important information about phone number
   useEffect(() => {
-    console.log("MessageForm: MOUNT with phone number prop:", phoneNumber);
+    console.log("MessageForm: Component mounted");
+    console.log("MessageForm: Phone number from props:", phoneNumber);
     
-    // Try to get from localStorage if empty prop
-    if (!phoneNumber || phoneNumber.trim() === "") {
+    // Initialize from localStorage if prop is empty
+    if (!phoneNumber) {
       const storedPhone = localStorage.getItem('lastPhoneNumber');
       console.log("MessageForm: Found stored phone number:", storedPhone);
       
       if (storedPhone) {
-        // Update parent state and local state
-        setPhoneNumber(storedPhone);
+        // Update both local and parent state
         setLocalPhoneNumber(storedPhone);
-        console.log("MessageForm: Setting parent state with stored number:", storedPhone);
+        setPhoneNumber(storedPhone);
+        console.log("MessageForm: Initialized from localStorage:", storedPhone);
       }
     } else {
-      // If we have a phone number prop, ensure local state is in sync
+      // Ensure local state is synced with prop
       setLocalPhoneNumber(phoneNumber);
-      console.log("MessageForm: Local state synced with prop:", phoneNumber);
     }
   }, []);
 
   // Update local state when prop changes
   useEffect(() => {
     console.log("MessageForm: Phone number prop changed:", phoneNumber);
-    if (phoneNumber && phoneNumber !== localPhoneNumber) {
+    if (phoneNumber !== localPhoneNumber) {
       setLocalPhoneNumber(phoneNumber);
-      console.log("MessageForm: Updated local state with new prop:", phoneNumber);
     }
   }, [phoneNumber]);
 
   const handleChangePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
+    console.log("MessageForm: Phone number changed to:", newValue);
+    
+    // Update both local and parent state
     setLocalPhoneNumber(newValue);
     setPhoneNumber(newValue);
     
-    // Also persist to localStorage immediately
-    if (newValue.trim() !== "") {
+    // Persist to localStorage
+    if (newValue) {
       localStorage.setItem('lastPhoneNumber', newValue);
       console.log("MessageForm: Saved phone number to localStorage:", newValue);
     }
   };
 
   const handleSendSMS = async () => {
-    // Use local state for validation to ensure we have the most up-to-date value
-    console.log("Sending SMS with phone number (local):", localPhoneNumber);
-    console.log("Sending SMS with phone number (prop):", phoneNumber);
+    // Use combined approach for determining phone number
+    const phoneToUse = localPhoneNumber || phoneNumber || localStorage.getItem('lastPhoneNumber') || "";
     
-    // Always use the local state for validation
-    if (!localPhoneNumber || localPhoneNumber.trim() === "") {
+    console.log("Preparing to send SMS with phone number:", phoneToUse);
+    console.log("Phone number type:", typeof phoneToUse);
+    console.log("Phone number length:", phoneToUse.length);
+    console.log("Is phone number empty?", phoneToUse.trim() === "");
+    
+    if (!phoneToUse || phoneToUse.trim() === "") {
       toast({
         title: "Phone number required",
         description: "Please enter a valid phone number",
@@ -89,28 +93,32 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
     setLoading(true);
     
     try {
-      // Use the local phone number to ensure we're using the correct value
+      console.log("Sending SMS request with phone:", phoneToUse);
+      
       const response = await fetch("/api/send-sms", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          to: localPhoneNumber,
+          to: phoneToUse,
           body: message
         })
       });
+      
+      console.log("SMS API response status:", response.status);
       
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || 'Failed to send SMS');
       }
       
-      await response.json();
+      const responseData = await response.json();
+      console.log("SMS sent successfully:", responseData);
       
       toast({
         title: "Message Sent",
-        description: `SMS sent to ${localPhoneNumber}`,
+        description: `SMS sent to ${phoneToUse}`,
       });
       
       setMessage("");

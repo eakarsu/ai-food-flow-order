@@ -11,9 +11,9 @@ import TwilioSoftphone from './TwilioSoftphone';
 import NgrokSettings from './NgrokSettings';
 
 const TwilioContact = () => {
-  // Initialize phone number from localStorage immediately
-  const initialPhoneNumber = localStorage.getItem('lastPhoneNumber') || "";
-  const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber);
+  // Initialize phone number from localStorage with a more direct approach
+  const storedPhoneNumber = localStorage.getItem('lastPhoneNumber') || "";
+  const [phoneNumber, setPhoneNumber] = useState(storedPhoneNumber);
   const [activeTab, setActiveTab] = useState("sms");
   const [softphoneOpen, setSoftphoneOpen] = useState(false);
   const [ngrokSettingsOpen, setNgrokSettingsOpen] = useState(false);
@@ -22,27 +22,30 @@ const TwilioContact = () => {
   useEffect(() => {
     console.log("TwilioContact: Component mounted");
     console.log("TwilioContact: Initial phoneNumber state:", phoneNumber);
+    console.log("TwilioContact: Stored phone number:", storedPhoneNumber);
     
-    // Log environment variables for debugging (if any)
+    // Log environment variables for debugging
     console.log("TwilioContact: Environment variables check");
     if (import.meta.env.VITE_NGROK_VOICE_URL) {
-      console.log("VITE_NGROK_VOICE_URL is set: YES");
+      console.log("VITE_NGROK_VOICE_URL is set");
     } else {
       console.log("VITE_NGROK_VOICE_URL is not set");
     }
     
     if (import.meta.env.VITE_NGROK_SMS_URL) {
-      console.log("VITE_NGROK_SMS_URL is set: YES");
+      console.log("VITE_NGROK_SMS_URL is set");
     } else {
       console.log("VITE_NGROK_SMS_URL is not set");
     }
   }, []);
 
+  // This ensures immediate persistence of the phone number
   const handleSetPhoneNumber = (value: string) => {
     console.log("TwilioContact: Setting phone number to:", value);
     setPhoneNumber(value);
     
-    if (value && value.trim() !== "") {
+    // Always save to localStorage if there's any value
+    if (value) {
       localStorage.setItem('lastPhoneNumber', value);
       console.log("TwilioContact: Saved to localStorage:", value);
     }
@@ -50,7 +53,7 @@ const TwilioContact = () => {
 
   const handleMakeCall = () => {
     // Save the phone number for future use
-    if (phoneNumber && phoneNumber.trim() !== "") {
+    if (phoneNumber) {
       localStorage.setItem('lastPhoneNumber', phoneNumber);
     }
     setSoftphoneOpen(true);
