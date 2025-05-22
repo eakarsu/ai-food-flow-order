@@ -15,6 +15,9 @@ export const useTwilioDevice = (open: boolean, phoneNumber: string) => {
   // Fetch Twilio token from your server
   const fetchToken = async () => {
     try {
+      // Get the ngrok URL from localStorage if available
+      const ngrokVoiceUrl = localStorage.getItem('twilioNgrokVoiceUrl');
+      
       // Call your secure backend endpoint that generates Twilio tokens
       const response = await fetch("/api/twilio-token", {
         method: 'POST',
@@ -22,8 +25,9 @@ export const useTwilioDevice = (open: boolean, phoneNumber: string) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ 
-          // You can send identity or other parameters your server needs
-          identity: "customer-service-agent"
+          identity: "customer-service-agent",
+          // Pass the ngrok URL if available
+          ngrokUrl: ngrokVoiceUrl || undefined
         })
       });
       

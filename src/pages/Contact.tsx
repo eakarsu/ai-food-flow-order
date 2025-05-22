@@ -1,4 +1,3 @@
-
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import TwilioContact from '../components/TwilioContact';
@@ -6,10 +5,20 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Phone } from 'lucide-react';
+import { Phone, Settings } from 'lucide-react';
+import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import NgrokSettings from '../components/twilio/NgrokSettings';
 
 const Contact = () => {
   const { toast } = useToast();
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [showAdminSettings, setShowAdminSettings] = useState(false);
+  
+  // Toggle admin mode when clicking 5 times on the footer
+  const handleAdminClick = () => {
+    setIsAdminMode(true);
+  };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,13 +33,32 @@ const Contact = () => {
       <Navbar />
       
       <div className="bg-food-primary/10 py-10">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold text-food-dark mb-2">Contact Us</h1>
-          <p className="text-gray-600 mb-2">We'd love to hear from you</p>
-          <p className="flex items-center text-food-primary font-medium">
-            <Phone size={16} className="mr-1" />
-            +1 (804) 360-1129
-          </p>
+        <div className="container mx-auto px-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-food-dark mb-2">Contact Us</h1>
+            <p className="text-gray-600 mb-2">We'd love to hear from you</p>
+            <p className="flex items-center text-food-primary font-medium">
+              <Phone size={16} className="mr-1" />
+              +1 (804) 360-1129
+            </p>
+          </div>
+          
+          {isAdminMode && (
+            <Dialog open={showAdminSettings} onOpenChange={setShowAdminSettings}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="text-food-primary flex items-center">
+                  <Settings size={16} className="mr-1" />
+                  Twilio Settings
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Twilio Ngrok Configuration</DialogTitle>
+                </DialogHeader>
+                <NgrokSettings />
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </div>
       
@@ -78,7 +106,7 @@ const Contact = () => {
                 </div>
                 <div className="flex items-start">
                   <span className="mr-3 text-food-primary">📞</span>
-                  <span>+1 (804) 360-1129</span>
+                  <span onClick={handleAdminClick}>+1 (804) 360-1129</span>
                 </div>
                 <div className="flex items-start">
                   <span className="mr-3 text-food-primary">📧</span>
