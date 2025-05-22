@@ -11,23 +11,28 @@ import TwilioSoftphone from './TwilioSoftphone';
 import NgrokSettings from './NgrokSettings';
 
 const TwilioContact = () => {
-  // Get the stored phone number with a default empty string
+  console.log("TwilioContact: Starting component render");
+  
+  // Initialize with a default value that is synchronized with localStorage
   const [phoneNumber, setPhoneNumber] = useState(() => {
-    const stored = localStorage.getItem('lastPhoneNumber');
+    const stored = localStorage.getItem('lastPhoneNumber') || '';
     console.log("TwilioContact: Initializing with stored phone:", stored);
-    return stored || '';
+    return stored;
   });
+  
   const [activeTab, setActiveTab] = useState("sms");
   const [softphoneOpen, setSoftphoneOpen] = useState(false);
   const [ngrokSettingsOpen, setNgrokSettingsOpen] = useState(false);
   
-  // Use a callback for updating phone number to ensure consistent handling
+  // Function to update phone number both in state and localStorage
   const handleSetPhoneNumber = useCallback((value: string) => {
     console.log("TwilioContact: Setting phone number to:", value);
+    
+    // Update state
     setPhoneNumber(value);
     
     // Store in localStorage for persistence
-    if (value) {
+    if (value && value.trim() !== '') {
       localStorage.setItem('lastPhoneNumber', value);
       console.log("TwilioContact: Saved to localStorage:", value);
     }
@@ -37,6 +42,7 @@ const TwilioContact = () => {
   useEffect(() => {
     console.log("TwilioContact: Component mounted");
     console.log("TwilioContact: Initial phoneNumber state:", phoneNumber);
+    console.log("TwilioContact: Stored phone number:", localStorage.getItem('lastPhoneNumber'));
     
     // Log environment variables for debugging
     console.log("TwilioContact: Environment variables check");
@@ -51,19 +57,38 @@ const TwilioContact = () => {
     } else {
       console.log("VITE_NGROK_SMS_URL is not set");
     }
+
+    // Force synchronization with localStorage on mount
+    const storedPhone = localStorage.getItem('lastPhoneNumber');
+    if (storedPhone && storedPhone !== phoneNumber) {
+      console.log("TwilioContact: Syncing with localStorage on mount:", storedPhone);
+      setPhoneNumber(storedPhone);
+    }
+  }, []);
+
+  // Debug when phoneNumber changes
+  useEffect(() => {
+    console.log("TwilioContact: phoneNumber state changed to:", phoneNumber);
   }, [phoneNumber]);
 
   const handleMakeCall = () => {
-    // Save the phone number for future use
-    if (phoneNumber) {
+    console.log("TwilioContact: handleMakeCall with phoneNumber:", phoneNumber);
+    
+    // Double-check phone number before proceeding
+    if (phoneNumber && phoneNumber.trim() !== '') {
       localStorage.setItem('lastPhoneNumber', phoneNumber);
+      console.log("TwilioContact: Phone number saved before call:", phoneNumber);
+    } else {
+      console.warn("TwilioContact: Attempting to make call with empty phone number");
     }
+    
     setSoftphoneOpen(true);
   };
 
   // Handle tab change
   const handleTabChange = (value: string) => {
     setActiveTab(value);
+    console.log("TwilioContact: Tab changed to:", value);
   };
 
   return (
