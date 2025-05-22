@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -62,28 +61,40 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
     }
   };
 
-  // Format phone number for API consumption
+  // Format phone number for API consumption - completely rewritten for E.164 format
   const formatPhoneNumber = (phone: string): string => {
     if (!phone || phone.trim() === "") {
       return "+18001234567"; // Default fallback
     }
     
-    // Remove all quotes that might be causing the syntax error
-    let formatted = phone.replace(/['"]+/g, '');
-    
-    // Trim whitespace
-    formatted = formatted.trim();
-    
-    // If number doesn't start with +, add it
-    if (!formatted.startsWith('+')) {
-      formatted = '+' + formatted;
+    try {
+      // Strip all non-numeric characters except the leading plus
+      let formatted = phone.replace(/['"]+/g, '').trim();
+      
+      // Ensure there's a leading plus
+      if (!formatted.startsWith('+')) {
+        formatted = '+' + formatted;
+      }
+      
+      // Keep only the plus sign and digits
+      formatted = '+' + formatted.replace(/[^\d]/g, '');
+      
+      // Ensure we have at least some digits after the plus
+      if (formatted.length <= 1) {
+        return "+18001234567"; // Default if we've stripped everything
+      }
+      
+      // Remove any country code prefix that might be duplicated (like ++1)
+      if (formatted.startsWith('++')) {
+        formatted = '+' + formatted.substring(2);
+      }
+      
+      console.log("MessageForm: Final formatted phone:", formatted);
+      return formatted;
+    } catch (error) {
+      console.error("Error formatting phone number:", error);
+      return "+18001234567"; // Default on error
     }
-    
-    // Remove any spaces, dashes, parentheses, or other non-digit characters except for the leading +
-    formatted = formatted.charAt(0) + formatted.substring(1).replace(/[^\d]/g, '');
-    
-    console.log("MessageForm: Formatted phone number:", formatted);
-    return formatted;
   };
 
   const handleSendSMS = async () => {
@@ -125,8 +136,9 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
       console.log("SMS API response status:", response.status);
       
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Failed to send SMS');
+        const errorData = await response.json();
+        console.error("SMS API error response:", errorData);
+        throw new Error(errorData.message || 'Failed to send SMS');
       }
       
       const responseData = await response.json();
