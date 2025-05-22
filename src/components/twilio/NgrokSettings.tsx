@@ -29,35 +29,35 @@ const NgrokSettings = () => {
     
     toast({
       title: "Settings Saved",
-      description: "Ngrok URLs have been updated.",
+      description: "API endpoints have been updated.",
     });
   };
   
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="voice-url">Ngrok Voice URL</Label>
+        <Label htmlFor="voice-url">Voice API Endpoint</Label>
         <Input 
           id="voice-url"
-          placeholder="https://your-ngrok-voice-url.ngrok.io"
+          placeholder="https://your-api-domain.com/voice-endpoint"
           value={voiceUrl}
           onChange={(e) => setVoiceUrl(e.target.value)}
         />
         <p className="text-sm text-gray-500">
-          URL for handling Twilio voice functionality
+          URL for handling voice call functionality
         </p>
       </div>
       
       <div className="space-y-2">
-        <Label htmlFor="sms-url">Ngrok SMS URL</Label>
+        <Label htmlFor="sms-url">SMS API Endpoint</Label>
         <Input 
           id="sms-url"
-          placeholder="https://your-ngrok-sms-url.ngrok.io"
+          placeholder="https://your-api-domain.com/sms-endpoint"
           value={smsUrl}
           onChange={(e) => setSmsUrl(e.target.value)}
         />
         <p className="text-sm text-gray-500">
-          URL for handling Twilio SMS functionality
+          URL for handling SMS functionality
         </p>
       </div>
       

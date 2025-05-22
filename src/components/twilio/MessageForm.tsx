@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -123,21 +124,28 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
     setLoading(true);
     
     try {
-      // Format phone number before sending - ensure it's a clean string without quotes
+      // Format phone number before sending
       const formattedPhone = formatPhoneNumber(currentPhone);
+      
+      // Get the SMS endpoint URL from environment variable or from localStorage
+      const smsEndpoint = import.meta.env.VITE_NGROK_SMS_URL || 
+                           localStorage.getItem('twilioNgrokSmsUrl') || 
+                           '/api/send-sms';  // Fallback to default
+      
+      console.log("Using SMS endpoint:", smsEndpoint);
       console.log("Sending SMS request with formatted phone:", formattedPhone);
       console.log("JSON payload:", JSON.stringify({
         to: formattedPhone,
         body: message
       }));
       
-      const response = await fetch("/api/send-sms", {
+      const response = await fetch(smsEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          to: formattedPhone, // Use the properly formatted phone number
+          to: formattedPhone,
           body: message
         })
       });
