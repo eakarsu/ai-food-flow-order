@@ -19,14 +19,13 @@ interface TwilioSoftphoneProps {
 
 const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphoneProps) => {
   const {
-    token,
     isConnected,
     isConnecting,
     isMuted,
     makeCall,
     disconnectCall,
     toggleMute
-  } = useTwilioDevice(open, phoneNumber);
+  } = useTwilioDevice({ open, phoneNumber });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -57,7 +56,7 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
               phoneNumber={phoneNumber}
               handleMakeCall={makeCall}
               isConnecting={isConnecting}
-              hasToken={!!token}
+              hasToken={true} // Simplified as we no longer need tokens client-side
             />
           )}
         </div>

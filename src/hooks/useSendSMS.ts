@@ -33,11 +33,6 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
                           '/api/send-sms';  // Fallback to default
       
       console.log("Using SMS endpoint:", smsEndpoint);
-      console.log("Sending SMS request with formatted phone:", formattedPhone);
-      console.log("JSON payload:", JSON.stringify({
-        to: formattedPhone,
-        body: message
-      }));
       
       const response = await fetch(smsEndpoint, {
         method: 'POST',
@@ -50,11 +45,8 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
         })
       });
       
-      console.log("SMS API response status:", response.status);
-      
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("SMS API error response:", errorData);
         throw new Error(errorData.message || 'Failed to send SMS');
       }
       
