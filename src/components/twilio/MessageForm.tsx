@@ -61,35 +61,40 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
     }
   };
 
-  // Format phone number for API consumption - completely rewritten for E.164 format
+  // Completely rewritten for stricter E.164 format compliance
   const formatPhoneNumber = (phone: string): string => {
     if (!phone || phone.trim() === "") {
       return "+18001234567"; // Default fallback
     }
     
     try {
-      // Strip all non-numeric characters except the leading plus
-      let formatted = phone.replace(/['"]+/g, '').trim();
+      console.log("Original phone input:", phone);
       
-      // Ensure there's a leading plus
-      if (!formatted.startsWith('+')) {
-        formatted = '+' + formatted;
+      // First remove any quotes that might be causing the syntax error
+      let formatted = phone.toString().replace(/['"]+/g, '').trim();
+      console.log("After removing quotes:", formatted);
+      
+      // Extract only the digits and any leading plus sign
+      const hasPlus = formatted.startsWith('+');
+      const digitsOnly = formatted.replace(/\D/g, '');
+      console.log("Digits only:", digitsOnly);
+      
+      // Ensure we have digits
+      if (!digitsOnly || digitsOnly.length === 0) {
+        console.log("No digits found, using default");
+        return "+18001234567";
       }
       
-      // Keep only the plus sign and digits
-      formatted = '+' + formatted.replace(/[^\d]/g, '');
+      // Construct proper E.164: + followed by digits
+      formatted = (hasPlus ? "+" : "+") + digitsOnly;
+      console.log("Final E.164 format:", formatted);
       
-      // Ensure we have at least some digits after the plus
-      if (formatted.length <= 1) {
-        return "+18001234567"; // Default if we've stripped everything
+      // Sanity check: Must start with + and have at least one digit
+      if (!formatted.startsWith('+') || formatted.length < 2) {
+        console.log("Invalid format after processing, using default");
+        return "+18001234567";
       }
       
-      // Remove any country code prefix that might be duplicated (like ++1)
-      if (formatted.startsWith('++')) {
-        formatted = '+' + formatted.substring(2);
-      }
-      
-      console.log("MessageForm: Final formatted phone:", formatted);
       return formatted;
     } catch (error) {
       console.error("Error formatting phone number:", error);
@@ -121,6 +126,10 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
       // Format phone number before sending - ensure it's a clean string without quotes
       const formattedPhone = formatPhoneNumber(currentPhone);
       console.log("Sending SMS request with formatted phone:", formattedPhone);
+      console.log("JSON payload:", JSON.stringify({
+        to: formattedPhone,
+        body: message
+      }));
       
       const response = await fetch("/api/send-sms", {
         method: 'POST',
