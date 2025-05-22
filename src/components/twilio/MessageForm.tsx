@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Send } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -16,63 +16,20 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
   const { toast } = useToast();
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [localPhoneNumber, setLocalPhoneNumber] = useState(phoneNumber);
-
-  // Log important information about phone number
-  useEffect(() => {
-    console.log("MessageForm: Component mounted");
-    console.log("MessageForm: Phone number from props:", phoneNumber);
-    
-    // Initialize from localStorage if prop is empty
-    if (!phoneNumber) {
-      const storedPhone = localStorage.getItem('lastPhoneNumber');
-      console.log("MessageForm: Found stored phone number:", storedPhone);
-      
-      if (storedPhone) {
-        // Update both local and parent state
-        setLocalPhoneNumber(storedPhone);
-        setPhoneNumber(storedPhone);
-        console.log("MessageForm: Initialized from localStorage:", storedPhone);
-      }
-    } else {
-      // Ensure local state is synced with prop
-      setLocalPhoneNumber(phoneNumber);
-    }
-  }, []);
-
-  // Update local state when prop changes
-  useEffect(() => {
-    console.log("MessageForm: Phone number prop changed:", phoneNumber);
-    if (phoneNumber !== localPhoneNumber) {
-      setLocalPhoneNumber(phoneNumber);
-    }
-  }, [phoneNumber]);
 
   const handleChangePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     console.log("MessageForm: Phone number changed to:", newValue);
-    
-    // Update both local and parent state
-    setLocalPhoneNumber(newValue);
     setPhoneNumber(newValue);
-    
-    // Persist to localStorage
-    if (newValue) {
-      localStorage.setItem('lastPhoneNumber', newValue);
-      console.log("MessageForm: Saved phone number to localStorage:", newValue);
-    }
   };
 
   const handleSendSMS = async () => {
-    // Use combined approach for determining phone number
-    const phoneToUse = localPhoneNumber || phoneNumber || localStorage.getItem('lastPhoneNumber') || "";
+    console.log("Preparing to send SMS with phone number:", phoneNumber);
+    console.log("Phone number type:", typeof phoneNumber);
+    console.log("Phone number length:", phoneNumber.length);
+    console.log("Is phone number empty?", phoneNumber.trim() === "");
     
-    console.log("Preparing to send SMS with phone number:", phoneToUse);
-    console.log("Phone number type:", typeof phoneToUse);
-    console.log("Phone number length:", phoneToUse.length);
-    console.log("Is phone number empty?", phoneToUse.trim() === "");
-    
-    if (!phoneToUse || phoneToUse.trim() === "") {
+    if (!phoneNumber || phoneNumber.trim() === "") {
       toast({
         title: "Phone number required",
         description: "Please enter a valid phone number",
@@ -93,7 +50,7 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
     setLoading(true);
     
     try {
-      console.log("Sending SMS request with phone:", phoneToUse);
+      console.log("Sending SMS request with phone:", phoneNumber);
       
       const response = await fetch("/api/send-sms", {
         method: 'POST',
@@ -101,7 +58,7 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          to: phoneToUse,
+          to: phoneNumber,
           body: message
         })
       });
@@ -118,7 +75,7 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
       
       toast({
         title: "Message Sent",
-        description: `SMS sent to ${phoneToUse}`,
+        description: `SMS sent to ${phoneNumber}`,
       });
       
       setMessage("");
@@ -143,7 +100,7 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
           id="phone-sms"
           type="tel" 
           placeholder="+1 (555) 123-4567" 
-          value={localPhoneNumber}
+          value={phoneNumber}
           onChange={handleChangePhoneNumber}
         />
       </div>

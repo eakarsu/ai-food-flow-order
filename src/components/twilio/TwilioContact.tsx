@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Phone, MessageSquare, Settings } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,18 +11,32 @@ import TwilioSoftphone from './TwilioSoftphone';
 import NgrokSettings from './NgrokSettings';
 
 const TwilioContact = () => {
-  // Initialize phone number from localStorage with a more direct approach
-  const storedPhoneNumber = localStorage.getItem('lastPhoneNumber') || "";
-  const [phoneNumber, setPhoneNumber] = useState(storedPhoneNumber);
+  // Get the stored phone number with a default empty string
+  const [phoneNumber, setPhoneNumber] = useState(() => {
+    const stored = localStorage.getItem('lastPhoneNumber');
+    console.log("TwilioContact: Initializing with stored phone:", stored);
+    return stored || '';
+  });
   const [activeTab, setActiveTab] = useState("sms");
   const [softphoneOpen, setSoftphoneOpen] = useState(false);
   const [ngrokSettingsOpen, setNgrokSettingsOpen] = useState(false);
+  
+  // Use a callback for updating phone number to ensure consistent handling
+  const handleSetPhoneNumber = useCallback((value: string) => {
+    console.log("TwilioContact: Setting phone number to:", value);
+    setPhoneNumber(value);
+    
+    // Store in localStorage for persistence
+    if (value) {
+      localStorage.setItem('lastPhoneNumber', value);
+      console.log("TwilioContact: Saved to localStorage:", value);
+    }
+  }, []);
 
-  // Add debug logging
+  // Debug logging
   useEffect(() => {
     console.log("TwilioContact: Component mounted");
     console.log("TwilioContact: Initial phoneNumber state:", phoneNumber);
-    console.log("TwilioContact: Stored phone number:", storedPhoneNumber);
     
     // Log environment variables for debugging
     console.log("TwilioContact: Environment variables check");
@@ -37,19 +51,7 @@ const TwilioContact = () => {
     } else {
       console.log("VITE_NGROK_SMS_URL is not set");
     }
-  }, []);
-
-  // This ensures immediate persistence of the phone number
-  const handleSetPhoneNumber = (value: string) => {
-    console.log("TwilioContact: Setting phone number to:", value);
-    setPhoneNumber(value);
-    
-    // Always save to localStorage if there's any value
-    if (value) {
-      localStorage.setItem('lastPhoneNumber', value);
-      console.log("TwilioContact: Saved to localStorage:", value);
-    }
-  };
+  }, [phoneNumber]);
 
   const handleMakeCall = () => {
     // Save the phone number for future use
