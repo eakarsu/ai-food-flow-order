@@ -160,61 +160,87 @@ const Index = () => {
         <AiRecommendation />
       </div>
       
-      {/* Search Section (Replacing Twilio Contact) */}
+      {/* Order Your Favorite Food Section */}
       <div className="container mx-auto px-4 py-12 bg-food-light rounded-lg my-4">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-food-dark mb-3">Find Your Favorite Dishes</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">Search our extensive menu for culinary delights</p>
+          <h2 className="text-3xl font-bold text-food-dark mb-3">Order Your Favorite Food</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">Have your favorite meals delivered right to your doorstep</p>
         </div>
         
         <div className="max-w-2xl mx-auto">
-          <SearchBar 
-            onSearch={handleSearch}
-            initialQuery={searchQuery}
-          />
+          <div className="mb-8">
+            <SearchBar 
+              onSearch={handleSearch}
+              initialQuery={searchQuery}
+            />
+          </div>
           
           <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
-            <div onClick={() => handleSearch("breakfast")} className="cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all">
-              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 mx-auto mb-2 flex items-center justify-center">
-                <Search size={20} className="text-food-primary" />
+            <Button 
+              variant="outline" 
+              className="p-4 h-auto flex flex-col items-center"
+              onClick={() => navigate('/menu?category=breakfast')}
+            >
+              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
+                <span className="text-food-primary text-lg">☕</span>
               </div>
-              <p className="font-medium">Breakfast</p>
-            </div>
+              <span>Breakfast</span>
+            </Button>
             
-            <div onClick={() => handleSearch("sandwiches")} className="cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all">
-              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 mx-auto mb-2 flex items-center justify-center">
-                <Search size={20} className="text-food-primary" />
+            <Button 
+              variant="outline" 
+              className="p-4 h-auto flex flex-col items-center"
+              onClick={() => navigate('/menu?category=lunch')}
+            >
+              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
+                <span className="text-food-primary text-lg">🥪</span>
               </div>
-              <p className="font-medium">Sandwiches</p>
-            </div>
+              <span>Lunch</span>
+            </Button>
             
-            <div onClick={() => handleSearch("salads")} className="cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all">
-              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 mx-auto mb-2 flex items-center justify-center">
-                <Search size={20} className="text-food-primary" />
+            <Button 
+              variant="outline" 
+              className="p-4 h-auto flex flex-col items-center"
+              onClick={() => navigate('/menu?category=dinner')}
+            >
+              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
+                <span className="text-food-primary text-lg">🍽️</span>
               </div>
-              <p className="font-medium">Salads</p>
-            </div>
+              <span>Dinner</span>
+            </Button>
             
-            <div onClick={() => handleSearch("beverages")} className="cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all">
-              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 mx-auto mb-2 flex items-center justify-center">
-                <Search size={20} className="text-food-primary" />
+            <Button 
+              variant="outline" 
+              className="p-4 h-auto flex flex-col items-center"
+              onClick={() => navigate('/menu?category=beverages')}
+            >
+              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
+                <span className="text-food-primary text-lg">🥤</span>
               </div>
-              <p className="font-medium">Beverages</p>
-            </div>
+              <span>Beverages</span>
+            </Button>
             
-            <div onClick={() => handleSearch("desserts")} className="cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all">
-              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 mx-auto mb-2 flex items-center justify-center">
-                <Search size={20} className="text-food-primary" />
+            <Button 
+              variant="outline" 
+              className="p-4 h-auto flex flex-col items-center"
+              onClick={() => navigate('/menu?category=desserts')}
+            >
+              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
+                <span className="text-food-primary text-lg">🍰</span>
               </div>
-              <p className="font-medium">Desserts</p>
-            </div>
+              <span>Desserts</span>
+            </Button>
             
-            <div onClick={() => navigate('/menu')} className="cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all">
-              <div className="bg-food-secondary/10 p-3 rounded-full w-12 h-12 mx-auto mb-2 flex items-center justify-center">
-                <Search size={20} className="text-food-secondary" />
+            <Button 
+              variant="outline"
+              className="p-4 h-auto flex flex-col items-center bg-food-secondary/10 hover:bg-food-secondary/20 border-food-secondary/20"
+              onClick={() => navigate('/menu')}
+            >
+              <div className="bg-food-secondary/20 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
+                <span className="text-food-secondary text-lg">🍴</span>
               </div>
-              <p className="font-medium">All Items</p>
-            </div>
+              <span>All Menu</span>
+            </Button>
           </div>
         </div>
       </div>
