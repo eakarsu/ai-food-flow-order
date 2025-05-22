@@ -15,7 +15,7 @@ const TwilioContact = () => {
   
   // Initialize with a default value that is synchronized with localStorage
   const [phoneNumber, setPhoneNumber] = useState(() => {
-    const stored = localStorage.getItem('lastPhoneNumber') || '';
+    const stored = localStorage.getItem('lastPhoneNumber') || "+18001234567";
     console.log("TwilioContact: Initializing with stored phone:", stored);
     return stored;
   });
@@ -26,23 +26,31 @@ const TwilioContact = () => {
   
   // Function to update phone number both in state and localStorage
   const handleSetPhoneNumber = useCallback((value: string) => {
-    console.log("TwilioContact: Setting phone number to:", value);
+    // Ensure we always have a value by providing a default
+    const numberToUse = value && value.trim() !== '' ? value : "+18001234567";
+    
+    console.log("TwilioContact: Setting phone number to:", numberToUse);
     
     // Update state
-    setPhoneNumber(value);
+    setPhoneNumber(numberToUse);
     
     // Store in localStorage for persistence
-    if (value && value.trim() !== '') {
-      localStorage.setItem('lastPhoneNumber', value);
-      console.log("TwilioContact: Saved to localStorage:", value);
-    }
+    localStorage.setItem('lastPhoneNumber', numberToUse);
+    console.log("TwilioContact: Saved to localStorage:", numberToUse);
   }, []);
 
-  // Debug logging
+  // Debug logging and initialize with default if needed
   useEffect(() => {
     console.log("TwilioContact: Component mounted");
     console.log("TwilioContact: Initial phoneNumber state:", phoneNumber);
-    console.log("TwilioContact: Stored phone number:", localStorage.getItem('lastPhoneNumber'));
+    
+    // Force default if phone number is empty
+    if (!phoneNumber || phoneNumber.trim() === '') {
+      const defaultPhone = "+18001234567";
+      console.log("TwilioContact: Using default phone:", defaultPhone);
+      setPhoneNumber(defaultPhone);
+      localStorage.setItem('lastPhoneNumber', defaultPhone);
+    }
     
     // Log environment variables for debugging
     console.log("TwilioContact: Environment variables check");
@@ -57,13 +65,6 @@ const TwilioContact = () => {
     } else {
       console.log("VITE_NGROK_SMS_URL is not set");
     }
-
-    // Force synchronization with localStorage on mount
-    const storedPhone = localStorage.getItem('lastPhoneNumber');
-    if (storedPhone && storedPhone !== phoneNumber) {
-      console.log("TwilioContact: Syncing with localStorage on mount:", storedPhone);
-      setPhoneNumber(storedPhone);
-    }
   }, []);
 
   // Debug when phoneNumber changes
@@ -72,14 +73,12 @@ const TwilioContact = () => {
   }, [phoneNumber]);
 
   const handleMakeCall = () => {
-    console.log("TwilioContact: handleMakeCall with phoneNumber:", phoneNumber);
+    const phoneToUse = phoneNumber || localStorage.getItem('lastPhoneNumber') || "+18001234567";
+    console.log("TwilioContact: handleMakeCall with phoneNumber:", phoneToUse);
     
-    // Double-check phone number before proceeding
-    if (phoneNumber && phoneNumber.trim() !== '') {
-      localStorage.setItem('lastPhoneNumber', phoneNumber);
-      console.log("TwilioContact: Phone number saved before call:", phoneNumber);
-    } else {
-      console.warn("TwilioContact: Attempting to make call with empty phone number");
+    // Set default if empty before proceeding
+    if (!phoneNumber || phoneNumber.trim() === '') {
+      setPhoneNumber(phoneToUse);
     }
     
     setSoftphoneOpen(true);
@@ -161,7 +160,7 @@ const TwilioContact = () => {
 
       {/* Softphone Dialog */}
       <TwilioSoftphone 
-        phoneNumber={phoneNumber}
+        phoneNumber={phoneNumber || "+18001234567"}
         open={softphoneOpen}
         onOpenChange={setSoftphoneOpen}
       />
