@@ -7,6 +7,7 @@ import MessageTextarea from "./MessageTextarea";
 import { useSendSMS } from "@/hooks/useSendSMS";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
+import { Label } from "@/components/ui/label";
 
 interface MessageFormProps {
   phoneNumber: string;
@@ -31,10 +32,11 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
         setPhoneNumber={setPhoneNumber} 
       />
       
-      {messageHistory.length > 0 && (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium text-gray-700">Message History</h3>
+      {/* Message History Area */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="message-history" className="text-sm font-medium text-gray-700">Message History</Label>
+          {messageHistory.length > 0 && (
             <Button 
               variant="ghost" 
               size="sm" 
@@ -44,8 +46,11 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
               <Trash2 className="h-4 w-4" />
               <span className="ml-1 text-xs">Clear</span>
             </Button>
-          </div>
-          <ScrollArea className="h-32 rounded-md border">
+          )}
+        </div>
+        
+        <ScrollArea id="message-history" className="h-32 rounded-md border">
+          {messageHistory.length > 0 ? (
             <div className="space-y-2 p-2">
               {messageHistory.map((msg, idx) => (
                 <div 
@@ -65,10 +70,15 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
                 </div>
               ))}
             </div>
-          </ScrollArea>
-        </div>
-      )}
+          ) : (
+            <div className="flex items-center justify-center h-full text-sm text-muted-foreground">
+              No messages yet
+            </div>
+          )}
+        </ScrollArea>
+      </div>
       
+      {/* New Message Area */}
       <MessageTextarea 
         message={message} 
         onChange={setMessage} 
@@ -77,7 +87,7 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
       <div className="flex justify-end border-t pt-4">
         <Button 
           onClick={handleSendSMS} 
-          disabled={loading}
+          disabled={loading || !message.trim()}
           className="bg-food-primary hover:bg-food-primary/90"
         >
           {loading ? "Sending..." : (

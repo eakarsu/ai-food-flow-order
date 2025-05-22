@@ -16,7 +16,7 @@ const MessageTextarea = ({ message, onChange }: MessageTextareaProps) => {
         placeholder="Enter your message here..." 
         value={message}
         onChange={(e) => onChange(e.target.value)}
-        className="min-h-[80px]" // Made smaller as requested
+        className="min-h-[60px]" // Even smaller for better UX
       />
     </div>
   );
