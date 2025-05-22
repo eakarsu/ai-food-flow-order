@@ -38,7 +38,7 @@ const NgrokSettings = () => {
   return (
     <div className="space-y-4">
       {(voiceUrl.includes('ngrok') || smsUrl.includes('ngrok')) && (
-        <Alert variant="warning" className="bg-yellow-50 border-yellow-200">
+        <Alert variant="default" className="bg-yellow-50 border-yellow-200">
           <AlertTriangle className="h-4 w-4 text-yellow-600" />
           <AlertTitle className="text-yellow-800">CORS Configuration Required</AlertTitle>
           <AlertDescription className="text-yellow-700">
