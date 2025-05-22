@@ -8,6 +8,7 @@ import AiRecommendation from '../components/AiRecommendation';
 import Footer from '../components/Footer';
 import { Button } from "@/components/ui/button";
 import { Search } from 'lucide-react';
+import TwilioContact from '../components/twilio/TwilioContact';
 
 // Single restaurant data
 const restaurantData = {
@@ -160,88 +161,15 @@ const Index = () => {
         <AiRecommendation />
       </div>
       
-      {/* Order Your Favorite Food Section */}
+      {/* Twilio Communication Section (replacing "Order Your Favorite Food") */}
       <div className="container mx-auto px-4 py-12 bg-food-light rounded-lg my-4">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-food-dark mb-3">Order Your Favorite Food</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">Have your favorite meals delivered right to your doorstep</p>
+          <p className="text-gray-600 max-w-2xl mx-auto">Contact us directly to place your order or inquire about our daily specials</p>
         </div>
         
-        <div className="max-w-2xl mx-auto">
-          <div className="mb-8">
-            <SearchBar 
-              onSearch={handleSearch}
-              initialQuery={searchQuery}
-            />
-          </div>
-          
-          <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
-            <Button 
-              variant="outline" 
-              className="p-4 h-auto flex flex-col items-center"
-              onClick={() => navigate('/menu?category=breakfast')}
-            >
-              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
-                <span className="text-food-primary text-lg">☕</span>
-              </div>
-              <span>Breakfast</span>
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              className="p-4 h-auto flex flex-col items-center"
-              onClick={() => navigate('/menu?category=lunch')}
-            >
-              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
-                <span className="text-food-primary text-lg">🥪</span>
-              </div>
-              <span>Lunch</span>
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              className="p-4 h-auto flex flex-col items-center"
-              onClick={() => navigate('/menu?category=dinner')}
-            >
-              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
-                <span className="text-food-primary text-lg">🍽️</span>
-              </div>
-              <span>Dinner</span>
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              className="p-4 h-auto flex flex-col items-center"
-              onClick={() => navigate('/menu?category=beverages')}
-            >
-              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
-                <span className="text-food-primary text-lg">🥤</span>
-              </div>
-              <span>Beverages</span>
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              className="p-4 h-auto flex flex-col items-center"
-              onClick={() => navigate('/menu?category=desserts')}
-            >
-              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
-                <span className="text-food-primary text-lg">🍰</span>
-              </div>
-              <span>Desserts</span>
-            </Button>
-            
-            <Button 
-              variant="outline"
-              className="p-4 h-auto flex flex-col items-center bg-food-secondary/10 hover:bg-food-secondary/20 border-food-secondary/20"
-              onClick={() => navigate('/menu')}
-            >
-              <div className="bg-food-secondary/20 p-3 rounded-full w-12 h-12 flex items-center justify-center mb-2">
-                <span className="text-food-secondary text-lg">🍴</span>
-              </div>
-              <span>All Menu</span>
-            </Button>
-          </div>
+        <div className="max-w-xl mx-auto">
+          <TwilioContact />
         </div>
       </div>
       

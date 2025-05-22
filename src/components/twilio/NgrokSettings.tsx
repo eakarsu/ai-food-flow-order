@@ -1,128 +1,72 @@
 
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { Save } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { useToast } from '@/hooks/use-toast';
 
-interface NgrokSettingsProps {
-  defaultVoiceUrl?: string;
-  defaultSmsUrl?: string;
-}
-
-const NgrokSettings = ({ defaultVoiceUrl, defaultSmsUrl }: NgrokSettingsProps) => {
+const NgrokSettings = () => {
   const { toast } = useToast();
-  const [ngrokVoiceUrl, setNgrokVoiceUrl] = useState(defaultVoiceUrl || '');
-  const [ngrokSmsUrl, setNgrokSmsUrl] = useState(defaultSmsUrl || '');
+  const [voiceUrl, setVoiceUrl] = useState('');
+  const [smsUrl, setSmsUrl] = useState('');
   
-  // Load URLs from environment variables or localStorage
   useEffect(() => {
-    // Try to get from environment variables first
+    // Try to load from environment variables first, fall back to localStorage
     const envVoiceUrl = import.meta.env.VITE_NGROK_VOICE_URL;
     const envSmsUrl = import.meta.env.VITE_NGROK_SMS_URL;
     
-    // Then check localStorage as fallback
-    const savedVoiceUrl = localStorage.getItem('twilioNgrokVoiceUrl');
-    const savedSmsUrl = localStorage.getItem('twilioNgrokSmsUrl');
+    const storedVoiceUrl = localStorage.getItem('twilioNgrokVoiceUrl') || '';
+    const storedSmsUrl = localStorage.getItem('twilioNgrokSmsUrl') || '';
     
-    // Set URLs with priority: env vars > localStorage > props > empty string
-    if (envVoiceUrl) {
-      setNgrokVoiceUrl(envVoiceUrl);
-    } else if (savedVoiceUrl) {
-      setNgrokVoiceUrl(savedVoiceUrl);
-    }
-    
-    if (envSmsUrl) {
-      setNgrokSmsUrl(envSmsUrl);
-    } else if (savedSmsUrl) {
-      setNgrokSmsUrl(savedSmsUrl);
-    }
+    setVoiceUrl(envVoiceUrl || storedVoiceUrl);
+    setSmsUrl(envSmsUrl || storedSmsUrl);
   }, []);
   
-  // Save URLs to localStorage and notify user
-  const saveUrls = () => {
-    // Validate URLs
-    if (!isValidNgrokUrl(ngrokVoiceUrl) && ngrokVoiceUrl !== '') {
-      toast({
-        title: "Invalid Voice URL",
-        description: "Please enter a valid ngrok URL (e.g., https://abc123.ngrok.io)",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (!isValidNgrokUrl(ngrokSmsUrl) && ngrokSmsUrl !== '') {
-      toast({
-        title: "Invalid SMS URL",
-        description: "Please enter a valid ngrok URL (e.g., https://abc123.ngrok.io)",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    // Save to localStorage
-    localStorage.setItem('twilioNgrokVoiceUrl', ngrokVoiceUrl);
-    localStorage.setItem('twilioNgrokSmsUrl', ngrokSmsUrl);
+  const handleSave = () => {
+    // Save to localStorage as fallback for browsers
+    localStorage.setItem('twilioNgrokVoiceUrl', voiceUrl);
+    localStorage.setItem('twilioNgrokSmsUrl', smsUrl);
     
     toast({
-      title: "Ngrok URLs Saved",
-      description: "Your Twilio webhook URLs have been saved",
+      title: "Settings Saved",
+      description: "Ngrok URLs have been updated.",
     });
   };
   
-  const isValidNgrokUrl = (url: string): boolean => {
-    return url === '' || /^https?:\/\/[a-z0-9]+\.ngrok\.io(\/.*)?$/i.test(url);
-  };
-  
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-food-primary">Ngrok Webhook Settings</CardTitle>
-        <CardDescription>
-          Configure your Twilio webhook URLs for voice and SMS
-        </CardDescription>
-      </CardHeader>
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="voice-url">Ngrok Voice URL</Label>
+        <Input 
+          id="voice-url"
+          placeholder="https://your-ngrok-voice-url.ngrok.io"
+          value={voiceUrl}
+          onChange={(e) => setVoiceUrl(e.target.value)}
+        />
+        <p className="text-sm text-gray-500">
+          URL for handling Twilio voice functionality
+        </p>
+      </div>
       
-      <CardContent className="space-y-4">
-        <div>
-          <label htmlFor="ngrokVoiceUrl" className="block text-sm font-medium text-gray-700 mb-1">
-            Voice Webhook URL
-          </label>
-          <Input
-            id="ngrokVoiceUrl"
-            placeholder="https://your-ngrok-url.ngrok.io/voice"
-            value={ngrokVoiceUrl}
-            onChange={(e) => setNgrokVoiceUrl(e.target.value)}
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            This URL should handle voice calls for your Twilio application
-          </p>
-        </div>
-        
-        <div>
-          <label htmlFor="ngrokSmsUrl" className="block text-sm font-medium text-gray-700 mb-1">
-            SMS Webhook URL
-          </label>
-          <Input
-            id="ngrokSmsUrl"
-            placeholder="https://your-ngrok-url.ngrok.io/sms"
-            value={ngrokSmsUrl}
-            onChange={(e) => setNgrokSmsUrl(e.target.value)}
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            This URL should handle SMS messages for your Twilio application
-          </p>
-        </div>
-      </CardContent>
+      <div className="space-y-2">
+        <Label htmlFor="sms-url">Ngrok SMS URL</Label>
+        <Input 
+          id="sms-url"
+          placeholder="https://your-ngrok-sms-url.ngrok.io"
+          value={smsUrl}
+          onChange={(e) => setSmsUrl(e.target.value)}
+        />
+        <p className="text-sm text-gray-500">
+          URL for handling Twilio SMS functionality
+        </p>
+      </div>
       
-      <CardFooter>
-        <Button onClick={saveUrls} className="bg-food-primary hover:bg-food-primary/90">
-          <Save className="mr-2 h-4 w-4" />
-          Save Webhook URLs
+      <div className="pt-4 flex justify-end">
+        <Button onClick={handleSave} className="bg-food-primary hover:bg-food-primary/90">
+          Save Settings
         </Button>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 };
 
