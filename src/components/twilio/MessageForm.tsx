@@ -62,6 +62,23 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
     }
   };
 
+  // Format phone number for API consumption
+  const formatPhoneNumber = (phone: string): string => {
+    // Remove all non-digit characters except the leading +
+    let formatted = phone.trim();
+    
+    // If number doesn't start with +, add it
+    if (!formatted.startsWith('+')) {
+      formatted = '+' + formatted;
+    }
+    
+    // Remove any spaces, dashes, or parentheses
+    formatted = formatted.charAt(0) + formatted.substring(1).replace(/[^\d]/g, '');
+    
+    console.log("MessageForm: Formatted phone number:", formatted);
+    return formatted;
+  };
+
   const handleSendSMS = async () => {
     // Always use the current input value first, fallback to default
     const currentPhone = inputPhoneNumber || localStorage.getItem('lastPhoneNumber') || "+18001234567";
@@ -83,7 +100,9 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
     setLoading(true);
     
     try {
-      console.log("Sending SMS request with phone:", currentPhone);
+      // Format phone number before sending
+      const formattedPhone = formatPhoneNumber(currentPhone);
+      console.log("Sending SMS request with formatted phone:", formattedPhone);
       
       const response = await fetch("/api/send-sms", {
         method: 'POST',
@@ -91,7 +110,7 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          to: currentPhone,
+          to: formattedPhone,
           body: message
         })
       });
@@ -108,7 +127,7 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
       
       toast({
         title: "Message Sent",
-        description: `SMS sent to ${currentPhone}`,
+        description: `SMS sent to ${formattedPhone}`,
       });
       
       setMessage("");
