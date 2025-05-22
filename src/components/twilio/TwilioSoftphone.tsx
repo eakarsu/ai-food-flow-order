@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { useTwilioDevice } from './useTwilioDevice';
+import { useTwilioDevice } from '@/hooks/useTwilioDevice';
 import CallInitiator from './CallInitiator';
 import ActiveCall from './ActiveCall';
 
