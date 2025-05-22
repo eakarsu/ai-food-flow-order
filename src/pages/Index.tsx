@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -6,9 +5,9 @@ import SearchBar from '../components/SearchBar';
 import RestaurantCard from '../components/RestaurantCard';
 import FoodItem from '../components/FoodItem';
 import AiRecommendation from '../components/AiRecommendation';
-import TwilioContact from '../components/TwilioContact';
 import Footer from '../components/Footer';
 import { Button } from "@/components/ui/button";
+import { Search } from 'lucide-react';
 
 // Single restaurant data
 const restaurantData = {
@@ -161,13 +160,63 @@ const Index = () => {
         <AiRecommendation />
       </div>
       
-      {/* Twilio Contact Section */}
-      <div className="container mx-auto px-4 py-8 bg-food-light rounded-lg my-4">
+      {/* Search Section (Replacing Twilio Contact) */}
+      <div className="container mx-auto px-4 py-12 bg-food-light rounded-lg my-4">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-food-dark mb-3">Order Your Favorite Food</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">Contact us directly to place your order or inquire about our daily specials</p>
+          <h2 className="text-3xl font-bold text-food-dark mb-3">Find Your Favorite Dishes</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">Search our extensive menu for culinary delights</p>
         </div>
-        <TwilioContact />
+        
+        <div className="max-w-2xl mx-auto">
+          <SearchBar 
+            onSearch={handleSearch}
+            initialQuery={searchQuery}
+          />
+          
+          <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
+            <div onClick={() => handleSearch("breakfast")} className="cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all">
+              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 mx-auto mb-2 flex items-center justify-center">
+                <Search size={20} className="text-food-primary" />
+              </div>
+              <p className="font-medium">Breakfast</p>
+            </div>
+            
+            <div onClick={() => handleSearch("sandwiches")} className="cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all">
+              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 mx-auto mb-2 flex items-center justify-center">
+                <Search size={20} className="text-food-primary" />
+              </div>
+              <p className="font-medium">Sandwiches</p>
+            </div>
+            
+            <div onClick={() => handleSearch("salads")} className="cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all">
+              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 mx-auto mb-2 flex items-center justify-center">
+                <Search size={20} className="text-food-primary" />
+              </div>
+              <p className="font-medium">Salads</p>
+            </div>
+            
+            <div onClick={() => handleSearch("beverages")} className="cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all">
+              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 mx-auto mb-2 flex items-center justify-center">
+                <Search size={20} className="text-food-primary" />
+              </div>
+              <p className="font-medium">Beverages</p>
+            </div>
+            
+            <div onClick={() => handleSearch("desserts")} className="cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all">
+              <div className="bg-food-primary/10 p-3 rounded-full w-12 h-12 mx-auto mb-2 flex items-center justify-center">
+                <Search size={20} className="text-food-primary" />
+              </div>
+              <p className="font-medium">Desserts</p>
+            </div>
+            
+            <div onClick={() => navigate('/menu')} className="cursor-pointer p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all">
+              <div className="bg-food-secondary/10 p-3 rounded-full w-12 h-12 mx-auto mb-2 flex items-center justify-center">
+                <Search size={20} className="text-food-secondary" />
+              </div>
+              <p className="font-medium">All Items</p>
+            </div>
+          </div>
+        </div>
       </div>
       
       {/* Featured Items */}

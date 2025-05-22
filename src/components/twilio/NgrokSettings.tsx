@@ -16,13 +16,28 @@ const NgrokSettings = ({ defaultVoiceUrl, defaultSmsUrl }: NgrokSettingsProps) =
   const [ngrokVoiceUrl, setNgrokVoiceUrl] = useState(defaultVoiceUrl || '');
   const [ngrokSmsUrl, setNgrokSmsUrl] = useState(defaultSmsUrl || '');
   
-  // Load saved URLs from localStorage on component mount
+  // Load URLs from environment variables or localStorage
   useEffect(() => {
+    // Try to get from environment variables first
+    const envVoiceUrl = import.meta.env.VITE_NGROK_VOICE_URL;
+    const envSmsUrl = import.meta.env.VITE_NGROK_SMS_URL;
+    
+    // Then check localStorage as fallback
     const savedVoiceUrl = localStorage.getItem('twilioNgrokVoiceUrl');
     const savedSmsUrl = localStorage.getItem('twilioNgrokSmsUrl');
     
-    if (savedVoiceUrl) setNgrokVoiceUrl(savedVoiceUrl);
-    if (savedSmsUrl) setNgrokSmsUrl(savedSmsUrl);
+    // Set URLs with priority: env vars > localStorage > props > empty string
+    if (envVoiceUrl) {
+      setNgrokVoiceUrl(envVoiceUrl);
+    } else if (savedVoiceUrl) {
+      setNgrokVoiceUrl(savedVoiceUrl);
+    }
+    
+    if (envSmsUrl) {
+      setNgrokSmsUrl(envSmsUrl);
+    } else if (savedSmsUrl) {
+      setNgrokSmsUrl(savedSmsUrl);
+    }
   }, []);
   
   // Save URLs to localStorage and notify user
