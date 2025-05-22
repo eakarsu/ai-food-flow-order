@@ -1,14 +1,7 @@
 
-import SearchBar from '../SearchBar';
-import { useNavigate } from 'react-router-dom';
+import TwilioContact from '../twilio/TwilioContact';
 
 const Hero = () => {
-  const navigate = useNavigate();
-  
-  const handleSearch = (query: string) => {
-    navigate(`/menu?search=${encodeURIComponent(query)}`);
-  };
-
   return (
     <div className="bg-gradient-to-r from-food-primary to-food-secondary text-white py-20">
       <div className="container mx-auto px-4 text-center">
@@ -19,7 +12,11 @@ const Hero = () => {
           Fresh, delicious meals made just for you
         </p>
         <div className="max-w-xl mx-auto">
-          <SearchBar onSearch={handleSearch} />
+          <div className="bg-white rounded-lg p-4 shadow-lg">
+            <h3 className="text-xl font-semibold text-food-primary mb-3">Contact Us Directly</h3>
+            <p className="text-gray-600 mb-4">Place your order or inquire about our daily specials</p>
+            <TwilioContact />
+          </div>
         </div>
       </div>
     </div>

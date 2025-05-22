@@ -1,15 +1,15 @@
-
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import AiRecommendation from '../components/AiRecommendation';
 import Footer from '../components/Footer';
-import TwilioContact from '../components/twilio/TwilioContact';
+import SearchBar from '../components/SearchBar';
 import LoadingScreen from '../components/home/LoadingScreen';
 import Hero from '../components/home/Hero';
 import RestaurantInfo from '../components/home/RestaurantInfo';
 import FeaturedItems from '../components/home/FeaturedItems';
 import HowItWorks from '../components/home/HowItWorks';
 import CallToAction from '../components/home/CallToAction';
+import { useNavigate } from 'react-router-dom';
 
 // Single restaurant data
 const restaurantData = {
@@ -61,6 +61,7 @@ const featuredFoodItems = [
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
   
   // Simulate page loading
   useEffect(() => {
@@ -71,6 +72,10 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
   
+  const handleSearch = (query: string) => {
+    navigate(`/menu?search=${encodeURIComponent(query)}`);
+  };
+  
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -79,7 +84,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
       
-      {/* Hero Section */}
+      {/* Hero Section with Twilio Contact */}
       <Hero />
       
       {/* Restaurant Info Section */}
@@ -90,15 +95,15 @@ const Index = () => {
         <AiRecommendation />
       </div>
       
-      {/* Twilio Communication Section */}
+      {/* Search Section */}
       <div className="container mx-auto px-4 py-12 bg-food-light rounded-lg my-4">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-food-dark mb-3">Order Your Favorite Food</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">Contact us directly to place your order or inquire about our daily specials</p>
+          <h2 className="text-3xl font-bold text-food-dark mb-3">Find Your Favorite Food</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">Search our extensive menu for delicious options</p>
         </div>
         
         <div className="max-w-xl mx-auto">
-          <TwilioContact />
+          <SearchBar onSearch={handleSearch} />
         </div>
       </div>
       

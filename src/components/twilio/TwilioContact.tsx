@@ -27,7 +27,7 @@ const TwilioContact = () => {
 
   return (
     <>
-      <Card className="w-full max-w-md mx-auto">
+      <Card className="w-full mx-auto bg-white shadow-lg">
         <CardHeader className="bg-food-primary/10 rounded-t-lg">
           <div className="flex justify-between items-center">
             <CardTitle className="text-food-primary flex items-center">
@@ -53,11 +53,11 @@ const TwilioContact = () => {
               </DialogContent>
             </Dialog>
           </div>
-          <CardDescription>
+          <CardDescription className="text-gray-600">
             Send SMS or call about your food order
           </CardDescription>
         </CardHeader>
-        <CardContent className="pt-6">
+        <CardContent className="pt-4">
           <Tabs 
             defaultValue="sms" 
             className="w-full"
