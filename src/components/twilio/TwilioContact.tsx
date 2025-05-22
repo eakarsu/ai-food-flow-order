@@ -95,10 +95,15 @@ const TwilioContact = () => {
       <Card className="w-full mx-auto bg-white shadow-lg">
         <CardHeader className="bg-food-primary/10 rounded-t-lg">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-food-primary flex items-center">
-              <Phone className="mr-2" size={20} />
-              Food Order Communications
-            </CardTitle>
+            <div>
+              <CardTitle className="text-food-primary flex items-center text-xl">
+                <Phone className="mr-2" size={20} />
+                Food Order Communications
+              </CardTitle>
+              <CardDescription className="text-gray-600 mt-1">
+                Send SMS or call about your food order
+              </CardDescription>
+            </div>
             
             <Dialog open={ngrokSettingsOpen} onOpenChange={setNgrokSettingsOpen}>
               <DialogTrigger asChild>
@@ -118,9 +123,6 @@ const TwilioContact = () => {
               </DialogContent>
             </Dialog>
           </div>
-          <CardDescription className="text-gray-600">
-            Send SMS or call about your food order
-          </CardDescription>
         </CardHeader>
         <CardContent className="pt-4">
           <Tabs 

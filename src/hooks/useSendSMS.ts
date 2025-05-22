@@ -1,7 +1,13 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { formatPhoneNumber } from '@/utils/phoneNumberFormat';
+
+interface Message {
+  text: string;
+  timestamp: number; // Unix timestamp
+  status: 'sent' | 'failed';
+}
 
 interface UseSendSMSProps {
   phoneNumber: string;
@@ -10,6 +16,18 @@ interface UseSendSMSProps {
 export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [messageHistory, setMessageHistory] = useState<Message[]>(() => {
+    // Try to load message history from localStorage
+    const savedHistory = localStorage.getItem(`sms_history_${phoneNumber}`);
+    return savedHistory ? JSON.parse(savedHistory) : [];
+  });
+  
+  // Update localStorage when message history changes
+  useEffect(() => {
+    if (messageHistory.length > 0) {
+      localStorage.setItem(`sms_history_${phoneNumber}`, JSON.stringify(messageHistory));
+    }
+  }, [messageHistory, phoneNumber]);
   
   const sendSMS = async (message: string) => {
     if (!message) {
@@ -42,17 +60,19 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
         console.log("Cross-origin request detected. Adding CORS mode.");
       }
       
+      // Format phone number and message as form data
+      const formData = new URLSearchParams();
+      formData.append('From', phoneNumber); // or formattedPhone
+      formData.append('To', phoneNumber);   // or the recipient number
+      formData.append('Body', message);
+      formData.append('MessageSid', 'SMxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'); // or generate as needed
+
       const response = await fetch(smsEndpoint, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        // Add mode: 'cors' for cross-origin requests
-        ...(isCrossOrigin ? { mode: 'cors' } : {}),
-        body: JSON.stringify({
-          to: formattedPhone,
-          body: message
-        })
+        body: formData.toString(),
       });
       
       if (!response.ok) {
@@ -63,6 +83,15 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
       const responseData = await response.json();
       console.log("SMS sent successfully:", responseData);
       
+      // Add message to history
+      const newMessage: Message = {
+        text: message,
+        timestamp: Date.now(),
+        status: 'sent'
+      };
+      
+      setMessageHistory(prev => [...prev, newMessage]);
+      
       toast({
         title: "Message Sent",
         description: `SMS sent to ${formattedPhone}`,
@@ -71,6 +100,15 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
       return true;
     } catch (error) {
       console.error("SMS Error:", error);
+      
+      // Add failed message to history
+      const newMessage: Message = {
+        text: message,
+        timestamp: Date.now(),
+        status: 'failed'
+      };
+      
+      setMessageHistory(prev => [...prev, newMessage]);
       
       // Provide more specific error message for CORS issues
       let errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
@@ -98,8 +136,19 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
     }
   };
 
+  const clearHistory = () => {
+    setMessageHistory([]);
+    localStorage.removeItem(`sms_history_${phoneNumber}`);
+    toast({
+      title: "Message History Cleared",
+      description: "Your message history has been cleared."
+    });
+  };
+
   return {
     loading,
-    sendSMS
+    messageHistory,
+    sendSMS,
+    clearHistory
   };
 };
