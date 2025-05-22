@@ -27,18 +27,27 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
   const deviceRef = useRef<Device | null>(null);
   const activeCallRef = useRef<any | null>(null);
 
-  // Ideally, this token should be fetched from your backend
+  // Fetch Twilio token from your server
   const fetchToken = async () => {
     try {
-      // In a real app, you would get this from your server
-      // For demo purposes, we're simulating a successful token fetch
-      toast({
-        title: "Demo Mode",
-        description: "In a production app, this would fetch a real Twilio token from your server.",
+      // Call your secure backend endpoint that generates Twilio tokens
+      const response = await fetch("/api/twilio-token", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          // You can send identity or other parameters your server needs
+          identity: "customer-service-agent"
+        })
       });
       
-      // Simulated token - this is just for UI demonstration
-      return "simulated-twilio-token";
+      if (!response.ok) {
+        throw new Error("Failed to fetch token");
+      }
+      
+      const data = await response.json();
+      return data.token;
     } catch (error) {
       console.error("Error fetching token:", error);
       toast({
@@ -60,7 +69,6 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
           
           try {
             // Initialize Twilio Device with the token
-            // Using only valid options from the Twilio Voice SDK 
             const device = new Device(newToken, {
               // These are valid options in the Twilio Voice SDK
               logLevel: 1,  // 0-silent, 1-error, 2-warning, 3-info, 4-debug, 5-log
@@ -134,41 +142,11 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
     try {
       setIsConnecting(true);
       
-      // In a real implementation, you would:
-      // 1. Call your backend to get a capability token
-      // 2. Initialize the call with proper parameters
-      
-      // For demo purposes, we'll simulate the call connection
-      setTimeout(() => {
-        setIsConnecting(false);
-        setIsConnected(true);
-        
-        toast({
-          title: "Demo Call Connected",
-          description: `Connected to ${phoneNumber} (simulated)`,
-        });
-        
-        // Simulate an active call object
-        activeCallRef.current = {
-          disconnect: () => {
-            setIsConnected(false);
-            activeCallRef.current = null;
-            toast({
-              title: "Call Ended",
-              description: "The call has been disconnected",
-            });
-          },
-          mute: (shouldMute: boolean) => {
-            setIsMuted(shouldMute);
-          }
-        };
-      }, 1500);
-      
-      /* In a real implementation, you would do something like:
+      // Make the actual Twilio call
       const call = await deviceRef.current.connect({
         params: {
           To: phoneNumber,
-          // Add any other parameters needed
+          // Any other TwiML parameters you need
         }
       });
       
@@ -177,12 +155,22 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
       call.on('accept', () => {
         setIsConnecting(false);
         setIsConnected(true);
+        
+        toast({
+          title: "Call Connected",
+          description: `Connected to ${phoneNumber}`,
+        });
       });
       
       call.on('disconnect', () => {
         setIsConnected(false);
         setIsMuted(false);
         activeCallRef.current = null;
+        
+        toast({
+          title: "Call Ended",
+          description: "The call has been disconnected",
+        });
       });
       
       call.on('error', (error) => {
@@ -196,8 +184,6 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
         setIsConnected(false);
         activeCallRef.current = null;
       });
-      */
-      
     } catch (error) {
       console.error('Error making call:', error);
       toast({

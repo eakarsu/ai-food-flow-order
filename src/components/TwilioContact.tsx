@@ -10,10 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import TwilioSoftphone from './TwilioSoftphone';
 
-// Twilio API configuration - replace these with your actual credentials
-const TWILIO_ACCOUNT_SID = "YOUR_ACCOUNT_SID";
-const TWILIO_AUTH_TOKEN = "YOUR_AUTH_TOKEN";
-const TWILIO_PHONE_NUMBER = "YOUR_TWILIO_PHONE_NUMBER";
+// Twilio configuration - replace with your actual credentials
+const TWILIO_PHONE_NUMBER = "+18043601129"; // Your Twilio phone number
 
 const TwilioContact = () => {
   const { toast } = useToast();
@@ -45,18 +43,15 @@ const TwilioContact = () => {
     setLoading(true);
     
     try {
-      // In a production environment, this should be a server-side API call
-      // to protect your Twilio credentials
-      const response = await fetch("https://api.twilio.com/2010-04-01/Accounts/" + TWILIO_ACCOUNT_SID + "/Messages.json", {
+      // Call your secure backend endpoint that handles Twilio SMS sending
+      const response = await fetch("/api/send-sms", {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Basic ' + btoa(TWILIO_ACCOUNT_SID + ':' + TWILIO_AUTH_TOKEN)
+          'Content-Type': 'application/json',
         },
-        body: new URLSearchParams({
-          'From': TWILIO_PHONE_NUMBER,
-          'To': phoneNumber,
-          'Body': message
+        body: JSON.stringify({
+          to: phoneNumber,
+          body: message
         })
       });
       
@@ -65,6 +60,8 @@ const TwilioContact = () => {
         throw new Error(data.message || 'Failed to send SMS');
       }
       
+      const result = await response.json();
+      
       toast({
         title: "Message Sent",
         description: `SMS sent to ${phoneNumber}`,
@@ -72,12 +69,12 @@ const TwilioContact = () => {
       
       setMessage("");
     } catch (error) {
-      console.error("Twilio API Error:", error);
+      console.error("SMS Error:", error);
       
-      // Fall back to simulation mode if the API call fails
       toast({
-        title: "Message Sent (Simulated)",
-        description: `The message would be sent to ${phoneNumber}`,
+        title: "Failed to Send Message",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive"
       });
     } finally {
       setLoading(false);
@@ -173,7 +170,7 @@ const TwilioContact = () => {
                 </div>
                 
                 <p className="text-sm text-gray-500 mt-4">
-                  Click the "Call Customer" button to initiate a browser-based call using WebRTC technology.
+                  Click the "Call Customer" button to initiate a browser-based call using Twilio's Voice SDK.
                 </p>
               </div>
             </TabsContent>
