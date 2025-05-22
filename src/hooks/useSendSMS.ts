@@ -34,11 +34,21 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
       
       console.log("Using SMS endpoint:", smsEndpoint);
       
+      // Check if the SMS endpoint is a cross-origin URL (different domain)
+      const isCrossOrigin = smsEndpoint.startsWith('http') && 
+                            !smsEndpoint.includes(window.location.hostname);
+      
+      if (isCrossOrigin) {
+        console.log("Cross-origin request detected. Adding CORS mode.");
+      }
+      
       const response = await fetch(smsEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        // Add mode: 'cors' for cross-origin requests
+        ...(isCrossOrigin ? { mode: 'cors' } : {}),
         body: JSON.stringify({
           to: formattedPhone,
           body: message
@@ -62,9 +72,23 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
     } catch (error) {
       console.error("SMS Error:", error);
       
+      // Provide more specific error message for CORS issues
+      let errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      
+      if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+        // This is likely a CORS error
+        errorMessage = "Cannot connect to SMS server. This may be due to CORS restrictions. Please ensure your server allows cross-origin requests.";
+        
+        // Log helpful information for debugging
+        console.log("Possible CORS issue detected. Check that your server has the following headers:");
+        console.log("Access-Control-Allow-Origin: *");
+        console.log("Access-Control-Allow-Methods: POST, OPTIONS");
+        console.log("Access-Control-Allow-Headers: Content-Type");
+      }
+      
       toast({
         title: "Failed to Send Message",
-        description: error instanceof Error ? error.message : "An unknown error occurred",
+        description: errorMessage,
         variant: "destructive"
       });
       

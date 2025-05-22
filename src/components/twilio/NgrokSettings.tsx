@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertTriangle } from 'lucide-react';
 
 const NgrokSettings = () => {
   const { toast } = useToast();
@@ -35,6 +37,23 @@ const NgrokSettings = () => {
   
   return (
     <div className="space-y-4">
+      {(voiceUrl.includes('ngrok') || smsUrl.includes('ngrok')) && (
+        <Alert variant="warning" className="bg-yellow-50 border-yellow-200">
+          <AlertTriangle className="h-4 w-4 text-yellow-600" />
+          <AlertTitle className="text-yellow-800">CORS Configuration Required</AlertTitle>
+          <AlertDescription className="text-yellow-700">
+            <p className="mb-2">
+              When using ngrok endpoints, you must configure your server to allow cross-origin requests.
+            </p>
+            <p className="text-sm font-mono bg-gray-100 p-2 rounded">
+              Access-Control-Allow-Origin: *<br />
+              Access-Control-Allow-Methods: POST, OPTIONS<br />
+              Access-Control-Allow-Headers: Content-Type
+            </p>
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <div className="space-y-2">
         <Label htmlFor="voice-url">Voice API Endpoint</Label>
         <Input 

@@ -27,11 +27,21 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       
       console.log("Calling voice endpoint:", voiceEndpoint);
       
+      // Check if the voice endpoint is a cross-origin URL (different domain)
+      const isCrossOrigin = voiceEndpoint.startsWith('http') && 
+                           !voiceEndpoint.includes(window.location.hostname);
+      
+      if (isCrossOrigin) {
+        console.log("Cross-origin request detected. Adding CORS mode.");
+      }
+      
       const response = await fetch(voiceEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        // Add mode: 'cors' for cross-origin requests
+        ...(isCrossOrigin ? { mode: 'cors' } : {}),
         body: JSON.stringify({ 
           to: phoneNumber,
           identity: "customer-service-agent"
@@ -55,9 +65,17 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       console.error("Error making call:", error);
       setIsConnecting(false);
       
+      // Provide more specific error message for CORS issues
+      let errorMessage = error instanceof Error ? error.message : "Failed to connect call";
+      
+      if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+        // This is likely a CORS error
+        errorMessage = "Cannot connect to voice server. This may be due to CORS restrictions. Please ensure your server allows cross-origin requests.";
+      }
+      
       toast({
         title: "Call Error",
-        description: error instanceof Error ? error.message : "Failed to connect call",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -70,11 +88,17 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
                           localStorage.getItem('twilioNgrokVoiceUrl') || 
                           '/api/twilio-call';
       
+      // Check if the voice endpoint is a cross-origin URL (different domain)
+      const isCrossOrigin = voiceEndpoint.startsWith('http') && 
+                           !voiceEndpoint.includes(window.location.hostname);
+      
       const response = await fetch(`${voiceEndpoint}/hangup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        // Add mode: 'cors' for cross-origin requests
+        ...(isCrossOrigin ? { mode: 'cors' } : {}),
         body: JSON.stringify({ 
           identity: "customer-service-agent"
         })
@@ -107,11 +131,17 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
                           localStorage.getItem('twilioNgrokVoiceUrl') || 
                           '/api/twilio-call';
       
+      // Check if the voice endpoint is a cross-origin URL (different domain)
+      const isCrossOrigin = voiceEndpoint.startsWith('http') && 
+                           !voiceEndpoint.includes(window.location.hostname);
+      
       const response = await fetch(`${voiceEndpoint}/mute`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        // Add mode: 'cors' for cross-origin requests
+        ...(isCrossOrigin ? { mode: 'cors' } : {}),
         body: JSON.stringify({ 
           muted: !isMuted,
           identity: "customer-service-agent"
