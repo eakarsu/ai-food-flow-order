@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
@@ -17,8 +17,19 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Add debug logs
+  useEffect(() => {
+    console.log("MessageForm: Phone number from props:", phoneNumber);
+  }, [phoneNumber]);
+
   const handleSendSMS = async () => {
-    if (!phoneNumber) {
+    console.log("Sending SMS with phone number:", phoneNumber);
+    console.log("Is phone number empty?", !phoneNumber);
+    console.log("Phone number type:", typeof phoneNumber);
+    console.log("Phone number length:", phoneNumber?.length);
+
+    // Check if phone number is empty, undefined, or just whitespace
+    if (!phoneNumber || phoneNumber.trim() === "") {
       toast({
         title: "Phone number required",
         description: "Please enter a valid phone number",

@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Phone, MessageSquare, Settings } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +16,39 @@ const TwilioContact = () => {
   const [softphoneOpen, setSoftphoneOpen] = useState(false);
   const [ngrokSettingsOpen, setNgrokSettingsOpen] = useState(false);
 
+  // Add debug logging
+  useEffect(() => {
+    console.log("TwilioContact: Current phoneNumber state:", phoneNumber);
+    
+    // Check if there's a stored phone number in localStorage that we can use
+    const storedNumber = localStorage.getItem('lastPhoneNumber');
+    console.log("TwilioContact: Stored phone number:", storedNumber);
+    
+    if (storedNumber && !phoneNumber) {
+      console.log("TwilioContact: Setting phone number from storage");
+      setPhoneNumber(storedNumber);
+    }
+    
+    // Log environment variables for debugging (if any)
+    console.log("TwilioContact: Environment variables check");
+    if (import.meta.env.VITE_NGROK_VOICE_URL) {
+      console.log("VITE_NGROK_VOICE_URL is set");
+    } else {
+      console.log("VITE_NGROK_VOICE_URL is not set");
+    }
+    
+    if (import.meta.env.VITE_NGROK_SMS_URL) {
+      console.log("VITE_NGROK_SMS_URL is set");
+    } else {
+      console.log("VITE_NGROK_SMS_URL is not set");
+    }
+  }, [phoneNumber]);
+
   const handleMakeCall = () => {
+    // Save the phone number for future use
+    if (phoneNumber) {
+      localStorage.setItem('lastPhoneNumber', phoneNumber);
+    }
     setSoftphoneOpen(true);
   };
 
@@ -78,14 +110,26 @@ const TwilioContact = () => {
             <TabsContent value="sms">
               <MessageForm 
                 phoneNumber={phoneNumber}
-                setPhoneNumber={setPhoneNumber}
+                setPhoneNumber={(value) => {
+                  console.log("TwilioContact: Setting phone number to:", value);
+                  setPhoneNumber(value);
+                  if (value) {
+                    localStorage.setItem('lastPhoneNumber', value);
+                  }
+                }}
               />
             </TabsContent>
             
             <TabsContent value="call">
               <CallForm 
                 phoneNumber={phoneNumber}
-                setPhoneNumber={setPhoneNumber}
+                setPhoneNumber={(value) => {
+                  console.log("TwilioContact: Setting phone number to:", value);
+                  setPhoneNumber(value);
+                  if (value) {
+                    localStorage.setItem('lastPhoneNumber', value);
+                  }
+                }}
                 handleMakeCall={handleMakeCall}
               />
             </TabsContent>
