@@ -60,9 +60,10 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
           
           try {
             // Initialize Twilio Device with the token
+            // Using only valid options from the Twilio Voice SDK 
             const device = new Device(newToken, {
-              // Set device options here
-              enableIcegatheringOnRinging: true,
+              // These are valid options in the Twilio Voice SDK
+              logLevel: 1,  // 0-silent, 1-error, 2-warning, 3-info, 4-debug, 5-log
               allowIncomingWhileBusy: true
             });
             
