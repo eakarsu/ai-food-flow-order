@@ -123,7 +123,7 @@ const NgrokSettings = () => {
           <AlertDescription className="text-blue-700">
             <p className="font-medium mb-1">Required API Endpoints:</p>
             <ul className="list-disc pl-5 text-xs">
-              <li>POST /token - Returns a Twilio token JSON with format {"token": "YOUR_TOKEN"}</li>
+              <li>POST /token - Returns a Twilio token JSON with format {`{"token": "YOUR_TOKEN"}`}</li>
               <li>POST /voice - Handles voice calls with TwiML response</li>
             </ul>
           </AlertDescription>
