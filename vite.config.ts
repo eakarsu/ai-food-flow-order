@@ -1,13 +1,16 @@
-
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react' // Remove -swc
+import react from '@vitejs/plugin-react'
+import path from 'path'
 
 export default defineConfig({
-  plugins: [react()], // Use regular React plugin instead of SWC
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   build: {
     outDir: 'dist'
-  },
-  server: {
-    port: 8080
   }
 })
+
