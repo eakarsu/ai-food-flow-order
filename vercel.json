@@ -1,3 +1,0 @@
-{
-  "buildCommand": "npm ci --no-cache && npm run build"
-}
