@@ -16,10 +16,18 @@ interface UseSendSMSProps {
 export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  // Initialize message history as empty array - no localStorage persistence
-  const [messageHistory, setMessageHistory] = useState<Message[]>([]);
+  const [messageHistory, setMessageHistory] = useState<Message[]>(() => {
+    // Try to load message history from localStorage
+    const savedHistory = localStorage.getItem(`sms_history_${phoneNumber}`);
+    return savedHistory ? JSON.parse(savedHistory) : [];
+  });
   
-  // Remove the localStorage effect since we want to clear on refresh
+  // Update localStorage when message history changes
+  useEffect(() => {
+    if (messageHistory.length > 0) {
+      localStorage.setItem(`sms_history_${phoneNumber}`, JSON.stringify(messageHistory));
+    }
+  }, [messageHistory, phoneNumber]);
   
   const sendSMS = async (message: string) => {
     if (!message) {
@@ -140,6 +148,7 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
 
   const clearHistory = () => {
     setMessageHistory([]);
+    localStorage.removeItem(`sms_history_${phoneNumber}`);
     toast({
       title: "Message History Cleared",
       description: "Your message history has been cleared."
