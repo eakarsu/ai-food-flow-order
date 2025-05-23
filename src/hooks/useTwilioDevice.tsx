@@ -26,6 +26,7 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
                           '/api/twilio-call';
       
       console.log("Calling voice endpoint:", voiceEndpoint);
+      console.log("Calling phone number:", phoneNumber);
       
       // Check if the voice endpoint is a cross-origin URL (different domain)
       const isCrossOrigin = voiceEndpoint.startsWith('http') && 
@@ -48,22 +49,26 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         })
       });
       
+      console.log("Response status:", response.status);
+      
       if (!response.ok) {
-        throw new Error("Failed to initiate call");
+        throw new Error(`Failed to initiate call. Status: ${response.status}`);
       }
       
       const data = await response.json();
-      console.log("Call initiated:", data);
+      console.log("Call initiated successfully:", data);
       
       setIsConnected(true);
-      setIsConnecting(false);
+      toast({
+        title: "Call Connected",
+        description: `Connected to ${phoneNumber}`,
+      });
       
       // In a real implementation, you would likely set up a WebSocket 
       // or polling to get call status updates from your server
       
     } catch (error) {
       console.error("Error making call:", error);
-      setIsConnecting(false);
       
       // Provide more specific error message for CORS issues
       let errorMessage = error instanceof Error ? error.message : "Failed to connect call";
@@ -78,6 +83,8 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         description: errorMessage,
         variant: "destructive",
       });
+    } finally {
+      setIsConnecting(false);
     }
   };
 
@@ -87,6 +94,8 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       const voiceEndpoint = import.meta.env.VITE_NGROK_VOICE_URL || 
                           localStorage.getItem('twilioNgrokVoiceUrl') || 
                           '/api/twilio-call';
+      
+      console.log("Disconnecting call using endpoint:", `${voiceEndpoint}/hangup`);
       
       // Check if the voice endpoint is a cross-origin URL (different domain)
       const isCrossOrigin = voiceEndpoint.startsWith('http') && 
@@ -108,7 +117,11 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         throw new Error("Failed to end call");
       }
       
-      console.log("Call disconnected");
+      console.log("Call disconnected successfully");
+      toast({
+        title: "Call Ended",
+        description: "Call has been disconnected",
+      });
       
     } catch (error) {
       console.error("Error disconnecting call:", error);
@@ -130,6 +143,8 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       const voiceEndpoint = import.meta.env.VITE_NGROK_VOICE_URL || 
                           localStorage.getItem('twilioNgrokVoiceUrl') || 
                           '/api/twilio-call';
+      
+      console.log("Toggling mute using endpoint:", `${voiceEndpoint}/mute`);
       
       // Check if the voice endpoint is a cross-origin URL (different domain)
       const isCrossOrigin = voiceEndpoint.startsWith('http') && 
@@ -153,6 +168,10 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       }
       
       setIsMuted(!isMuted);
+      toast({
+        title: isMuted ? "Microphone Unmuted" : "Microphone Muted",
+        description: isMuted ? "Others can hear you now" : "You are now muted",
+      });
       
     } catch (error) {
       console.error("Error toggling mute:", error);

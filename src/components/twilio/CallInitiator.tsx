@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Phone } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 interface CallInitiatorProps {
   phoneNumber: string;
@@ -19,13 +20,17 @@ const CallInitiator = ({ phoneNumber, handleMakeCall, isConnecting, hasToken }: 
       <Button
         onClick={handleMakeCall}
         disabled={isConnecting || !hasToken}
-        className="bg-food-primary hover:bg-food-primary/90 h-12 w-12 rounded-full"
+        className={`${isConnecting ? 'bg-gray-400' : 'bg-food-primary hover:bg-food-primary/90'} h-16 w-16 rounded-full flex items-center justify-center`}
       >
-        <Phone size={24} />
+        {isConnecting ? (
+          <Loader2 size={28} className="animate-spin" />
+        ) : (
+          <Phone size={28} />
+        )}
       </Button>
       
       {isConnecting && (
-        <div className="text-sm text-gray-500">
+        <div className="text-base font-medium text-food-primary animate-pulse">
           Connecting...
         </div>
       )}

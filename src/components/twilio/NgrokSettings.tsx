@@ -19,6 +19,13 @@ const NgrokSettings = () => {
     const envSmsUrl = import.meta.env.VITE_NGROK_SMS_URL;
     const envVoiceNumber = import.meta.env.VITE_TWILIO_VOICE_NUMBER;
     
+    // Log the values to help with debugging
+    console.log("NgrokSettings - Environment variables:", {
+      VITE_NGROK_VOICE_URL: envVoiceUrl,
+      VITE_NGROK_SMS_URL: envSmsUrl,
+      VITE_TWILIO_VOICE_NUMBER: envVoiceNumber
+    });
+    
     const storedVoiceUrl = localStorage.getItem('twilioNgrokVoiceUrl') || '';
     const storedSmsUrl = localStorage.getItem('twilioNgrokSmsUrl') || '';
     const storedVoiceNumber = localStorage.getItem('twilioVoiceNumber') || '';
@@ -34,9 +41,22 @@ const NgrokSettings = () => {
     localStorage.setItem('twilioNgrokSmsUrl', smsUrl);
     localStorage.setItem('twilioVoiceNumber', voiceNumber);
     
+    console.log("NgrokSettings - Saved to localStorage:", {
+      twilioNgrokVoiceUrl: voiceUrl,
+      twilioNgrokSmsUrl: smsUrl,
+      twilioVoiceNumber: voiceNumber
+    });
+    
     toast({
       title: "Settings Saved",
       description: "API endpoints and Twilio number have been updated.",
+    });
+    
+    // Alert the user that they need to refresh for the settings to take effect
+    toast({
+      title: "Refresh Required",
+      description: "Please refresh the page for the new settings to take effect.",
+      variant: "default",
     });
   };
   
