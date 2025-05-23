@@ -31,7 +31,13 @@ const CallInitiator = ({ phoneNumber, handleMakeCall, isConnecting, hasToken }: 
       
       {isConnecting && (
         <div className="text-base font-medium text-food-primary animate-pulse">
-          Connecting...
+          Connecting to {phoneNumber}...
+        </div>
+      )}
+
+      {!isConnecting && (
+        <div className="text-sm text-gray-500">
+          Click to initiate call
         </div>
       )}
     </>

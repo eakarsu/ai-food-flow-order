@@ -78,7 +78,7 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
         </DialogHeader>
 
         {envVarMissing && (
-          <Alert variant="warning" className="bg-yellow-50 border-yellow-200 mb-4">
+          <Alert variant="destructive" className="bg-yellow-50 border-yellow-200 mb-4">
             <AlertCircle className="h-4 w-4 text-yellow-600" />
             <AlertDescription className="text-yellow-700">
               VITE_TWILIO_VOICE_NUMBER environment variable is not set. Using provided number instead.
