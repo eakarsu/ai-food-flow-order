@@ -24,7 +24,6 @@ const Navbar = () => {
           {/* Logo and Name */}
           <Link to="/" className="flex items-center">
             <span className="text-food-primary font-bold text-2xl">OrderlyBite</span>
-            <span className="ml-1 text-xs bg-food-secondary text-white px-1 rounded">AI</span>
           </Link>
           
           {/* Desktop Navigation */}
