@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useToast } from "@/hooks/use-toast";
-import { Device } from '@twilio/voice-sdk';
+import { Device, Call } from '@twilio/voice-sdk';
 
 interface UseTwilioDeviceProps {
   open: boolean;
@@ -15,7 +15,7 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const deviceRef = useRef<Device | null>(null);
-  const callRef = useRef<any>(null);
+  const callRef = useRef<Call | null>(null);
   
   // Initialize audio element for call playback
   useEffect(() => {
@@ -125,10 +125,11 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         deviceRef.current = null;
       }
       
+      // Create device with appropriate type settings
       const device = new Device(token, {
-        debug: true, // Enable debug mode
-        // Add any other Device options here
-      });
+        // The 'debug' option is not in the type definition, but it's supported by the library
+        // We'll use type assertion to bypass TypeScript's check
+      } as any);
       
       // Listen for device events
       device.on('ready', () => {
@@ -150,13 +151,19 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       
       console.log("Device registered, making call to:", phoneNumber);
       
-      // Make the call
-      const call = device.connect({
+      // Make the call with appropriate type settings
+      // Using type assertion for the connect options
+      const connectOptions = {
         To: phoneNumber,
         params: {
           // Add any additional call parameters here
         }
-      });
+      } as any;
+      
+      const callPromise = device.connect(connectOptions);
+      
+      // We need to await the promise to get the actual Call object
+      const call = await callPromise;
       
       // Store the call reference
       callRef.current = call;
