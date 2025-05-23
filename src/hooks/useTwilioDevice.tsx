@@ -60,7 +60,7 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       const tokenUrl = import.meta.env.VITE_TOKEN_URL || 
                       `${baseEndpoint}/token`;
       
-      const voiceEndpoint = `${baseEndpoint}/voice`;
+      const voiceEndpoint = `${baseEndpoint}`;
       
       console.log("Calling voice endpoint:", voiceEndpoint);
       console.log("Using token URL:", tokenUrl);
