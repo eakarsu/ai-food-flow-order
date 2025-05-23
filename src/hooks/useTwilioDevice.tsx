@@ -56,10 +56,14 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
                           localStorage.getItem('twilioNgrokVoiceUrl') || 
                           'https://api.orderlybite.com';
       
+      // Get token URL from environment variable or use default constructed from baseEndpoint
+      const tokenUrl = import.meta.env.VITE_TOKEN_URL || 
+                      `${baseEndpoint}/token`;
+      
       const voiceEndpoint = `${baseEndpoint}/voice`;
-      const tokenEndpoint = `${baseEndpoint}/token`;
       
       console.log("Calling voice endpoint:", voiceEndpoint);
+      console.log("Using token URL:", tokenUrl);
       console.log("Calling phone number:", phoneNumber);
       
       // Check if the voice endpoint is a cross-origin URL (different domain)
@@ -90,8 +94,8 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       }
       
       // Fetch token from the token endpoint
-      console.log("Fetching token from:", tokenEndpoint);
-      const tokenResponse = await fetch(tokenEndpoint, {
+      console.log("Fetching token from:", tokenUrl);
+      const tokenResponse = await fetch(tokenUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -126,9 +130,8 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       
       // Create device with appropriate type settings
       const device = new Device(token, {
-        // The 'debug' option is not in the type definition, but it's supported by the library
-        // We'll use type assertion to bypass TypeScript's check
-      } as any);
+        // Limit type to what's in the Device interface
+      });
       
       // Listen for device events
       device.on('ready', () => {
@@ -150,19 +153,12 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       
       console.log("Device registered, making call to:", phoneNumber);
       
-      // Make the call with appropriate type settings
-      // Using type assertion for the connect options
-      const connectOptions = {
-        To: phoneNumber,
+      // Make the call with proper types
+      const call = await device.connect({
         params: {
-          // Add any additional call parameters here
+          To: phoneNumber
         }
-      } as any;
-      
-      const callPromise = device.connect(connectOptions);
-      
-      // We need to await the promise to get the actual Call object
-      const call = await callPromise;
+      });
       
       // Store the call reference
       callRef.current = call;
@@ -305,7 +301,7 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       const newMuteState = !isMuted;
       console.log(`Setting mute state to: ${newMuteState}`);
       
-      // Fix: Instead of using unmute(), we use mute(false) to unmute the call
+      // Use mute() with boolean parameter
       callRef.current.mute(newMuteState);
       
       setIsMuted(newMuteState);
