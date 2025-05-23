@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useToast } from "@/hooks/use-toast";
+import { Device } from '@twilio/voice-sdk';
 
 interface UseTwilioDeviceProps {
   open: boolean;
@@ -13,6 +14,8 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
   const [isConnecting, setIsConnecting] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const deviceRef = useRef<Device | null>(null);
+  const callRef = useRef<any>(null);
   
   // Initialize audio element for call playback
   useEffect(() => {
@@ -37,15 +40,25 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
 
   // Simplified API that relies on server-side implementation
   const makeCall = async () => {
-    if (!phoneNumber) return;
+    if (!phoneNumber) {
+      toast({
+        title: "Error",
+        description: "Phone number is required",
+        variant: "destructive",
+      });
+      return;
+    }
     
     try {
       setIsConnecting(true);
       
       // Get the voice endpoint URL from environment variable or from localStorage
-      const voiceEndpoint = import.meta.env.VITE_NGROK_VOICE_URL || 
+      const baseEndpoint = import.meta.env.VITE_NGROK_VOICE_URL || 
                           localStorage.getItem('twilioNgrokVoiceUrl') || 
-                          '/api/twilio-call';
+                          'https://api.orderlybite.com';
+      
+      const voiceEndpoint = `${baseEndpoint}/voice`;
+      const tokenEndpoint = `${baseEndpoint}/token`;
       
       console.log("Calling voice endpoint:", voiceEndpoint);
       console.log("Calling phone number:", phoneNumber);
@@ -77,146 +90,148 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         return;
       }
       
-      // For WebRTC-based audio stream using fetch to connect to the Twilio API
-      const response = await fetch(voiceEndpoint, {
+      // Fetch token from the token endpoint
+      console.log("Fetching token from:", tokenEndpoint);
+      const tokenResponse = await fetch(tokenEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        // Add mode: 'cors' for cross-origin requests
         ...(isCrossOrigin ? { mode: 'cors' } : {}),
-        body: JSON.stringify({ 
-          to: phoneNumber,
-          identity: "customer-service-agent"
-        })
+        body: JSON.stringify({ identity: "customer-service-agent" }),
       });
       
-      console.log("Response status:", response.status);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to initiate call. Status: ${response.status}`);
+      if (!tokenResponse.ok) {
+        throw new Error(`Failed to get token. Status: ${tokenResponse.status}`);
       }
       
-      // Check the content type to determine if it's JSON or XML
-      const contentType = response.headers.get('content-type');
+      const tokenData = await tokenResponse.json();
+      const token = tokenData.token;
       
-      if (contentType && contentType.includes('application/json')) {
-        // Handle JSON response
-        const data = await response.json();
-        console.log("Call initiated successfully:", data);
-        
-        // If this is a JSON response with a mediaUrl, play it
-        if (data.mediaUrl) {
-          if (audioRef.current) {
-            audioRef.current.src = data.mediaUrl;
-            audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
-          }
-        }
-      } else if (contentType && (contentType.includes('application/xml') || contentType.includes('text/xml'))) {
-        // Handle XML response (common with Twilio TwiML)
-        const xmlText = await response.text();
-        console.log("Received XML response:", xmlText);
-        
-        // Create a WebSocket connection to handle real-time audio
+      if (!token) {
+        throw new Error("Token endpoint did not return a valid token");
+      }
+      
+      console.log("Token received successfully");
+      
+      // Initialize Twilio Device with the token
+      if (deviceRef.current) {
+        // Destroy existing device if it exists
         try {
-          // Create WebSocket URL from the same base endpoint
-          const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-          const wsEndpoint = voiceEndpoint.startsWith('http') 
-            ? voiceEndpoint.replace(/^http(s?):\/\//, wsProtocol + '//') + '/stream'
-            : wsProtocol + '//' + window.location.host + voiceEndpoint + '/stream';
-          
-          console.log("Attempting WebSocket connection to:", wsEndpoint);
-          
-          // Try to connect to WebSocket for audio streaming
-          // This will likely need server-side support specifically for audio streaming
-          const socket = new WebSocket(wsEndpoint);
-          
-          socket.onopen = () => {
-            console.log("WebSocket connection established for audio streaming");
-            socket.send(JSON.stringify({ 
-              action: 'connect', 
-              phoneNumber,
-              identity: "customer-service-agent"
-            }));
-          };
-          
-          socket.onerror = (error) => {
-            console.error("WebSocket error:", error);
-            toast({
-              title: "Audio Connection Failed",
-              description: "Could not establish audio connection. Call connected but you may not hear audio.",
-              variant: "destructive",
-            });
-          };
-        } catch (wsError) {
-          console.error("WebSocket connection failed:", wsError);
-          // Continue with the call even if WebSocket fails, as it might be handled by the server directly
+          deviceRef.current.destroy();
+        } catch (e) {
+          console.error("Error destroying existing device:", e);
         }
-        
-        // Check if the XML contains TwiML directives
-        if (xmlText.includes('<Dial') || xmlText.includes('<Say') || xmlText.includes('<Response')) {
-          console.log("Received valid TwiML response, considering call connected");
-          
-          // Create audio context for playing audio
-          try {
-            // For browsers that support AudioContext API
-            const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-            if (AudioContext) {
-              const audioContext = new AudioContext();
-              
-              // Attempt to play a dial tone as feedback that the call is connecting
-              const oscillator = audioContext.createOscillator();
-              oscillator.type = 'sine';
-              oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
-              
-              const gainNode = audioContext.createGain();
-              gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); // Low volume
-              
-              oscillator.connect(gainNode);
-              gainNode.connect(audioContext.destination);
-              
-              oscillator.start();
-              
-              // Stop the tone after 1 second
-              setTimeout(() => {
-                oscillator.stop();
-                // Clean up
-                oscillator.disconnect();
-                gainNode.disconnect();
-              }, 1000);
-              
-              console.log("Playing dial tone as audio feedback");
-            }
-          } catch (audioError) {
-            console.error("AudioContext initialization failed:", audioError);
-          }
-        } else {
-          throw new Error("Received XML response but it doesn't appear to be valid TwiML");
-        }
-      } else {
-        // Handle other response types
-        const text = await response.text();
-        console.log("Response received (non-JSON format):", text);
+        deviceRef.current = null;
       }
       
-      // Consider the call connected if we got a 200 OK response
-      setIsConnected(true);
-      toast({
-        title: "Call Connected",
-        description: `Connected to ${phoneNumber}`,
+      const device = new Device(token, {
+        debug: true, // Enable debug mode
+        // Add any other Device options here
       });
+      
+      // Listen for device events
+      device.on('ready', () => {
+        console.log("Twilio Device ready");
+      });
+      
+      device.on('error', (twilioError) => {
+        console.error("Twilio Device error:", twilioError);
+        toast({
+          title: "Twilio Device Error",
+          description: twilioError.message || "An error occurred with the call device",
+          variant: "destructive",
+        });
+      });
+      
+      // Register the device
+      await device.register();
+      deviceRef.current = device;
+      
+      console.log("Device registered, making call to:", phoneNumber);
+      
+      // Make the call
+      const call = device.connect({
+        To: phoneNumber,
+        params: {
+          // Add any additional call parameters here
+        }
+      });
+      
+      // Store the call reference
+      callRef.current = call;
+      
+      // Set up call event listeners
+      call.on('accept', () => {
+        console.log("Call accepted");
+        setIsConnected(true);
+        setIsConnecting(false);
+        toast({
+          title: "Call Connected",
+          description: `Connected to ${phoneNumber}`,
+        });
+      });
+      
+      call.on('disconnect', () => {
+        console.log("Call disconnected");
+        setIsConnected(false);
+        setIsConnecting(false);
+        setIsMuted(false);
+        toast({
+          title: "Call Ended",
+          description: "Call has been disconnected",
+        });
+      });
+      
+      call.on('error', (callError) => {
+        console.error("Call error:", callError);
+        setIsConnected(false);
+        setIsConnecting(false);
+        toast({
+          title: "Call Error",
+          description: callError.message || "An error occurred during the call",
+          variant: "destructive",
+        });
+      });
+      
+      // Create audio context for playing a dial tone as feedback
+      try {
+        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioContext) {
+          const audioContext = new AudioContext();
+          
+          const oscillator = audioContext.createOscillator();
+          oscillator.type = 'sine';
+          oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
+          
+          const gainNode = audioContext.createGain();
+          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); // Low volume
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.start();
+          
+          // Stop the tone after 1 second
+          setTimeout(() => {
+            oscillator.stop();
+            oscillator.disconnect();
+            gainNode.disconnect();
+          }, 1000);
+          
+          console.log("Playing dial tone as audio feedback");
+        }
+      } catch (audioError) {
+        console.error("AudioContext initialization failed:", audioError);
+      }
       
     } catch (error) {
       console.error("Error making call:", error);
       
-      // Provide more specific error message for CORS issues and XML parsing
       let errorMessage = error instanceof Error ? error.message : "Failed to connect call";
       
       if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-        // This is likely a CORS error
         errorMessage = "Cannot connect to voice server. This may be due to CORS restrictions. Please ensure your server allows cross-origin requests.";
-      } else if (error instanceof SyntaxError && error.message.includes("Unexpected token")) {
-        errorMessage = "The server returned a response in an unexpected format (possibly XML when JSON was expected). Check server configuration.";
       }
       
       toast({
@@ -225,47 +240,33 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         variant: "destructive",
       });
       
-      // Reset the connected state
       setIsConnected(false);
-    } finally {
       setIsConnecting(false);
     }
   };
 
   const disconnectCall = async () => {
     try {
-      // Get the voice endpoint URL
-      const voiceEndpoint = import.meta.env.VITE_NGROK_VOICE_URL || 
-                          localStorage.getItem('twilioNgrokVoiceUrl') || 
-                          '/api/twilio-call';
+      if (callRef.current) {
+        console.log("Disconnecting active call");
+        callRef.current.disconnect();
+        callRef.current = null;
+      } else {
+        console.log("No active call to disconnect");
+      }
       
-      console.log("Disconnecting call using endpoint:", `${voiceEndpoint}/hangup`);
-      
-      // Check if the voice endpoint is a cross-origin URL (different domain)
-      const isCrossOrigin = voiceEndpoint.startsWith('http') && 
-                           !voiceEndpoint.includes(window.location.hostname);
-      
-      const response = await fetch(`${voiceEndpoint}/hangup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // Add mode: 'cors' for cross-origin requests
-        ...(isCrossOrigin ? { mode: 'cors' } : {}),
-        body: JSON.stringify({ 
-          identity: "customer-service-agent"
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error("Failed to end call");
+      // Destroy the device
+      if (deviceRef.current) {
+        console.log("Unregistering device");
+        try {
+          deviceRef.current.destroy();
+          deviceRef.current = null;
+        } catch (e) {
+          console.error("Error destroying device:", e);
+        }
       }
       
       console.log("Call disconnected successfully");
-      toast({
-        title: "Call Ended",
-        description: "Call has been disconnected",
-      });
       
       // Stop any audio playback
       if (audioRef.current) {
@@ -290,43 +291,24 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
 
   const toggleMute = async () => {
     try {
-      // Get the voice endpoint URL
-      const voiceEndpoint = import.meta.env.VITE_NGROK_VOICE_URL || 
-                          localStorage.getItem('twilioNgrokVoiceUrl') || 
-                          '/api/twilio-call';
-      
-      console.log("Toggling mute using endpoint:", `${voiceEndpoint}/mute`);
-      
-      // Check if the voice endpoint is a cross-origin URL (different domain)
-      const isCrossOrigin = voiceEndpoint.startsWith('http') && 
-                           !voiceEndpoint.includes(window.location.hostname);
-      
-      // Also mute the local audio element if it exists
-      if (audioRef.current) {
-        audioRef.current.muted = !isMuted;
+      if (!callRef.current) {
+        console.log("No active call to mute/unmute");
+        return;
       }
       
-      const response = await fetch(`${voiceEndpoint}/mute`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // Add mode: 'cors' for cross-origin requests
-        ...(isCrossOrigin ? { mode: 'cors' } : {}),
-        body: JSON.stringify({ 
-          muted: !isMuted,
-          identity: "customer-service-agent"
-        })
-      });
+      const newMuteState = !isMuted;
+      console.log(`Setting mute state to: ${newMuteState}`);
       
-      if (!response.ok) {
-        throw new Error("Failed to toggle mute");
+      if (newMuteState) {
+        callRef.current.mute();
+      } else {
+        callRef.current.unmute();
       }
       
-      setIsMuted(!isMuted);
+      setIsMuted(newMuteState);
       toast({
-        title: isMuted ? "Microphone Unmuted" : "Microphone Muted",
-        description: isMuted ? "Others can hear you now" : "You are now muted",
+        title: newMuteState ? "Microphone Muted" : "Microphone Unmuted",
+        description: newMuteState ? "You are now muted" : "Others can hear you now",
       });
       
     } catch (error) {

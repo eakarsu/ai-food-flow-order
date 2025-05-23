@@ -25,6 +25,7 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
   const [twilioNumber, setTwilioNumber] = useState<string>("");
   const [envVarMissing, setEnvVarMissing] = useState<boolean>(false);
   const [audioPermissionGranted, setAudioPermissionGranted] = useState<boolean | null>(null);
+  const [tokenAvailable, setTokenAvailable] = useState<boolean | null>(null);
 
   useEffect(() => {
     // Check for microphone permission
@@ -67,7 +68,7 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
 
   // Automatically attempt to make the call when the dialog is opened
   useEffect(() => {
-    if (open && !isConnected && !isConnecting) {
+    if (open && !isConnected && !isConnecting && audioPermissionGranted !== false) {
       console.log("Dialog opened, auto-initiating call to:", twilioNumber);
       // Small timeout to ensure UI is ready
       const timer = setTimeout(() => {
@@ -75,7 +76,7 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [open, twilioNumber, isConnected, isConnecting, makeCall]);
+  }, [open, twilioNumber, isConnected, isConnecting, makeCall, audioPermissionGranted]);
 
   // Clean up when dialog closes
   useEffect(() => {
@@ -83,6 +84,29 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
       disconnectCall();
     }
   }, [open, isConnected, disconnectCall]);
+
+  // Check if token endpoint is available
+  useEffect(() => {
+    if (open) {
+      const baseEndpoint = import.meta.env.VITE_NGROK_VOICE_URL || 
+                         localStorage.getItem('twilioNgrokVoiceUrl') || 
+                         'https://api.orderlybite.com';
+      const tokenEndpoint = `${baseEndpoint}/token`;
+      
+      // Just check if the endpoint is available
+      fetch(tokenEndpoint, {
+        method: 'HEAD',
+        mode: 'no-cors', // This will always succeed in terms of network request
+      })
+        .then(() => {
+          // This doesn't guarantee the endpoint works properly, just that it exists
+          setTokenAvailable(true);
+        })
+        .catch(() => {
+          setTokenAvailable(false);
+        });
+    }
+  }, [open]);
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => {
@@ -115,6 +139,15 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
           </Alert>
         )}
 
+        {tokenAvailable === false && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Unable to connect to token service. Please check your server configuration.
+            </AlertDescription>
+          </Alert>
+        )}
+
         {envVarMissing && (
           <Alert variant="destructive" className="bg-yellow-50 border-yellow-200 mb-4">
             <AlertCircle className="h-4 w-4 text-yellow-600" />
@@ -137,7 +170,7 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
               phoneNumber={twilioNumber}
               handleMakeCall={makeCall}
               isConnecting={isConnecting}
-              hasToken={true} // Simplified as we no longer need tokens client-side
+              hasToken={tokenAvailable !== false}
             />
           )}
         </div>

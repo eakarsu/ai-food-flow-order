@@ -35,7 +35,13 @@ const CallInitiator = ({ phoneNumber, handleMakeCall, isConnecting, hasToken }: 
         </div>
       )}
 
-      {!isConnecting && (
+      {!isConnecting && !hasToken && (
+        <div className="text-sm text-red-500">
+          Token service not available
+        </div>
+      )}
+
+      {!isConnecting && hasToken && (
         <div className="text-sm text-gray-500">
           Click to initiate call
         </div>

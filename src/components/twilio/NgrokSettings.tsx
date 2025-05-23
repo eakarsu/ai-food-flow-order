@@ -101,7 +101,7 @@ const NgrokSettings = () => {
           onChange={(e) => setVoiceUrl(e.target.value)}
         />
         <p className="text-sm text-gray-500">
-          URL for handling voice call functionality
+          Base URL for voice functions (used for /voice and /token endpoints)
         </p>
       </div>
       
@@ -116,6 +116,18 @@ const NgrokSettings = () => {
         <p className="text-sm text-gray-500">
           URL for handling SMS functionality
         </p>
+      </div>
+
+      <div className="pt-2">
+        <Alert variant="default" className="bg-blue-50 border-blue-200">
+          <AlertDescription className="text-blue-700">
+            <p className="font-medium mb-1">Required API Endpoints:</p>
+            <ul className="list-disc pl-5 text-xs">
+              <li>POST /token - Returns a Twilio token JSON with format {"token": "YOUR_TOKEN"}</li>
+              <li>POST /voice - Handles voice calls with TwiML response</li>
+            </ul>
+          </AlertDescription>
+        </Alert>
       </div>
       
       <div className="pt-4 flex justify-end">
