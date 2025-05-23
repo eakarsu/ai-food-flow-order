@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { Device, Call } from '@twilio/voice-sdk';
@@ -306,11 +305,8 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       const newMuteState = !isMuted;
       console.log(`Setting mute state to: ${newMuteState}`);
       
-      if (newMuteState) {
-        callRef.current.mute();
-      } else {
-        callRef.current.unmute();
-      }
+      // Fix: Instead of using unmute(), we use mute(false) to unmute the call
+      callRef.current.mute(newMuteState);
       
       setIsMuted(newMuteState);
       toast({
