@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Phone } from 'lucide-react';
+import { Phone, Volume2 } from 'lucide-react';
 import { Loader2 } from 'lucide-react';
 
 interface CallInitiatorProps {
@@ -38,6 +38,13 @@ const CallInitiator = ({ phoneNumber, handleMakeCall, isConnecting, hasToken }: 
       {!isConnecting && (
         <div className="text-sm text-gray-500">
           Click to initiate call
+        </div>
+      )}
+      
+      {isConnecting && (
+        <div className="mt-2 flex items-center justify-center text-xs text-gray-500">
+          <Volume2 size={14} className="mr-1" />
+          Make sure your speakers are turned on
         </div>
       )}
     </>

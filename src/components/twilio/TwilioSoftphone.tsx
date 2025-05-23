@@ -24,6 +24,22 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
   // Get TWILIO_VOICE_NUMBER from environment variables
   const [twilioNumber, setTwilioNumber] = useState<string>("");
   const [envVarMissing, setEnvVarMissing] = useState<boolean>(false);
+  const [audioPermissionGranted, setAudioPermissionGranted] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    // Check for microphone permission
+    if (open) {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(() => {
+          setAudioPermissionGranted(true);
+          console.log("Microphone permission is granted");
+        })
+        .catch(error => {
+          setAudioPermissionGranted(false);
+          console.error("Microphone permission denied:", error);
+        });
+    }
+  }, [open]);
 
   useEffect(() => {
     // Use environment variable or fallback to the provided phone number
@@ -59,10 +75,23 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [open, twilioNumber]);
+  }, [open, twilioNumber, isConnected, isConnecting, makeCall]);
+
+  // Clean up when dialog closes
+  useEffect(() => {
+    if (!open && isConnected) {
+      disconnectCall();
+    }
+  }, [open, isConnected, disconnectCall]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+      if (!isOpen && isConnected) {
+        // When closing the dialog, make sure to disconnect the call
+        disconnectCall();
+      }
+      onOpenChange(isOpen);
+    }}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center">
@@ -76,6 +105,15 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
             }
           </DialogDescription>
         </DialogHeader>
+
+        {audioPermissionGranted === false && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Microphone access is required for calls. Please allow microphone access in your browser settings.
+            </AlertDescription>
+          </Alert>
+        )}
 
         {envVarMissing && (
           <Alert variant="destructive" className="bg-yellow-50 border-yellow-200 mb-4">
@@ -103,6 +141,13 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
             />
           )}
         </div>
+        
+        {/* Debug notification about audio status */}
+        {isConnected && (
+          <div className="mt-4 text-xs text-center text-gray-500">
+            If you can't hear audio, check your browser volume settings and make sure media autoplay is allowed.
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
