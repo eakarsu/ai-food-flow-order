@@ -6,7 +6,7 @@ import { formatPhoneNumber } from '@/utils/phoneNumberFormat';
 interface Message {
   text: string;
   timestamp: number; // Unix timestamp
-  status: 'sent' | 'failed';
+  status: 'sent' | 'received' | 'failed';
 }
 
 interface UseSendSMSProps {
@@ -84,13 +84,23 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
       console.log("SMS sent successfully:", responseData);
       
       // Add message to history
-      const newMessage: Message = {
+      const newSentMessage: Message = {
         text: message,
         timestamp: Date.now(),
         status: 'sent'
       };
       
-      setMessageHistory(prev => [...prev, newMessage]);
+      setMessageHistory(prev => [...prev, newSentMessage]);
+      
+      // If there's a response message in the data, add it to history
+      if (responseData && responseData.message) {
+        const responseMessage: Message = {
+          text: responseData.message,
+          timestamp: Date.now() + 1000, // Add 1 second to ensure it appears after sent message
+          status: 'received'
+        };
+        setMessageHistory(prev => [...prev, responseMessage]);
+      }
       
       toast({
         title: "Message Sent",

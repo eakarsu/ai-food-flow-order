@@ -16,8 +16,19 @@ const MessageTextarea = ({ message, onChange }: MessageTextareaProps) => {
         placeholder="Enter your message here..." 
         value={message}
         onChange={(e) => onChange(e.target.value)}
-        className="min-h-[60px]" // Even smaller for better UX
+        className="min-h-[60px] resize-none"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            // Trigger form submission via a custom event
+            const submitEvent = new CustomEvent('submit-message');
+            document.dispatchEvent(submitEvent);
+          }
+        }}
       />
+      <div className="text-xs text-muted-foreground text-right">
+        Press Enter to send, Shift+Enter for new line
+      </div>
     </div>
   );
 };

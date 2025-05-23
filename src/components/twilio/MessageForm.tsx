@@ -19,6 +19,8 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
   const { loading, messageHistory, sendSMS, clearHistory } = useSendSMS({ phoneNumber });
 
   const handleSendSMS = async () => {
+    if (!message.trim()) return;
+    
     const success = await sendSMS(message);
     if (success) {
       setMessage("");
@@ -49,20 +51,28 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
           )}
         </div>
         
-        <ScrollArea id="message-history" className="h-32 rounded-md border">
+        <ScrollArea id="message-history" className="h-[180px] rounded-md border">
           {messageHistory.length > 0 ? (
-            <div className="space-y-2 p-2">
+            <div className="space-y-2 p-3">
               {messageHistory.map((msg, idx) => (
                 <div 
                   key={idx} 
                   className={`p-2 rounded-lg text-sm ${
                     msg.status === 'sent' 
                       ? 'bg-food-primary/10 text-food-dark' 
-                      : 'bg-red-50 text-red-800'
+                      : msg.status === 'received'
+                        ? 'bg-blue-50 text-blue-800'
+                        : 'bg-red-50 text-red-800'
                   }`}
                 >
                   <div className="flex justify-between items-start">
-                    <span className="whitespace-pre-wrap break-words">{msg.text}</span>
+                    <div className="flex-1">
+                      <div className="text-xs font-medium mb-1">
+                        {msg.status === 'sent' ? 'You' : 
+                         msg.status === 'received' ? 'Response' : 'Error'}:
+                      </div>
+                      <span className="whitespace-pre-wrap break-words">{msg.text}</span>
+                    </div>
                     <span className="text-xs text-muted-foreground ml-2 whitespace-nowrap">
                       {format(msg.timestamp, 'HH:mm')}
                     </span>

@@ -39,6 +39,23 @@ const TwilioContact = () => {
     console.log("TwilioContact: Saved to localStorage:", numberToUse);
   }, []);
 
+  // Listen for custom submit-message event
+  useEffect(() => {
+    const handleSubmitMessage = () => {
+      if (activeTab === "sms") {
+        const sendButton = document.querySelector('button:has(.lucide-send)') as HTMLButtonElement;
+        if (sendButton && !sendButton.disabled) {
+          sendButton.click();
+        }
+      }
+    };
+    
+    document.addEventListener('submit-message', handleSubmitMessage);
+    return () => {
+      document.removeEventListener('submit-message', handleSubmitMessage);
+    };
+  }, [activeTab]);
+
   // Debug logging and initialize with default if needed
   useEffect(() => {
     console.log("TwilioContact: Component mounted");
@@ -93,7 +110,7 @@ const TwilioContact = () => {
   return (
     <>
       <Card className="w-full mx-auto bg-white shadow-lg">
-        <CardHeader className="bg-food-primary/10 rounded-t-lg">
+        <CardHeader className="bg-food-primary/10 rounded-t-lg pb-4">
           <div className="flex justify-between items-center">
             <div>
               <CardTitle className="text-food-primary flex items-center text-xl">
