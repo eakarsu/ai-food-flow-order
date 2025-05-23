@@ -11,27 +11,32 @@ const NgrokSettings = () => {
   const { toast } = useToast();
   const [voiceUrl, setVoiceUrl] = useState('');
   const [smsUrl, setSmsUrl] = useState('');
+  const [voiceNumber, setVoiceNumber] = useState('');
   
   useEffect(() => {
     // Try to load from environment variables first, fall back to localStorage
     const envVoiceUrl = import.meta.env.VITE_NGROK_VOICE_URL;
     const envSmsUrl = import.meta.env.VITE_NGROK_SMS_URL;
+    const envVoiceNumber = import.meta.env.VITE_TWILIO_VOICE_NUMBER;
     
     const storedVoiceUrl = localStorage.getItem('twilioNgrokVoiceUrl') || '';
     const storedSmsUrl = localStorage.getItem('twilioNgrokSmsUrl') || '';
+    const storedVoiceNumber = localStorage.getItem('twilioVoiceNumber') || '';
     
     setVoiceUrl(envVoiceUrl || storedVoiceUrl);
     setSmsUrl(envSmsUrl || storedSmsUrl);
+    setVoiceNumber(envVoiceNumber || storedVoiceNumber);
   }, []);
   
   const handleSave = () => {
     // Save to localStorage as fallback for browsers
     localStorage.setItem('twilioNgrokVoiceUrl', voiceUrl);
     localStorage.setItem('twilioNgrokSmsUrl', smsUrl);
+    localStorage.setItem('twilioVoiceNumber', voiceNumber);
     
     toast({
       title: "Settings Saved",
-      description: "API endpoints have been updated.",
+      description: "API endpoints and Twilio number have been updated.",
     });
   };
   
@@ -53,6 +58,19 @@ const NgrokSettings = () => {
           </AlertDescription>
         </Alert>
       )}
+      
+      <div className="space-y-2">
+        <Label htmlFor="voice-number">Twilio Voice Number</Label>
+        <Input 
+          id="voice-number"
+          placeholder="+18001234567"
+          value={voiceNumber}
+          onChange={(e) => setVoiceNumber(e.target.value)}
+        />
+        <p className="text-sm text-gray-500">
+          The Twilio phone number to call
+        </p>
+      </div>
       
       <div className="space-y-2">
         <Label htmlFor="voice-url">Voice API Endpoint</Label>

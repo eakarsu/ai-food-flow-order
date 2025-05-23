@@ -10,6 +10,7 @@ import {
 import { useTwilioDevice } from '@/hooks/useTwilioDevice';
 import CallInitiator from './CallInitiator';
 import ActiveCall from './ActiveCall';
+import { useState, useEffect } from 'react';
 
 interface TwilioSoftphoneProps {
   phoneNumber: string;
@@ -18,6 +19,22 @@ interface TwilioSoftphoneProps {
 }
 
 const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphoneProps) => {
+  // Get TWILIO_VOICE_NUMBER from environment variables
+  const [twilioNumber, setTwilioNumber] = useState<string>("");
+
+  useEffect(() => {
+    // Use environment variable or fallback to the provided phone number
+    const twilioVoiceNumber = import.meta.env.VITE_TWILIO_VOICE_NUMBER;
+    console.log("Twilio voice number from env:", twilioVoiceNumber);
+    
+    if (twilioVoiceNumber) {
+      setTwilioNumber(twilioVoiceNumber);
+    } else {
+      setTwilioNumber(phoneNumber);
+      console.log("VITE_TWILIO_VOICE_NUMBER environment variable not set, using provided number instead");
+    }
+  }, [phoneNumber]);
+
   const {
     isConnected,
     isConnecting,
@@ -25,7 +42,7 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
     makeCall,
     disconnectCall,
     toggleMute
-  } = useTwilioDevice({ open, phoneNumber });
+  } = useTwilioDevice({ open, phoneNumber: twilioNumber });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -37,8 +54,8 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
           </DialogTitle>
           <DialogDescription>
             {isConnected 
-              ? `Connected to ${phoneNumber}`
-              : `Calling ${phoneNumber}`
+              ? `Connected to ${twilioNumber}`
+              : `Calling ${twilioNumber}`
             }
           </DialogDescription>
         </DialogHeader>
@@ -46,14 +63,14 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
         <div className="flex flex-col items-center py-6 space-y-6">
           {isConnected ? (
             <ActiveCall 
-              phoneNumber={phoneNumber}
+              phoneNumber={twilioNumber}
               isMuted={isMuted}
               handleToggleMute={toggleMute}
               handleDisconnect={disconnectCall}
             />
           ) : (
             <CallInitiator
-              phoneNumber={phoneNumber}
+              phoneNumber={twilioNumber}
               handleMakeCall={makeCall}
               isConnecting={isConnecting}
               hasToken={true} // Simplified as we no longer need tokens client-side
