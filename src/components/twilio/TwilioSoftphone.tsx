@@ -91,7 +91,8 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
       const baseEndpoint = import.meta.env.VITE_NGROK_VOICE_URL || 
                          localStorage.getItem('twilioNgrokVoiceUrl') || 
                          'https://api.orderlybite.com';
-      const tokenEndpoint = `${baseEndpoint}/token`;
+
+      const tokenEndpoint = import.meta.env.VITE_TOKEN_URL;
       
       // Just check if the endpoint is available
       fetch(tokenEndpoint, {

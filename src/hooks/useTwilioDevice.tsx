@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { Device, Call } from '@twilio/voice-sdk';
+import { Capacitor } from '@capacitor/core';
+import { VoiceRecorder } from 'capacitor-voice-recorder'; 
 
 interface UseTwilioDeviceProps {
   open: boolean;
@@ -39,6 +41,35 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
 
   // Simplified API that relies on server-side implementation
   const makeCall = async () => {
+
+    // iOS-specific permission handling
+    if (Capacitor.getPlatform() === 'ios' || Capacitor.getPlatform() === 'android') {
+      // Check if the device can record (optional but good practice)
+      const canRecordResult = await VoiceRecorder.canDeviceVoiceRecord();
+      if (!canRecordResult.value) {
+        alert('This device cannot record audio.');
+        console.error('Device cannot record audio.');
+        return; // Stop if no recording capability
+      }
+
+      // Check current permission status
+      const permissionStatus = await VoiceRecorder.hasAudioRecordingPermission();
+      if (!permissionStatus.value) {
+        // Request permission using the plugin
+        const requestResult = await VoiceRecorder.requestAudioRecordingPermission();
+        if (!requestResult.value) {
+          alert('Microphone permission is required to make calls. Please grant permission.');
+          console.error('Microphone permission denied by user.');
+          return; // Stop if permission denied
+        }
+        console.log('Microphone permission granted via plugin.');
+      } else {
+        console.log('Microphone permission already granted.');
+      }
+    }
+
+
+
     if (!phoneNumber) {
       toast({
         title: "Error",
