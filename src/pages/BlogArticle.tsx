@@ -1,4 +1,3 @@
-
 import { useParams, Navigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -51,9 +50,9 @@ const blogArticles = [
       <p>Ready to unlock a new stream of revenue and delight a broader range of customers with the effortless power of AI?</p>
       
       <div class="mt-6 p-4 bg-food-light rounded-lg text-center">
-        <Link to="/" class="text-food-primary font-semibold hover:text-food-secondary underline">
+        <a href="/" class="text-food-primary font-semibold hover:text-food-secondary underline">
           See OrderlyBite in action: try the live demo on our homepage!
-        </Link>
+        </a>
       </div>
     `,
     author: "OrderlyBite Team",
@@ -106,15 +105,15 @@ const blogArticles = [
       <p>Offer your customers the ultimate in ordering freedom and watch your business thrive.</p>
       
       <div class="mt-6 p-4 bg-food-light rounded-lg text-center">
-        <Link to="/" class="text-food-primary font-semibold hover:text-food-secondary underline">
-          See OrderlyBite in action: try the live demo on our homepage!
-        </Link>
+        <a href="/" class="text-food-primary font-semibold hover:text-food-secondary underline">
+          Experience our AI demo directly on the OrderlyBite homepage.
+        </a>
       </div>
     `,
     author: "OrderlyBite Team", 
     publishDate: "2024-01-18",
     category: "AI Technology",
-    imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?q=80&w=1000",
+    imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1000",
     tags: ["customization", "BYO meals", "upselling", "AI"],
     readTime: "7 min read"
   },
@@ -160,9 +159,9 @@ const blogArticles = [
       <p>Stop letting outdated order-taking methods create bottlenecks and stress for your team. Embrace the future of restaurant efficiency.</p>
       
       <div class="mt-6 p-4 bg-food-light rounded-lg text-center">
-        <Link to="/" class="text-food-primary font-semibold hover:text-food-secondary underline">
-          See OrderlyBite in action: try the live demo on our homepage!
-        </Link>
+        <a href="/" class="text-food-primary font-semibold hover:text-food-secondary underline">
+          Try the OrderlyBite demo on our homepage and see the magic for yourself!
+        </a>
       </div>
     `,
     author: "OrderlyBite Team",
