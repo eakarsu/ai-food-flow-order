@@ -122,6 +122,39 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
   
+  /* Blog content article styles */
+  .blog-content {
+    @apply prose prose-lg max-w-none;
+  }
+  
+  .blog-content h2 {
+    @apply text-2xl font-bold text-food-dark mt-8 mb-4;
+  }
+  
+  .blog-content h3 {
+    @apply text-xl font-semibold text-food-dark mt-6 mb-3;
+  }
+  
+  .blog-content p {
+    @apply text-gray-700 leading-relaxed mb-4;
+  }
+  
+  .blog-content ul {
+    @apply list-disc ml-6 mb-4 space-y-2;
+  }
+  
+  .blog-content li {
+    @apply text-gray-700 leading-relaxed;
+  }
+  
+  .blog-content strong {
+    @apply font-semibold text-food-dark;
+  }
+  
+  .blog-content a {
+    @apply text-food-primary hover:text-food-secondary transition-colors;
+  }
+  
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
