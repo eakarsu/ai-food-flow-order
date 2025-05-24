@@ -1,3 +1,4 @@
+
 // vite.config.ts
 import { defineConfig, loadEnv } from 'vite'; // Import loadEnv
 import react from '@vitejs/plugin-react';
@@ -10,6 +11,9 @@ export default defineConfig(({ mode }) => { // Add ({ mode })
 
   return {
     plugins: [react()],
+    server: {
+      port: 8080
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
@@ -18,6 +22,17 @@ export default defineConfig(({ mode }) => { // Add ({ mode })
     build: {
       outDir: 'dist',
       assetsDir: 'assets',
+      rollupOptions: {
+        external: [
+          '@capacitor/filesystem',
+          '@capacitor/core',
+          '@capacitor/app',
+          '@capacitor/haptics',
+          '@capacitor/keyboard',
+          '@capacitor/status-bar',
+          'capacitor-voice-recorder'
+        ]
+      }
     },
     base: './',
     // This 'define' block directly replaces import.meta.env.VITE_XXX in your client code
@@ -33,4 +48,3 @@ export default defineConfig(({ mode }) => { // Add ({ mode })
     }
   };
 });
-
