@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Menu, X, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useCart } from '@/context/CartContext';
@@ -12,9 +12,15 @@ const Navbar = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { getTotalItems } = useCart();
+  const navigate = useNavigate();
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    setIsMenuOpen(false);
   };
 
   return (
@@ -30,7 +36,12 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-10">
             <Link to="/" className="text-gray-700 hover:text-food-primary transition-colors">Home</Link>
             <Link to="/restaurants" className="text-gray-700 hover:text-food-primary transition-colors">Restaurant</Link>
-            <Link to="/blog" className="text-gray-700 hover:text-food-primary transition-colors">Blog</Link>
+            <button 
+              onClick={() => handleNavigation('/blog')}
+              className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer"
+            >
+              Blog
+            </button>
             <Link to="/about" className="text-gray-700 hover:text-food-primary transition-colors">About</Link>
             <Link to="/contact" className="text-gray-700 hover:text-food-primary transition-colors">Contact</Link>
           </div>
@@ -71,11 +82,36 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 animate-fade-in">
             <div className="flex flex-col space-y-3">
-              <Link to="/" className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md" onClick={toggleMenu}>Home</Link>
-              <Link to="/restaurants" className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md" onClick={toggleMenu}>Restaurant</Link>
-              <Link to="/blog" className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md" onClick={toggleMenu}>Blog</Link>
-              <Link to="/about" className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md" onClick={toggleMenu}>About</Link>
-              <Link to="/contact" className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md" onClick={toggleMenu}>Contact</Link>
+              <button 
+                onClick={() => handleNavigation('/')}
+                className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left"
+              >
+                Home
+              </button>
+              <button 
+                onClick={() => handleNavigation('/restaurants')}
+                className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left"
+              >
+                Restaurant
+              </button>
+              <button 
+                onClick={() => handleNavigation('/blog')}
+                className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left"
+              >
+                Blog
+              </button>
+              <button 
+                onClick={() => handleNavigation('/about')}
+                className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left"
+              >
+                About
+              </button>
+              <button 
+                onClick={() => handleNavigation('/contact')}
+                className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left"
+              >
+                Contact
+              </button>
             </div>
           </div>
         )}
