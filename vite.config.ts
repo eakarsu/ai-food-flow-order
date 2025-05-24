@@ -1,4 +1,5 @@
 
+
 // vite.config.ts
 import { defineConfig, loadEnv } from 'vite'; // Import loadEnv
 import react from '@vitejs/plugin-react';
@@ -22,8 +23,9 @@ export default defineConfig(({ mode }) => { // Add ({ mode })
     build: {
       outDir: 'dist',
       assetsDir: 'assets',
+      // Only externalize for mobile builds, not web builds
       rollupOptions: {
-        external: [
+        external: mode === 'mobile' ? [
           '@capacitor/filesystem',
           '@capacitor/core',
           '@capacitor/app',
@@ -31,7 +33,7 @@ export default defineConfig(({ mode }) => { // Add ({ mode })
           '@capacitor/keyboard',
           '@capacitor/status-bar',
           'capacitor-voice-recorder'
-        ]
+        ] : []
       }
     },
     base: './',
@@ -48,3 +50,4 @@ export default defineConfig(({ mode }) => { // Add ({ mode })
     }
   };
 });
+
