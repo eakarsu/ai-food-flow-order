@@ -36,12 +36,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-10">
             <Link to="/" className="text-gray-700 hover:text-food-primary transition-colors">Home</Link>
             <Link to="/restaurants" className="text-gray-700 hover:text-food-primary transition-colors">Restaurant</Link>
-            <button 
-              onClick={() => handleNavigation('/blog')}
-              className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer"
-            >
-              Blog
-            </button>
+            <Link to="/blog" className="text-gray-700 hover:text-food-primary transition-colors">Blog</Link>
             <Link to="/about" className="text-gray-700 hover:text-food-primary transition-colors">About</Link>
             <Link to="/contact" className="text-gray-700 hover:text-food-primary transition-colors">Contact</Link>
           </div>
@@ -82,36 +77,41 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 animate-fade-in">
             <div className="flex flex-col space-y-3">
-              <button 
-                onClick={() => handleNavigation('/')}
+              <Link 
+                to="/" 
+                onClick={toggleMenu}
                 className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left"
               >
                 Home
-              </button>
-              <button 
-                onClick={() => handleNavigation('/restaurants')}
+              </Link>
+              <Link 
+                to="/restaurants" 
+                onClick={toggleMenu}
                 className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left"
               >
                 Restaurant
-              </button>
-              <button 
-                onClick={() => handleNavigation('/blog')}
+              </Link>
+              <Link 
+                to="/blog" 
+                onClick={toggleMenu}
                 className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left"
               >
                 Blog
-              </button>
-              <button 
-                onClick={() => handleNavigation('/about')}
+              </Link>
+              <Link 
+                to="/about" 
+                onClick={toggleMenu}
                 className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left"
               >
                 About
-              </button>
-              <button 
-                onClick={() => handleNavigation('/contact')}
+              </Link>
+              <Link 
+                to="/contact" 
+                onClick={toggleMenu}
                 className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left"
               >
                 Contact
-              </button>
+              </Link>
             </div>
           </div>
         )}
