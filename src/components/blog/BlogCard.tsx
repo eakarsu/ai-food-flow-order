@@ -2,6 +2,7 @@
 import { Calendar, User, Clock, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface BlogArticle {
   id: number;
@@ -21,12 +22,18 @@ interface BlogCardProps {
 }
 
 const BlogCard = ({ article }: BlogCardProps) => {
+  const navigate = useNavigate();
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const handleReadMore = () => {
+    navigate(`/blog/${article.id}`);
   };
 
   return (
@@ -45,7 +52,8 @@ const BlogCard = ({ article }: BlogCardProps) => {
       </div>
       
       <CardHeader className="pb-3">
-        <h3 className="blog-title text-xl font-bold text-food-dark line-clamp-2 hover:text-food-primary transition-colors">
+        <h3 className="blog-title text-xl font-bold text-food-dark line-clamp-2 hover:text-food-primary transition-colors cursor-pointer"
+            onClick={handleReadMore}>
           {article.title}
         </h3>
         
@@ -86,6 +94,7 @@ const BlogCard = ({ article }: BlogCardProps) => {
         <Button 
           variant="outline" 
           className="w-full group border-food-primary text-food-primary hover:bg-food-primary hover:text-white transition-all duration-300"
+          onClick={handleReadMore}
         >
           Read More 
           <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
