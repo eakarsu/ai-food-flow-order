@@ -4,6 +4,7 @@
 import { defineConfig, loadEnv } from 'vite'; // Import loadEnv
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => { // Add ({ mode })
   // Load .env files based on the mode (development, production, etc.)
@@ -11,8 +12,12 @@ export default defineConfig(({ mode }) => { // Add ({ mode })
   const env = loadEnv(mode, process.cwd(), ''); 
 
   return {
-    plugins: [react()],
+    plugins: [
+      react(),
+      mode === 'development' && componentTagger(),
+    ].filter(Boolean),
     server: {
+      host: "::",
       port: 8080
     },
     resolve: {
