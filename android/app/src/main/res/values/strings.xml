@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">OrderlyBite</string>
+    <string name="title_activity_main">OrderlyBite</string>
+    <string name="package_name">com.orderlybite.app</string>
+    <string name="custom_url_scheme">com.orderlybite.app</string>
+</resources>

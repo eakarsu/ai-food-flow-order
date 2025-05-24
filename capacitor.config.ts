@@ -14,8 +14,9 @@ const config: CapacitorConfig = {
   // The 'server' object can be used for scheme configuration.
   server: {
     iosScheme: 'capacitor', // A common scheme for local iOS files
-    androidScheme: 'https',   // A common scheme for local Android files
-    allowNavigation: ['api.orderlybite.com'] // If your app navigates to external APIs
+    androidScheme: 'http',   // A common scheme for local Android files
+    hostname: 'localhost',
+    allowNavigation: ['api.orderlybite.com','*.twilio.com'] // If your app navigates to external APIs
   },
   ios: {
     scheme: 'App', // This is your Xcode project scheme name
