@@ -115,7 +115,7 @@ const blogArticles = [
     author: "OrderlyBite Team", 
     publishDate: "2024-01-18",
     category: "AI Technology",
-    imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?q=80&w=1000",
+    imageUrl: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1000",
     tags: ["customization", "BYO meals", "upselling", "AI"],
     readTime: "7 min read"
   },
