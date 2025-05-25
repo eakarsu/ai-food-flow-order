@@ -1,21 +1,8 @@
-
 import { Calendar, User, Clock, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-
-interface BlogArticle {
-  id: number;
-  title: string;
-  excerpt: string;
-  content: string;
-  author: string;
-  publishDate: string;
-  category: string;
-  imageUrl: string;
-  tags: string[];
-  readTime: string;
-}
+import { BlogArticle } from '../../data/blogArticles';
 
 interface BlogCardProps {
   article: BlogArticle;
