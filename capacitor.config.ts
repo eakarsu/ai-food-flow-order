@@ -1,3 +1,4 @@
+
 // capacitor.config.ts
 import { CapacitorConfig } from '@capacitor/cli';
 
@@ -22,14 +23,27 @@ const config: CapacitorConfig = {
     scheme: 'App', // This is your Xcode project scheme name
     contentInset: 'automatic',
     allowsLinkPreview: false, // Can sometimes help with webview issues
-    // webContentsDebuggingEnabled: true // Enable for debugging, disable for release
+    webContentsDebuggingEnabled: true, // Enable for debugging
+    // iOS-specific settings for better touch handling
+    preferredContentMode: 'mobile',
+    // Improve touch responsiveness
+    scrollEnabled: true,
+    // Allow inline media playback
+    allowsInlineMediaPlayback: true
   },
   android: {
     // Similar settings if you were targeting Android
+  },
+  plugins: {
+    // Configure keyboard plugin for better iOS experience
+    Keyboard: {
+      resize: "body",
+      style: "dark",
+      resizeOnFullScreen: true,
+    },
   }
   // Optional: If issues persist after all other steps, try uncommenting this
   // bundledWebRuntime: false,
 };
 
 export default config;
-
