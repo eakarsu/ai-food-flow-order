@@ -1,10 +1,11 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import BlogCard from '../components/blog/BlogCard';
 import BlogSearch from '../components/blog/BlogSearch';
+import SEO from '../components/SEO';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const blogArticles = [
   {
@@ -189,48 +190,75 @@ const Blog = () => {
     return matchesSearch && matchesCategory;
   });
 
+  const blogStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "OrderlyBite Blog",
+    "description": "Fresh insights about AI-powered food ordering, restaurant technology, and industry trends",
+    "url": "https://orderlybite.com/blog",
+    "publisher": {
+      "@type": "Organization",
+      "name": "OrderlyBite",
+      "url": "https://orderlybite.com"
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navbar />
+    <>
+      <SEO
+        title="AI Food Ordering Blog - Industry Insights & Technology Trends"
+        description="Discover the latest in AI-powered food ordering, restaurant technology, and industry insights. Learn how OrderlyBite revolutionizes food delivery."
+        keywords="AI food ordering blog, restaurant technology, SMS ordering, phone ordering, food delivery insights"
+        type="website"
+        structuredData={blogStructuredData}
+      />
       
-      {/* Blog Hero Section */}
-      <div className="bg-gradient-to-r from-food-primary to-food-secondary text-white py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">OrderlyBite Blog</h1>
-          <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto">
-            Fresh insights, AI innovations, and restaurant technology trends
-          </p>
-        </div>
-      </div>
-
-      {/* Search and Filter Section */}
-      <div className="container mx-auto px-4 py-8">
-        <BlogSearch 
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-        />
-      </div>
-
-      {/* Blog Articles Grid */}
-      <div className="container mx-auto px-4 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredArticles.map(article => (
-            <BlogCard key={article.id} article={article} />
-          ))}
-        </div>
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Navbar />
         
-        {filteredArticles.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">No articles found matching your search criteria.</p>
+        {/* Blog Hero Section */}
+        <div className="bg-gradient-to-r from-food-primary to-food-secondary text-white py-16">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">OrderlyBite Blog</h1>
+            <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto">
+              Fresh insights, AI innovations, and restaurant technology trends
+            </p>
           </div>
-        )}
-      </div>
+        </div>
 
-      <Footer />
-    </div>
+        <div className="container mx-auto px-4 py-4">
+          <Breadcrumbs />
+        </div>
+
+        {/* Search and Filter Section */}
+        <div className="container mx-auto px-4 py-8">
+          <BlogSearch 
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
+        </div>
+
+        {/* Blog Articles Grid */}
+        <main className="container mx-auto px-4 pb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredArticles.map(article => (
+              <BlogCard key={article.id} article={article} />
+            ))}
+          </div>
+          
+          {filteredArticles.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">No articles found matching your search criteria.</p>
+            </div>
+          )}
+        </main>
+
+        <Footer />
+      </div>
+    </>
   );
 };
 
