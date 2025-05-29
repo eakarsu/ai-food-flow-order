@@ -52,20 +52,12 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
       
       console.log("Using SMS endpoint:", smsEndpoint);
       
-      // Check if the SMS endpoint is a cross-origin URL (different domain)
-      const isCrossOrigin = smsEndpoint.startsWith('http') && 
-                            !smsEndpoint.includes(window.location.hostname);
-      
-      if (isCrossOrigin) {
-        console.log("Cross-origin request detected. Adding CORS mode.");
-      }
-      
       // Format phone number and message as form data
       const formData = new URLSearchParams();
-      formData.append('From', phoneNumber); // or formattedPhone
-      formData.append('To', phoneNumber);   // or the recipient number
+      formData.append('From', phoneNumber);
+      formData.append('To', phoneNumber);
       formData.append('Body', message);
-      formData.append('MessageSid', 'SMxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'); // or generate as needed
+      formData.append('MessageSid', 'SMxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
 
       const response = await fetch(smsEndpoint, {
         method: 'POST',
@@ -75,12 +67,34 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
         body: formData.toString(),
       });
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to send SMS');
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+      
+      // Get response text first to check what we're dealing with
+      const responseText = await response.text();
+      console.log("Raw response:", responseText);
+      
+      // Check if response is likely XML (error page) or JSON
+      let responseData;
+      if (responseText.trim().startsWith('<?xml') || responseText.trim().startsWith('<html')) {
+        // This is an HTML/XML error page, not JSON
+        throw new Error(`Server returned an error page. Status: ${response.status}. This usually means the SMS endpoint URL is incorrect or the server is not configured properly.`);
       }
       
-      const responseData = await response.json();
+      // Try to parse as JSON
+      try {
+        responseData = responseText ? JSON.parse(responseText) : {};
+      } catch (parseError) {
+        console.error("Failed to parse response as JSON:", parseError);
+        throw new Error(`Invalid response format from SMS endpoint. Expected JSON but got: ${responseText.substring(0, 100)}...`);
+      }
+      
+      // Check if the request was successful
+      if (!response.ok) {
+        const errorMessage = responseData.message || responseData.error || `HTTP ${response.status}: ${response.statusText}`;
+        throw new Error(errorMessage);
+      }
+      
       console.log("SMS sent successfully:", responseData);
       
       // Add message to history
@@ -96,7 +110,7 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
       if (responseData && responseData.message) {
         const responseMessage: Message = {
           text: responseData.message,
-          timestamp: Date.now() + 1000, // Add 1 second to ensure it appears after sent message
+          timestamp: Date.now() + 1000,
           status: 'received'
         };
         setMessageHistory(prev => [...prev, responseMessage]);
@@ -120,18 +134,13 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
       
       setMessageHistory(prev => [...prev, newMessage]);
       
-      // Provide more specific error message for CORS issues
-      let errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      // Provide more specific error messages
+      let errorMessage = "An unknown error occurred";
       
-      if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-        // This is likely a CORS error
-        errorMessage = "Cannot connect to SMS server. This may be due to CORS restrictions. Please ensure your server allows cross-origin requests.";
-        
-        // Log helpful information for debugging
-        console.log("Possible CORS issue detected. Check that your server has the following headers:");
-        console.log("Access-Control-Allow-Origin: *");
-        console.log("Access-Control-Allow-Methods: POST, OPTIONS");
-        console.log("Access-Control-Allow-Headers: Content-Type");
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+        errorMessage = "Cannot connect to SMS server. Please check your SMS endpoint URL in the settings and ensure the server is running.";
       }
       
       toast({
