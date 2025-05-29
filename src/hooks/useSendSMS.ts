@@ -74,28 +74,39 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
       const responseText = await response.text();
       console.log("Raw response:", responseText);
       
-      // Check if response is likely XML (error page) or JSON
-      let responseData;
-      if (responseText.trim().startsWith('<?xml') || responseText.trim().startsWith('<html')) {
-        // This is an HTML/XML error page, not JSON
-        throw new Error(`Server returned an error page. Status: ${response.status}. This usually means the SMS endpoint URL is incorrect or the server is not configured properly.`);
-      }
-      
-      // Try to parse as JSON
-      try {
-        responseData = responseText ? JSON.parse(responseText) : {};
-      } catch (parseError) {
-        console.error("Failed to parse response as JSON:", parseError);
-        throw new Error(`Invalid response format from SMS endpoint. Expected JSON but got: ${responseText.substring(0, 100)}...`);
-      }
-      
       // Check if the request was successful
       if (!response.ok) {
-        const errorMessage = responseData.message || responseData.error || `HTTP ${response.status}: ${response.statusText}`;
-        throw new Error(errorMessage);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
-      console.log("SMS sent successfully:", responseData);
+      // Parse the response - could be XML (TwiML) or JSON
+      let responseMessage = '';
+      
+      if (responseText.trim().startsWith('<?xml')) {
+        // This is a TwiML XML response from Twilio
+        console.log("Received TwiML XML response");
+        
+        // Extract message from XML if present
+        const messageMatch = responseText.match(/<Message>(.*?)<\/Message>/);
+        if (messageMatch) {
+          responseMessage = messageMatch[1];
+        }
+      } else if (responseText.trim().startsWith('<html')) {
+        // This is an HTML error page
+        throw new Error(`Server returned an HTML error page. Status: ${response.status}. Please check your SMS endpoint configuration.`);
+      } else {
+        // Try to parse as JSON
+        try {
+          const responseData = responseText ? JSON.parse(responseText) : {};
+          responseMessage = responseData.message || '';
+        } catch (parseError) {
+          console.error("Failed to parse response as JSON:", parseError);
+          // If it's not XML or JSON, just use the raw text
+          responseMessage = responseText.substring(0, 100);
+        }
+      }
+      
+      console.log("SMS sent successfully");
       
       // Add message to history
       const newSentMessage: Message = {
@@ -106,14 +117,14 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
       
       setMessageHistory(prev => [...prev, newSentMessage]);
       
-      // If there's a response message in the data, add it to history
-      if (responseData && responseData.message) {
-        const responseMessage: Message = {
-          text: responseData.message,
+      // If there's a response message, add it to history
+      if (responseMessage) {
+        const responseMsg: Message = {
+          text: responseMessage,
           timestamp: Date.now() + 1000,
           status: 'received'
         };
-        setMessageHistory(prev => [...prev, responseMessage]);
+        setMessageHistory(prev => [...prev, responseMsg]);
       }
       
       toast({
