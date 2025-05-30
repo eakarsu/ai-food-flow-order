@@ -6,8 +6,13 @@ import { MessageTextarea } from './MessageTextarea';
 import { Trash2 } from 'lucide-react';
 import { useSendSMS } from '@/hooks/useSendSMS';
 
-export const MessageForm = () => {
-  const [phoneNumber, setPhoneNumber] = useState('+18001234567');
+interface MessageFormProps {
+  phoneNumber?: string;
+  onMessageSent?: (message: string) => void;
+}
+
+const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber: propPhoneNumber, onMessageSent }) => {
+  const [phoneNumber, setPhoneNumber] = useState(propPhoneNumber || '+18001234567');
   const [messageHistory, setMessageHistory] = useState([
     {
       message: 'hello',
@@ -125,3 +130,5 @@ export const MessageForm = () => {
     </div>
   );
 };
+
+export default MessageForm;

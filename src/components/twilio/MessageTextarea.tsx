@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { Send } from 'lucide-react';
 
 interface MessageTextareaProps {
@@ -9,48 +9,48 @@ interface MessageTextareaProps {
   isLoading?: boolean;
 }
 
-export const MessageTextarea: React.FC<MessageTextareaProps> = ({ 
-  onSendMessage, 
-  isLoading = false 
-}) => {
+const MessageTextarea: React.FC<MessageTextareaProps> = ({ onSendMessage, isLoading = false }) => {
   const [message, setMessage] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (message.trim() && !isLoading) {
-      onSendMessage(message);
-      setMessage('');
+    if (!message.trim() || isLoading) return;
+    
+    onSendMessage(message.trim());
+    setMessage('');
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
     }
   };
 
   return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+    <form onSubmit={handleSubmit} className="space-y-2">
+      <label className="text-sm font-medium text-gray-700">
         Your Message
       </label>
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <div className="flex space-x-2">
         <Textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyPress={handleKeyPress}
           placeholder="Enter your message here..."
-          className="min-h-[100px] resize-none"
+          className="flex-1 min-h-[100px]"
           disabled={isLoading}
         />
         <Button
           type="submit"
           disabled={!message.trim() || isLoading}
-          className="w-full bg-red-600 hover:bg-red-700 text-white"
+          className="self-end"
         >
-          {isLoading ? (
-            <>Sending...</>
-          ) : (
-            <>
-              <Send className="h-4 w-4 mr-2" />
-              Send Message
-            </>
-          )}
+          <Send className="h-4 w-4" />
         </Button>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 };
+
+export default MessageTextarea;
