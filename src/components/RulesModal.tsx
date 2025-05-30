@@ -65,29 +65,31 @@ const RulesModal: React.FC<RulesModalProps> = ({
 
   const calculateTotalPrice = () => {
     let total = basePrice;
-    rules.forEach(rule => {
-      const ruleSelections = selections[rule.name];
-      if (rule.type === "select_1" && ruleSelections) {
-        const option = rule.options.find(opt => opt.name === ruleSelections);
-        if (option) total += option.price;
-      } else if (Array.isArray(ruleSelections)) {
-        ruleSelections.forEach((selectedOption: string) => {
-          const option = rule.options.find(opt => opt.name === selectedOption);
-          if (option) total += option.price;
-        });
-      }
-    });
+    if(rules) {
+        rules.forEach(rule => {
+            const ruleSelections = selections[rule.name];
+            if (rule.type === "select_1" && ruleSelections) {
+              const option = rule.options.find(opt => opt.name === ruleSelections);
+              if (option) total += option.price;
+            } else if (Array.isArray(ruleSelections)) {
+              ruleSelections.forEach((selectedOption: string) => {
+                const option = rule.options.find(opt => opt.name === selectedOption);
+                if (option) total += option.price;
+              });
+            }
+          });
+    }
     return total;
   };
 
   const isValidSelection = () => {
-    return rules.every(rule => {
+    return rules?.every(rule => {
       const selection = selections[rule.name];
       if (rule.type === "select_1") {
         return selection !== undefined;
       }
       return true; // Optional selections are always valid
-    });
+    }) ?? true;
   };
 
   const handleConfirm = () => {
@@ -107,7 +109,7 @@ const RulesModal: React.FC<RulesModalProps> = ({
         </DialogHeader>
 
         <div className="space-y-6">
-          {(rules || []).map((rule, ruleIndex) => (
+          {rules && Array.isArray(rules) && rules.map((rule, ruleIndex) => (
             <div key={ruleIndex} className="border rounded-lg p-4 bg-gray-50">
               <h3 className="font-semibold text-lg mb-3 text-food-dark">
                 {rule.name}
