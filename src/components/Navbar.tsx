@@ -23,12 +23,6 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
-  // Enhanced navigation handler
-  const handleLinkClick = (path: string) => {
-    navigate(path);
-    setIsMenuOpen(false);
-  };
-
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3">
@@ -41,34 +35,32 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-10">
             <button 
-              onClick={() => handleLinkClick('/')}
-              className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer bg-transparent border-none p-0 font-inherit"
+              onClick={() => handleNavigation('/')}
+              className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer bg-transparent border-none p-0 font-inherit text-base"
             >
               Home
             </button>
             <button 
-              onClick={() => handleLinkClick('/restaurants')}
-              className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer bg-transparent border-none p-0 font-inherit"
+              onClick={() => handleNavigation('/restaurants')}
+              className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer bg-transparent border-none p-0 font-inherit text-base"
             >
               Restaurant
             </button>
             <button 
-              onClick={() => handleLinkClick('/blog')}
-              className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer bg-transparent border-none p-0 font-inherit"
+              onClick={() => handleNavigation('/blog')}
+              className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer bg-transparent border-none p-0 font-inherit text-base"
             >
               Blog
             </button>
             <button 
-              onClick={(e) => handleLinkClick('/about', e)}
-              onTouchEnd={(e) => handleLinkClick('/about', e)}
-              className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer bg-transparent border-none p-0 font-inherit"
+              onClick={() => handleNavigation('/about')}
+              className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer bg-transparent border-none p-0 font-inherit text-base"
             >
               About
             </button>
             <button 
-              onClick={(e) => handleLinkClick('/contact', e)}
-              onTouchEnd={(e) => handleLinkClick('/contact', e)}
-              className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer bg-transparent border-none p-0 font-inherit"
+              onClick={() => handleNavigation('/contact')}
+              className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer bg-transparent border-none p-0 font-inherit text-base"
             >
               Contact
             </button>
@@ -112,7 +104,6 @@ const Navbar = () => {
             <div className="flex flex-col space-y-3">
               <button 
                 onClick={() => handleNavigation('/')}
-                onTouchEnd={() => handleNavigation('/')}
                 className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left w-full bg-transparent border-none cursor-pointer"
               >
                 Home

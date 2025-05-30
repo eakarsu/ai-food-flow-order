@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -51,9 +50,9 @@ const TwilioContact = () => {
                 <Settings className="h-5 w-5 text-gray-400" />
               </div>
               <p className="text-gray-600 mb-6">Send SMS or call about your food order</p>
-
-              {/* Send SMS and Make Call Buttons */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
+      
+              {/* Tab Selection */}
+              <div className="flex mb-6 bg-gray-100 rounded-lg p-1">
                 <Button
                   type="button"
                   variant="outline"
@@ -61,14 +60,14 @@ const TwilioContact = () => {
                     e.preventDefault();
                     setActiveMode('sms');
                   }}
-                  className={`py-3 flex items-center justify-center space-x-2 cursor-pointer transition-colors ${
-                    activeMode === 'sms' 
-                      ? 'bg-food-primary text-white border-food-primary hover:bg-food-primary/90' 
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                  className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                    activeMode === 'sms'
+                      ? 'bg-food-primary text-white shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  <MessageSquare className="h-4 w-4" />
-                  <span>Send SMS</span>
+                  <MessageSquare className="h-4 w-4 inline mr-2" />
+                  Send SMS
                 </Button>
                 <Button
                   type="button"
@@ -78,17 +77,17 @@ const TwilioContact = () => {
                     setActiveMode('call');
                     setShowSoftphone(true);
                   }}
-                  className={`py-3 flex items-center justify-center space-x-2 cursor-pointer transition-colors ${
-                    activeMode === 'call' 
-                      ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700' 
-                      : 'bg-blue-50 text-blue-700 border-blue-300 hover:bg-blue-100'
+                  className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                    activeMode === 'call'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  <Phone className="h-4 w-4" />
-                  <span>Make Call</span>
+                  <Phone className="h-4 w-4 inline mr-2" />
+                  Make Call
                 </Button>
               </div>
-
+      
               {/* Phone Number Input */}
               <div className="space-y-2 mb-6">
                 <label className="text-sm font-medium text-gray-700">
@@ -105,7 +104,7 @@ const TwilioContact = () => {
                   Using phone number: {phoneNumber}
                 </p>
               </div>
-
+      
               {/* Message History */}
               <div className="space-y-2 mb-6">
                 <div className="flex items-center justify-between">
@@ -150,8 +149,8 @@ const TwilioContact = () => {
                   )}
                 </div>
               </div>
-
-              {/* Message Input - Only show when SMS mode is active */}
+      
+              {/* Tab Content */}
               {activeMode === 'sms' && (
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium text-gray-700">Your Message</h4>
@@ -161,9 +160,10 @@ const TwilioContact = () => {
                   />
                 </div>
               )}
+              {activeMode === 'call' && <CallForm />}
             </CardContent>
           </Card>
-
+      
           {/* Twilio Softphone for calls */}
           <TwilioSoftphone
             phoneNumber={phoneNumber}

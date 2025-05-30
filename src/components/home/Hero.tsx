@@ -1,9 +1,14 @@
+
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import TwilioContact from '../twilio/TwilioContact';
 
 const Hero = () => {
   const navigate = useNavigate();
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <div className="bg-gradient-to-r from-food-primary to-food-secondary text-white py-20">
@@ -17,26 +22,24 @@ const Hero = () => {
 
         {/* Navigation Buttons */}
         <div className="flex flex-wrap gap-4 justify-center mb-12">
-          <Button
-            onClick={() => navigate('/menu')}
-            className="bg-white text-food-primary hover:bg-gray-100 px-8 py-3 text-lg font-semibold cursor-pointer"
+          <button
+            onClick={() => handleNavigation('/menu')}
+            className="bg-white text-food-primary hover:bg-gray-100 px-8 py-3 text-lg font-semibold cursor-pointer border-none rounded-md transition-colors"
           >
             Order Now
-          </Button>
-          <Button
-            onClick={() => navigate('/menu')}
-            variant="outline"
-            className="border-white text-white hover:bg-white hover:text-food-primary px-8 py-3 text-lg font-semibold cursor-pointer"
+          </button>
+          <button
+            onClick={() => handleNavigation('/menu')}
+            className="border-2 border-white text-white hover:bg-white hover:text-food-primary px-8 py-3 text-lg font-semibold cursor-pointer bg-transparent rounded-md transition-colors"
           >
             View Menu
-          </Button>
-          <Button
-            onClick={() => navigate('/menu')}
-            variant="outline"
-            className="border-white text-white hover:bg-white hover:text-food-primary px-8 py-3 text-lg font-semibold cursor-pointer"
+          </button>
+          <button
+            onClick={() => handleNavigation('/menu')}
+            className="border-2 border-white text-white hover:bg-white hover:text-food-primary px-8 py-3 text-lg font-semibold cursor-pointer bg-transparent rounded-md transition-colors"
           >
             View Full Menu
-          </Button>
+          </button>
         </div>
 
         {/* Contact Form - Direct at top */}
