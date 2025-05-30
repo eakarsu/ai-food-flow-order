@@ -1,67 +1,47 @@
-import { useState } from 'react';
-import { Phone } from 'lucide-react';
-import { useToast } from "@/hooks/use-toast";
-import { Input } from "@/components/ui/input";
+import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Phone, PhoneCall } from "lucide-react";
+import { useCallManagement } from '@/hooks/useCallManagement';
 
 interface CallFormProps {
   phoneNumber: string;
-  setPhoneNumber: (phone: string) => void;
-  handleMakeCall: () => void;
+  onCallInitiated?: () => void;
 }
 
-const CallForm = ({ phoneNumber, setPhoneNumber, handleMakeCall }: CallFormProps) => {
-  console.log("CallForm: Rendering with phoneNumber:", phoneNumber);
+const CallForm: React.FC<CallFormProps> = ({ phoneNumber, onCallInitiated }) => {
+  const { initiateCall, isConnecting } = useCallManagement();
 
-  const { toast } = useToast();
+  const handleMakeCall = async () => {
+    if (!phoneNumber) return;
 
-  const handleCallClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("CallForm: Call button clicked");
-    
-    if (!phoneNumber || phoneNumber.trim() === '') {
-      toast({
-        title: "Phone number required",
-        description: "Please enter a valid phone number",
-        variant: "destructive",
-      });
-      return;
+    try {
+      await initiateCall(phoneNumber);
+      onCallInitiated?.();
+    } catch (error) {
+      console.error('Failed to initiate call:', error);
     }
-    
-    handleMakeCall();
   };
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="phone-call">Customer Phone Number</Label>
-        <Input 
-          id="phone-call"
-          type="tel" 
-          placeholder="+1 (555) 123-4567" 
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-        />
-      </div>
-
-      <p className="text-sm text-gray-500 mt-4">
-        Click the "Call Customer" button to initiate a browser-based call using Twilio's Voice SDK.
-      </p>
-
-      <div className="flex justify-end border-t pt-4">
-        <Button 
-          type="button"
-          onClick={handleCallClick}
-          className="w-full bg-food-primary hover:bg-food-primary/90 cursor-pointer pointer-events-auto"
-          disabled={false}
+    <Card className="w-full">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center space-x-2">
+          <Phone className="h-5 w-5 text-food-primary" />
+          <span>Make Call</span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Button
+          onClick={handleMakeCall}
+          disabled={!phoneNumber || isConnecting}
+          className="w-full bg-green-600 hover:bg-green-700 text-white py-3 flex items-center justify-center space-x-2"
         >
-          <Phone className="mr-2 h-4 w-4" />
-          Make Call
+          <PhoneCall className="h-5 w-5" />
+          <span>{isConnecting ? 'Connecting...' : 'Make Call'}</span>
         </Button>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

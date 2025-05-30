@@ -3,38 +3,27 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
 interface MessageTextareaProps {
-  message: string;
+  value: string;
   onChange: (value: string) => void;
+  placeholder?: string;
+  disabled?: boolean;
 }
 
-const MessageTextarea = ({ message, onChange }: MessageTextareaProps) => {
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    console.log("MessageTextarea: Input changed to:", e.target.value);
-    onChange(e.target.value);
-  };
-
-  const handleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    console.log("MessageTextarea: Clicked");
-  };
-
-  const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
-    e.stopPropagation();
-    console.log("MessageTextarea: Focused");
-  };
-
+const MessageTextarea: React.FC<MessageTextareaProps> = ({
+  value,
+  onChange,
+  placeholder = "Enter your message here...",
+  disabled = false
+}) => {
   return (
-    <div className="space-y-2">
-      <Label htmlFor="message" className="text-sm font-medium text-gray-700">Message</Label>
+    <div className="w-full">
       <Textarea
-        id="message"
-        placeholder="Enter your message here..."
-        value={message}
+        value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="min-h-[120px] resize-none pointer-events-auto"
-        style={{ pointerEvents: 'auto' }}
-        rows={5}
-        disabled={false}
+        placeholder={placeholder}
+        disabled={disabled}
+        className="min-h-[100px] resize-none border-gray-300 focus:border-food-primary focus:ring-food-primary"
+        rows={4}
       />
     </div>
   );
