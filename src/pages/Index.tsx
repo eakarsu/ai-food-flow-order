@@ -72,7 +72,7 @@ const Index = () => {
                 Your neighborhood destination for exceptional food, warm hospitality, and unforgettable flavors
               </p>
             </div>
-            <RestaurantInfo />
+            <RestaurantInfo restaurant={null} />
           </div>
         </section>
 
