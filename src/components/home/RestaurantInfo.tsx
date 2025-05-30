@@ -1,20 +1,16 @@
-
 import React from 'react';
 import { Clock, Phone, MapPin, Star, Award, Users } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
-const RestaurantInfo = () => {
-  const restaurantData = {
-    name: "OrderlyBite Kitchen",
-    rating: 4.8,
-    reviewCount: 1247,
-    deliveryTime: "25-40 min",
-    phone: "(804) 360-1129",
-    address: "2807 Hampton Woods Dr, Henrico, VA 23233",
+const RestaurantInfo = ({ restaurant }) => {
+  // Add fallback values if restaurant is undefined
+  const restaurantData = restaurant || {
+    name: "OrderlyBite Restaurant",
     imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000",
-    specialties: ["Fresh Ingredients", "Quick Service", "AI-Powered", "Local Favorite"],
-    openHours: "6:00 AM - 10:00 PM",
-    status: "Open Now"
+    description: "Fresh, delicious meals made to order",
+    cuisine: "American",
+    address: "2807 Hampton Woods Dr, Henrico, VA 23233",
+    phone: "(804) 360-1129"
   };
 
   const features = [
@@ -37,13 +33,13 @@ const RestaurantInfo = () => {
                   className="w-full h-96 object-cover"
                   loading="lazy"
                 />
-                
+
                 {/* Status Badge */}
                 <div className="absolute top-6 left-6 bg-green-500 text-white px-4 py-2 rounded-full font-semibold flex items-center space-x-2">
                   <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
                   <span>{restaurantData.status}</span>
                 </div>
-                
+
                 {/* Rating Badge */}
                 <div className="absolute top-6 right-6 bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2 flex items-center space-x-2">
                   <Star className="w-5 h-5 text-yellow-500 fill-current" />

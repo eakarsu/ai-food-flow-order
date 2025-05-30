@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -108,7 +107,7 @@ const RulesModal: React.FC<RulesModalProps> = ({
         </DialogHeader>
 
         <div className="space-y-6">
-          {rules.map((rule, ruleIndex) => (
+          {(rules || []).map((rule, ruleIndex) => (
             <div key={ruleIndex} className="border rounded-lg p-4 bg-gray-50">
               <h3 className="font-semibold text-lg mb-3 text-food-dark">
                 {rule.name}
