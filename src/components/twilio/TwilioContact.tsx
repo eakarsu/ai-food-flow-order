@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { Phone, MessageSquare, Settings } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,28 +11,29 @@ import NgrokSettings from './NgrokSettings';
 
 const TwilioContact = () => {
   console.log("TwilioContact: Starting component render");
-  
-  // Initialize with a default value that is synchronized with localStorage
-  const [phoneNumber, setPhoneNumber] = useState(() => {
-    const stored = localStorage.getItem('lastPhoneNumber') || "+18001234567";
-    console.log("TwilioContact: Initializing with stored phone:", stored);
-    return stored;
-  });
-  
+
   const [activeTab, setActiveTab] = useState("sms");
-  const [softphoneOpen, setSoftphoneOpen] = useState(false);
+  const [twilioSoftphoneOpen, setTwilioSoftphoneOpen] = useState(false);
   const [ngrokSettingsOpen, setNgrokSettingsOpen] = useState(false);
-  
+
+  // Initialize phone number from localStorage or use default
+  const [phoneNumber, setPhoneNumber] = useState(() => {
+    const stored = localStorage.getItem('lastPhoneNumber');
+    const initial = stored || "+18001234567";
+    console.log("TwilioContact: Initializing with stored phone:", initial);
+    return initial;
+  });
+
   // Function to update phone number both in state and localStorage
   const handleSetPhoneNumber = useCallback((value: string) => {
     // Ensure we always have a value by providing a default
     const numberToUse = value && value.trim() !== '' ? value : "+18001234567";
-    
+
     console.log("TwilioContact: Setting phone number to:", numberToUse);
-    
+
     // Update state
     setPhoneNumber(numberToUse);
-    
+
     // Store in localStorage for persistence
     localStorage.setItem('lastPhoneNumber', numberToUse);
     console.log("TwilioContact: Saved to localStorage:", numberToUse);
@@ -49,7 +49,7 @@ const TwilioContact = () => {
         }
       }
     };
-    
+
     document.addEventListener('submit-message', handleSubmitMessage);
     return () => {
       document.removeEventListener('submit-message', handleSubmitMessage);
@@ -60,7 +60,7 @@ const TwilioContact = () => {
   useEffect(() => {
     console.log("TwilioContact: Component mounted");
     console.log("TwilioContact: Initial phoneNumber state:", phoneNumber);
-    
+
     // Force default if phone number is empty
     if (!phoneNumber || phoneNumber.trim() === '') {
       const defaultPhone = "+18001234567";
@@ -68,7 +68,7 @@ const TwilioContact = () => {
       setPhoneNumber(defaultPhone);
       localStorage.setItem('lastPhoneNumber', defaultPhone);
     }
-    
+
     // Log environment variables for debugging
     console.log("TwilioContact: Environment variables check");
     if (import.meta.env.VITE_NGROK_VOICE_URL) {
@@ -76,7 +76,7 @@ const TwilioContact = () => {
     } else {
       console.log("VITE_NGROK_VOICE_URL is not set");
     }
-    
+
     if (import.meta.env.VITE_NGROK_SMS_URL) {
       console.log("VITE_NGROK_SMS_URL is set");
     } else {
@@ -92,13 +92,13 @@ const TwilioContact = () => {
   const handleMakeCall = () => {
     const phoneToUse = phoneNumber || localStorage.getItem('lastPhoneNumber') || "+18001234567";
     console.log("TwilioContact: handleMakeCall with phoneNumber:", phoneToUse);
-    
+
     // Set default if empty before proceeding
     if (!phoneNumber || phoneNumber.trim() === '') {
       setPhoneNumber(phoneToUse);
     }
-    
-    setSoftphoneOpen(true);
+
+    setTwilioSoftphoneOpen(true);
   };
 
   // Handle tab change
@@ -121,7 +121,7 @@ const TwilioContact = () => {
                 Send SMS or call about your food order
               </CardDescription>
             </div>
-            
+
             <Dialog open={ngrokSettingsOpen} onOpenChange={setNgrokSettingsOpen}>
               <DialogTrigger asChild>
                 <Button 
@@ -158,14 +158,14 @@ const TwilioContact = () => {
                 Make Call
               </TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="sms">
               <MessageForm 
                 phoneNumber={phoneNumber}
                 setPhoneNumber={handleSetPhoneNumber}
               />
             </TabsContent>
-            
+
             <TabsContent value="call">
               <CallForm 
                 phoneNumber={phoneNumber}
@@ -180,8 +180,8 @@ const TwilioContact = () => {
       {/* Softphone Dialog */}
       <TwilioSoftphone 
         phoneNumber={phoneNumber || "+18001234567"}
-        open={softphoneOpen}
-        onOpenChange={setSoftphoneOpen}
+        open={twilioSoftphoneOpen}
+        onOpenChange={setTwilioSoftphoneOpen}
       />
     </>
   );

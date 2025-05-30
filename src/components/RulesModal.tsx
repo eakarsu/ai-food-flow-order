@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
 import { Button } from './ui/button';
@@ -208,7 +207,7 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose, onSubmit, item
 
   useEffect(() => {
     if (!item) return;
-    
+
     let additionalPrice = 0;
     Object.entries(selections).forEach(([ruleCategory, selection]) => {
       const rule = rulesData[ruleCategory];
@@ -228,7 +227,7 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose, onSubmit, item
         });
       }
     });
-    
+
     const basePrice = typeof item.price === 'number' ? item.price : 0;
     setTotalPrice(basePrice + additionalPrice);
   }, [selections, item]);
@@ -259,11 +258,11 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose, onSubmit, item
 
   const isValid = () => {
     if (!item?.rules) return true;
-    
+
     return item.rules.every(ruleCategory => {
       const rule = rulesData[ruleCategory];
       if (!rule || !rule.required) return true;
-      
+
       const selection = selections[ruleCategory];
       if (rule.type === 'single') {
         return selection && selection.length > 0;
