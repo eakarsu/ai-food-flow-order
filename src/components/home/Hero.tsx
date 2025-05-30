@@ -30,8 +30,6 @@ const Hero = () => {
             </div>
           </div>
         </div>
-        {/* Adding TwilioContact component here */}
-        <TwilioContact />
       </div>
     </div>
   );
