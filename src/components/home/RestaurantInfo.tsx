@@ -1,64 +1,69 @@
-
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
+import { Clock, Star, Users, Shield } from "lucide-react";
 
-interface RestaurantInfoProps {
-  restaurant: {
-    id: string;
-    name: string;
-    imageUrl: string;
-    cuisine: string;
-    rating: number;
-    deliveryTime: string;
-    featured: boolean;
-    description: string;
+const RestaurantInfo = () => {
+  const restaurantData = {
+    name: "OrderlyBite",
+    description: "Experience the finest selection of freshly prepared meals, artisanal coffee, and gourmet sandwiches. Our commitment to quality ingredients and exceptional service makes every bite memorable.",
+    imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+    features: [
+      {
+        icon: Clock,
+        title: "Fast Service",
+        description: "Quick preparation and delivery times"
+      },
+      {
+        icon: Star,
+        title: "Premium Quality",
+        description: "Only the finest, freshest ingredients"
+      },
+      {
+        icon: Users,
+        title: "Friendly Staff",
+        description: "Exceptional customer service every time"
+      },
+      {
+        icon: Shield,
+        title: "Health & Safety",
+        description: "Highest standards of cleanliness and safety"
+      }
+    ]
   };
-}
-
-const RestaurantInfo = ({ restaurant }: RestaurantInfoProps) => {
-  const navigate = useNavigate();
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="md:flex">
-          <div className="md:w-1/3">
-            <img 
-              src={restaurant.imageUrl} 
-              alt={restaurant.name}
-              className="h-full w-full object-cover"
-            />
+    <div className="container mx-auto px-4">
+      <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-3xl font-bold text-food-dark mb-4">
+              {restaurantData.name}
+            </h3>
+            <p className="text-gray-600 text-lg leading-relaxed">
+              {restaurantData.description}
+            </p>
           </div>
-          <div className="p-6 md:w-2/3">
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-2xl font-bold text-food-dark">{restaurant.name}</h2>
-                <p className="text-gray-600 mt-1">{restaurant.cuisine}</p>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            {restaurantData.features.map((feature, index) => (
+              <div key={index} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <feature.icon className="w-6 h-6 text-food-primary mt-1 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-food-dark mb-1">{feature.title}</h4>
+                  <p className="text-sm text-gray-600">{feature.description}</p>
+                </div>
               </div>
-              <div className="flex items-center bg-green-100 px-3 py-1 rounded">
-                <span className="font-semibold text-green-800">{restaurant.rating}</span>
-                <span className="text-yellow-500 ml-1">★</span>
-              </div>
-            </div>
-            
-            <p className="mt-4 text-gray-700 leading-relaxed">{restaurant.description}</p>
-            
-            <div className="mt-6 space-y-2 text-gray-600">
-              <p><span className="font-semibold">Delivery Time:</span> {restaurant.deliveryTime} min</p>
-            </div>
-            
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button 
-                className="bg-food-primary hover:bg-food-primary/90 text-white"
-                onClick={() => navigate('/menu')}
-              >
-                View Full Menu
-              </Button>
-              <Button variant="outline" className="border-food-primary text-food-primary hover:bg-food-primary/10">
-                Contact Us
-              </Button>
-            </div>
+            ))}
           </div>
+        </div>
+
+        <div className="relative">
+          <img
+            src={restaurantData.imageUrl}
+            alt="OrderlyBite Restaurant"
+            className="rounded-2xl shadow-2xl w-full h-96 object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl"></div>
         </div>
       </div>
     </div>
