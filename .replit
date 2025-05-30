@@ -3,6 +3,7 @@ run = "npm run dev"
 
 [nix]
 channel = "stable-24_05"
+packages = ["vim"]
 
 [deployment]
 run = ["sh", "-c", "npm run dev"]
@@ -22,3 +23,7 @@ args = "npm run dev"
 [[ports]]
 localPort = 8080
 externalPort = 80
+
+[[ports]]
+localPort = 8081
+externalPort = 8081
