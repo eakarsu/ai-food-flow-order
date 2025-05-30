@@ -1,79 +1,117 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
+import React from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { FileText } from "lucide-react";
 
 interface RulesModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  rules?: string[];
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-const defaultRules = [
-  "All orders must be placed during business hours",
-  "Payment is required at time of order",
-  "Fresh ingredients are used daily",
-  "SMS and phone ordering available"
-];
-
-const RulesModal = ({ trigger }: RulesModalProps) => {
-  // Define default rules with fallbacks
-  const defaultRules = [
-    "All orders must be placed during business hours (11:00 AM - 10:00 PM)",
-    "Delivery is available within a 5-mile radius of our location",
-    "Minimum order amount for delivery is $15",
-    "Payment is accepted via cash, card, or mobile payment apps",
-    "Special dietary requests should be mentioned when placing the order",
-    "Cancellations must be made at least 15 minutes before pickup/delivery time",
-    "Fresh ingredients are used daily - some items may be unavailable if ingredients run out",
-    "SMS and phone orders are processed by our AI system for accuracy",
-    "Delivery times may vary during peak hours (12-2 PM, 6-8 PM)",
-    "Please provide accurate contact information for order updates"
+const RulesModal = ({ open, onOpenChange }: RulesModalProps) => {
+  const rules = [
+    {
+      title: "Order Policies",
+      items: [
+        "All orders must be placed during business hours: Mon-Sun 11:00 AM - 10:00 PM",
+        "Minimum order amount is $15 for delivery",
+        "Orders are typically ready within 20-30 minutes",
+        "Please provide accurate contact information for order confirmation"
+      ]
+    },
+    {
+      title: "SMS & Phone Ordering",
+      items: [
+        "Text your order to our number with your name and delivery address",
+        "Call us directly for special requests or dietary accommodations",
+        "You'll receive confirmation via SMS with estimated pickup/delivery time",
+        "Payment can be made over the phone or upon delivery"
+      ]
+    },
+    {
+      title: "Delivery & Pickup",
+      items: [
+        "Free delivery within 5 miles of our location",
+        "$3 delivery fee for distances beyond 5 miles",
+        "Pickup orders receive a 10% discount",
+        "Please be available at your delivery address during the estimated time window"
+      ]
+    },
+    {
+      title: "Payment & Refunds",
+      items: [
+        "We accept cash, credit cards, and digital payments",
+        "Payment is required upon delivery or pickup",
+        "Refunds available for cancelled orders (before preparation begins)",
+        "Contact us immediately for any order issues"
+      ]
+    },
+    {
+      title: "AI Recommendations",
+      items: [
+        "Our AI suggests dishes based on your preferences and past orders",
+        "Recommendations consider dietary restrictions when provided",
+        "You can always customize or ignore AI suggestions",
+        "The more you order, the better our recommendations become"
+      ]
+    }
   ];
 
-  // Use provided rules or fall back to defaults
-  const rules = defaultRules;
-
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        {trigger || (
-          <Button variant="outline" size="sm" className="text-food-primary border-food-primary">
-            <FileText className="w-4 h-4 mr-2" />
-            View Rules
-          </Button>
-        )}
-      </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[80vh]">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[80vh] pointer-events-auto">
         <DialogHeader>
-          <DialogTitle className="text-food-primary">Restaurant Rules & Policies</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-food-dark">
+            OrderlyBite Rules & Policies
+          </DialogTitle>
         </DialogHeader>
-        <ScrollArea className="max-h-[60vh] pr-4">
-          <div className="space-y-4">
-            <p className="text-gray-600">
-              Please review our restaurant rules and policies before placing your order:
-            </p>
-            <ul className="space-y-3">
-              {rules && rules.length > 0 ? (
-                rules?.map((rule, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="flex-shrink-0 w-6 h-6 bg-food-primary text-white text-sm rounded-full flex items-center justify-center mr-3 mt-0.5">
-                      {index + 1}
-                    </span>
-                    <span className="text-gray-700">{rule}</span>
-                  </li>
-                ))
-              ) : (
-                <li className="text-gray-600">
-                  <span className="flex-shrink-0 w-6 h-6 bg-food-primary text-white text-sm rounded-full flex items-center justify-center mr-3 mt-0.5">
-                    1
-                  </span>
-                  Standard restaurant policies apply. Please contact us for specific information.
-                </li>
-              )}
-            </ul>
+        
+        <ScrollArea className="h-[60vh] pr-4">
+          <div className="space-y-6">
+            {rules.map((section, index) => (
+              <div key={index} className="space-y-3">
+                <h3 className="text-lg font-semibold text-food-primary border-b border-gray-200 pb-2">
+                  {section.title}
+                </h3>
+                <ul className="space-y-2">
+                  {section.items.map((item, itemIndex) => (
+                    <li key={itemIndex} className="flex items-start space-x-2">
+                      <span className="text-food-primary mt-1">•</span>
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+            
+            <div className="bg-food-primary/5 p-4 rounded-lg border border-food-primary/20">
+              <h3 className="text-lg font-semibold text-food-dark mb-2">
+                Contact Information
+              </h3>
+              <div className="space-y-1 text-gray-700">
+                <p><strong>Phone:</strong> +1 (804) 360-1129</p>
+                <p><strong>Address:</strong> 2807 Hampton Woods Dr, Henrico, VA 23233</p>
+                <p><strong>Hours:</strong> Mon-Sun: 11:00 AM - 10:00 PM</p>
+                <p><strong>Email:</strong> support@orderlybite.com</p>
+              </div>
+            </div>
           </div>
         </ScrollArea>
+        
+        <div className="flex justify-end pt-4 border-t">
+          <Button 
+            onClick={() => onOpenChange(false)}
+            className="bg-food-primary hover:bg-food-primary/90 text-white pointer-events-auto"
+          >
+            I Understand
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
