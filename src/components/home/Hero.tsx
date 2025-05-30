@@ -1,12 +1,25 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import TwilioContact from '../twilio/TwilioContact';
+import MessageForm from '../twilio/MessageForm';
 
 const Hero = () => {
   const navigate = useNavigate();
 
   const handleNavigation = (path: string) => {
     navigate(path);
+  };
+
+  const handleOrderNow = () => {
+    navigate('/menu');
+  };
+
+  const handleViewMenu = () => {
+    navigate('/menu');
+  };
+
+  const handleViewFullMenu = () => {
+    navigate('/menu');
   };
 
   return (

@@ -54,3 +54,4 @@ export const MessageTextarea: React.FC<MessageTextareaProps> = ({ onSendMessage,
 };
 
 export default MessageTextarea;
+export { MessageTextarea };

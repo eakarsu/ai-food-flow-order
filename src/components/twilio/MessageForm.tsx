@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -70,3 +69,4 @@ export const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber, onMessage
 };
 
 export default MessageForm;
+export { MessageForm };
