@@ -1,11 +1,12 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, ChevronDown, ChevronUp, ImageOff, Star, Clock } from "lucide-react";
+import { Plus, ChevronDown, ChevronUp, ImageOff, Star, Clock, Settings } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useCart } from "@/context/CartContext";
+import RulesModal from "./RulesModal";
 
 export interface MenuItem {
   name: string;
@@ -26,19 +27,141 @@ interface MenuCategoryProps {
 const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQuery = "" }: MenuCategoryProps) => {
   const { toast } = useToast();
   const { addToCart } = useCart();
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
+  const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
   
   // Don't render category if no items are available
   if (items.length === 0) {
     return null;
   }
 
+  // Sample rules data - in a real app, this would come from your backend
+  const getSampleRules = (itemName: string) => {
+    if (itemName.includes("Build Your Own Breakfast")) {
+      return [
+        {
+          name: "Breakfast Bread",
+          type: "select_1" as const,
+          options: [
+            { name: "English Muffin", price: 0.50 },
+            { name: "Everything Bagel", price: 0.50 },
+            { name: "Whole Wheat Wrap", price: 1.00 },
+            { name: "Croissant", price: 2.00 }
+          ]
+        },
+        {
+          name: "Breakfast Egg Quantity",
+          type: "select_1" as const,
+          options: [
+            { name: "1 Egg", price: 0.75 },
+            { name: "2 Eggs", price: 1.50 },
+            { name: "3 Eggs", price: 2.25 }
+          ]
+        },
+        {
+          name: "Breakfast Meat",
+          type: "select_up_to" as const,
+          max: 1,
+          options: [
+            { name: "No Meat", price: 0.00 },
+            { name: "Bacon", price: 2.00 },
+            { name: "Sausage", price: 1.50 },
+            { name: "Ham", price: 1.50 }
+          ]
+        },
+        {
+          name: "Breakfast Cheese",
+          type: "select_up_to" as const,
+          max: 2,
+          options: [
+            { name: "American Cheese", price: 1.00 },
+            { name: "Cheddar", price: 1.00 },
+            { name: "Swiss", price: 1.00 }
+          ]
+        }
+      ];
+    }
+    if (itemName.includes("Build Your Own Sandwich")) {
+      return [
+        {
+          name: "Bread",
+          type: "select_1" as const,
+          options: [
+            { name: "Hero", price: 1.00 },
+            { name: "White Wrap", price: 1.00 },
+            { name: "Whole Wheat Bread", price: 0.00 },
+            { name: "Rye Bread", price: 0.00 }
+          ]
+        },
+        {
+          name: "Protein",
+          type: "select_range" as const,
+          min: 1,
+          max: 5,
+          options: [
+            { name: "Turkey", price: 2.00 },
+            { name: "Ham", price: 2.00 },
+            { name: "Roast Beef", price: 3.00 },
+            { name: "Grilled Chicken", price: 2.00 }
+          ]
+        }
+      ];
+    }
+    if (itemName.includes("Build Your Own Salad")) {
+      return [
+        {
+          name: "Salad Base",
+          type: "select_1" as const,
+          options: [
+            { name: "Mixed Greens", price: 0.00 },
+            { name: "Romaine", price: 0.00 },
+            { name: "Spinach", price: 0.00 }
+          ]
+        },
+        {
+          name: "Salad Add-ons",
+          type: "select_up_to" as const,
+          max: 10,
+          options: [
+            { name: "Grilled Chicken", price: 2.00 },
+            { name: "Feta Cheese", price: 2.00 },
+            { name: "Croutons", price: 0.50 },
+            { name: "Tomatoes", price: 0.50 }
+          ]
+        }
+      ];
+    }
+    return [];
+  };
+
   const handleAddToCart = (item: MenuItem) => {
-    addToCart(item);
-    toast({
-      title: "Added to cart! 🎉",
-      description: `${item.name} has been added to your cart`,
-      className: "bg-green-50 border-green-200",
-    });
+    if (item.rules && item.rules.length > 0) {
+      setSelectedItem(item);
+      setIsRulesModalOpen(true);
+    } else {
+      addToCart(item);
+      toast({
+        title: "Added to cart! 🎉",
+        description: `${item.name} has been added to your cart`,
+        className: "bg-green-50 border-green-200",
+      });
+    }
+  };
+
+  const handleRulesConfirm = (selections: Record<string, any>, totalPrice: number) => {
+    if (selectedItem) {
+      const customizedItem = {
+        ...selectedItem,
+        price: totalPrice,
+        customizations: selections
+      };
+      addToCart(customizedItem);
+      toast({
+        title: "Added to cart! 🎉",
+        description: `Customized ${selectedItem.name} has been added to your cart`,
+        className: "bg-green-50 border-green-200",
+      });
+    }
   };
 
   // Enhanced image mapping for better visual accuracy
@@ -97,8 +220,19 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
     if (nameLower.includes("french vanilla")) {
       return "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?q=80&w=1000";
     }
-    if (nameLower.includes("green tea") || nameLower.includes("tea")) {
-      return "https://images.unsplash.com/photo-1546877625-cb8c71916608?q=80&w=1000";
+    
+    // Tea - Fix the woman pictures issue
+    if (nameLower.includes("green decaf tea")) {
+      return "https://images.unsplash.com/photo-1544787219-7f47ccb76574?q=80&w=1000"; // Green tea in cup
+    }
+    if (nameLower.includes("green tea")) {
+      return "https://images.unsplash.com/photo-1544787219-7f47ccb76574?q=80&w=1000"; // Green tea in cup
+    }
+    if (nameLower.includes("hot decaf tea")) {
+      return "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=1000"; // Herbal tea
+    }
+    if (nameLower.includes("hot tea") || nameLower.includes("tea")) {
+      return "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=1000"; // Hot tea in cup
     }
 
     // Cold beverages
@@ -263,6 +397,15 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
           })}
         </div>
       </div>
+
+      <RulesModal
+        isOpen={isRulesModalOpen}
+        onClose={() => setIsRulesModalOpen(false)}
+        itemName={selectedItem?.name || ""}
+        basePrice={selectedItem?.price || 0}
+        rules={selectedItem ? getSampleRules(selectedItem.name) : []}
+        onConfirm={handleRulesConfirm}
+      />
     );
   }
 
@@ -359,8 +502,17 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
                           onClick={() => handleAddToCart(item)}
                           className="bg-gradient-to-r from-food-secondary to-food-primary hover:from-food-primary hover:to-food-secondary text-white px-6 py-2 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                         >
-                          <Plus size={16} className="mr-2" /> 
-                          Add to Cart
+                          {item.rules && item.rules.length > 0 ? (
+                            <>
+                              <Settings size={16} className="mr-2" /> 
+                              Customize
+                            </>
+                          ) : (
+                            <>
+                              <Plus size={16} className="mr-2" /> 
+                              Add to Cart
+                            </>
+                          )}
                         </Button>
                       </div>
                     </CardContent>
@@ -371,6 +523,15 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+
+      <RulesModal
+        isOpen={isRulesModalOpen}
+        onClose={() => setIsRulesModalOpen(false)}
+        itemName={selectedItem?.name || ""}
+        basePrice={selectedItem?.price || 0}
+        rules={selectedItem ? getSampleRules(selectedItem.name) : []}
+        onConfirm={handleRulesConfirm}
+      />
     </div>
   );
 };
