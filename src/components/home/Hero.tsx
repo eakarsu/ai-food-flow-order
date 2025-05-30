@@ -1,4 +1,5 @@
 import TwilioContact from '../twilio/TwilioContact';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -10,25 +11,32 @@ const Hero = () => {
         <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto animate-fade-in opacity-90">
           Fresh, delicious meals made just for you
         </p>
-        <div className="max-w-xl mx-auto">
+        
+        {/* Quick Action Buttons */}
+        <div className="max-w-xl mx-auto mb-8">
           <div className="bg-white rounded-lg p-4 shadow-lg">
             <h3 className="text-xl font-semibold text-food-primary mb-3">Ready to Order?</h3>
             <p className="text-gray-600 mb-4">Browse our menu or contact us directly</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a
-                href="/menu"
-                className="inline-flex items-center justify-center px-6 py-3 bg-food-primary text-white rounded-lg hover:bg-food-primary/90 transition-colors"
+              <Link
+                to="/menu"
+                className="inline-flex items-center justify-center px-6 py-3 bg-food-primary text-white rounded-lg hover:bg-food-primary/90 transition-colors cursor-pointer"
               >
                 View Menu
-              </a>
-              <a
-                href="/contact"
-                className="inline-flex items-center justify-center px-6 py-3 border border-food-primary text-food-primary rounded-lg hover:bg-food-primary hover:text-white transition-colors"
+              </Link>
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center px-6 py-3 border border-food-primary text-food-primary rounded-lg hover:bg-food-primary hover:text-white transition-colors cursor-pointer"
               >
                 Contact Us
-              </a>
+              </Link>
             </div>
           </div>
+        </div>
+
+        {/* SMS and Call Feature */}
+        <div className="max-w-4xl mx-auto">
+          <TwilioContact />
         </div>
       </div>
     </div>
