@@ -145,12 +145,13 @@ const TwilioContact = () => {
           </div>
 
           {/* Active Form */}
-          {activeTab === 'sms' ? (
+          {activeTab === 'sms' && (
             <MessageForm 
               phoneNumber={phoneNumber} 
               onMessageSent={handleMessageSent}
             />
-          ) : (
+          )}
+          {activeTab === 'call' && (
             <CallForm 
               phoneNumber={phoneNumber} 
             />

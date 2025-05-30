@@ -68,12 +68,13 @@ const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber = '', onMessageSe
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div onKeyPress={handleKeyPress}>
+        <div className="space-y-2">
           <MessageTextarea
             value={message}
             onChange={setMessage}
             placeholder="Enter your message here..."
             disabled={loading}
+            onKeyPress={handleKeyPress}
           />
         </div>
         <div className="flex justify-end">
