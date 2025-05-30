@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare, Send } from "lucide-react";
 import MessageTextarea from './MessageTextarea';
-import { useToast } from "@/hooks/use-toast";
+import { useSendSMS } from '@/hooks/useSendSMS';
 
 interface MessageFormProps {
   phoneNumber?: string;
@@ -13,42 +13,17 @@ interface MessageFormProps {
 
 const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber = '', onMessageSent }) => {
   const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  const { sendSMS, loading } = useSendSMS({ phoneNumber });
 
   const handleSendMessage = async () => {
-    if (!message.trim() || !phoneNumber || phoneNumber.trim() === '') {
-      toast({
-        title: "Message required",
-        description: "Please enter a message and phone number",
-        variant: "destructive",
-      });
+    if (!message.trim()) {
       return;
     }
 
-    setLoading(true);
-    
-    try {
-      // Simulate SMS sending - replace with actual Twilio implementation
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+    const success = await sendSMS(message);
+    if (success) {
       onMessageSent?.(message);
       setMessage('');
-      
-      toast({
-        title: "Message Sent",
-        description: `SMS sent to ${phoneNumber}`,
-      });
-    } catch (error) {
-      console.error('Failed to send message:', error);
-      
-      toast({
-        title: "Failed to Send Message",
-        description: "An error occurred while sending the message",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
     }
   };
 
