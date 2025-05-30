@@ -1,8 +1,8 @@
 
 import React, { useState } from "react";
 import MenuCategory, { MenuItem } from "@/components/MenuCategory";
-import { SearchBar } from "@/components/SearchBar";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
+import SearchBar from "@/components/SearchBar";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import SEO from "@/components/SEO";
 
 // Complete menu data based on prompt2.txt
