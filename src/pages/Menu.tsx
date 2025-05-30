@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from '../components/Navbar';
@@ -338,58 +337,25 @@ const rulesData = {
   }
 };
 
-// Menu data structure with category images
+// Enhanced menu data with better categorization and visual presentation
 const menuData: Array<{
   category: string;
   categoryImage?: string;
   items: MenuItem[];
+  categoryIcon?: string;
+  gradient?: string;
 }> = [
   {
-    category: "Acai Bowls",
-    categoryImage: "https://images.unsplash.com/photo-1590301157890-4810ed352733?q=80&w=1000",
+    category: "🌟 Featured Breakfast",
+    categoryImage: "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?q=80&w=1000",
+    gradient: "from-orange-400 to-red-500",
     items: [
       {
         name: "Acai Bowl",
         price: 12.97,
         description: "Nutrient-rich acai blend topped with fresh banana slices, sweet blueberries, strawberries, crunchy granola, coconut flakes, and a drizzle of organic honey",
         imageUrl: "https://images.unsplash.com/photo-1590301157890-4810ed352733?q=80&w=1000"
-      }
-    ]
-  },
-  {
-    category: "Bottled Drinks",
-    categoryImage: "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000",
-    items: [
-      { name: "Apple Juice", price: 3.59, description: "Fresh-pressed apple juice, bottled daily for maximum flavor", imageUrl: "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000" },
-      { name: "Arizona Iced Cold Brew Green Tea", price: 4.09, description: "Refreshing cold brew green tea with subtle herbal notes", imageUrl: "https://images.unsplash.com/photo-1620798018123-dce03e4a176b?q=80&w=1000" },
-      { name: "Arizona Iced Cold Brew Iced Tea", price: 4.09, description: "Classic cold brew iced tea, perfectly steeped for smooth taste", imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
-      { name: "Arizona Iced Cold Brew Sweet Tea", price: 4.09, description: "Southern-inspired sweet tea with a cold brew process for less bitterness", imageUrl: "https://images.unsplash.com/photo-1500631886742-f049cd451bba?q=80&w=1000" },
-      { name: "Arizona Iced Cold Brew Unsweet Tea", price: 4.09, description: "Pure unsweetened cold brew tea, showcasing natural tea flavors", imageUrl: "https://images.unsplash.com/photo-1620031351283-d3d04e125745?q=80&w=1000" },
-      { name: "Arizona Iced Tea 16 oz Arnold Palmer", price: 3.59, description: "Perfect balance of lemonade and iced tea in the classic combination", imageUrl: "https://images.unsplash.com/photo-1624372652234-74c3b9c1d36b?q=80&w=1000" },
-      { name: "Arizona Iced Tea 16 oz Diet Green Tea", price: 3.59, description: "Light and refreshing green tea with zero calories", imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
-      { name: "Arizona Iced Tea 16 oz Diet Iced Tea", price: 3.59, description: "Sugar-free classic iced tea for guilt-free refreshment", imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
-      { name: "Arizona Iced Tea 16 oz Green Tea", price: 3.59, description: "Traditional green tea with gentle sweetness and antioxidant benefits", imageUrl: "https://images.unsplash.com/photo-1565220847459-762ff497b38e?q=80&w=1000" },
-      { name: "Arizona Iced Tea 16 oz Iced Tea", price: 3.59, description: "Classic iced tea with the perfect balance of flavor and sweetness", imageUrl: "https://images.unsplash.com/photo-1572490151003-56ef25b05872?q=80&w=1000" },
-      { name: "Coke 20oz soda", price: 3.59, description: "The world-famous cola with its secret recipe of natural flavors", imageUrl: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=1000" },
-      { name: "Cranberry Juice", price: 3.59, description: "Tart and tangy cranberry juice, perfect for refreshment or mixing", imageUrl: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000" },
-      { name: "Diet Coke 20oz soda", price: 3.59, description: "Zero-calorie version of the classic cola with the same great taste", imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
-      { name: "Diet Dr. Pepper 20oz soda", price: 3.59, description: "Sugar-free version of the distinctive 23-flavor blend", imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
-      { name: "Diet Pepsi 20oz soda", price: 3.59, description: "Light and refreshing zero-calorie cola alternative", imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
-      { name: "Diet Sprite 20oz soda", price: 3.59, description: "Sugar-free lemon-lime soda with a crisp, clean taste", imageUrl: "https://images.unsplash.com/photo-1581098365948-6a5a912b7a49?q=80&w=1000" },
-      { name: "Dr. Pepper 20oz soda", price: 3.59, description: "Unique blend of 23 flavors creating an iconic sweet and spicy taste", imageUrl: "https://images.unsplash.com/photo-1629203432180-71e9b11626e6?q=80&w=1000" },
-      { name: "Essentia 1 L", price: 4.89, description: "Ionized alkaline water with a pH of 9.5+ for optimal hydration", imageUrl: "https://images.unsplash.com/photo-1564419429381-98dbcf916478?q=80&w=1000" },
-      { name: "Gatorade Cool Blue", price: 3.59, description: "Electrolyte-enhanced sports drink with refreshing blue flavor", imageUrl: "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?q=80&w=1000" },
-      { name: "Gatorade Frost", price: 3.59, description: "Light and crisp electrolyte beverage for quick hydration", imageUrl: "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?q=80&w=1000" },
-      { name: "Monster", price: 3.50, description: "High-energy drink blend with B-vitamins and taurine", imageUrl: "https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=1000" },
-      { name: "Monster Rehab", price: 3.50, description: "Tea and lemonade energy blend for recovery and hydration", imageUrl: "https://images.unsplash.com/photo-1570526427001-9e695fdadd15?q=80&w=1000" },
-      { name: "Monster Zero Sugar", price: 3.50, description: "Full energy boost without the sugar or calories", imageUrl: "https://images.unsplash.com/photo-1611066527104-99d69e0c5333?q=80&w=1000" },
-      { name: "Orange Juice", price: 3.59, description: "Freshly squeezed orange juice, packed with vitamin C", imageUrl: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000" },
-    ]
-  },
-  {
-    category: "Breakfast Combos",
-    categoryImage: "https://images.unsplash.com/photo-1484723091739-30a097e8f929?q=80&w=1000",
-    items: [
+      },
       {
         name: "French Toast",
         price: 9.95,
@@ -397,167 +363,39 @@ const menuData: Array<{
         imageUrl: "https://images.unsplash.com/photo-1484723091739-30a097e8f929?q=80&w=1000"
       },
       {
-        name: "Healthy One",
-        price: 11.64,
-        description: "Light and nutritious breakfast featuring fluffy egg whites, lean turkey, fresh spinach, and Alpine Lace Swiss cheese wrapped in a whole wheat tortilla",
-        imageUrl: "https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=1000"
-      },
-      {
-        name: "Hungry Man",
-        price: 12.95,
-        description: "The ultimate breakfast sandwich with three eggs, savory ham, crispy bacon, juicy sausage, and melted cheese on a fresh hero roll",
-        imageUrl: "https://images.unsplash.com/photo-1533920379810-6bedac961c2a?q=80&w=1000"
-      },
-      {
         name: "Melville Platter",
         price: 12.95,
         description: "Classic American breakfast featuring two eggs any style, ham, bacon, sausage, homestyle potatoes, and toast of your choice",
         imageUrl: "https://images.unsplash.com/photo-1529604278261-8bfcdb8a6f1d?q=80&w=1000"
-      },
-      {
-        name: "Protein Slammer",
-        price: 12.94,
-        description: "High-protein breakfast with five egg whites, extra turkey, and Alpine Lace Swiss cheese in a whole wheat wrap - perfect for fitness enthusiasts",
-        imageUrl: "https://images.unsplash.com/photo-1613769049987-b31b641f25b1?q=80&w=1000"
-      },
-      {
-        name: "Super Thing",
-        price: 12.94,
-        description: "Indulgent breakfast featuring two eggs, double portions of bacon and sausage, sautéed onions, and melted American cheese",
-        imageUrl: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1000"
       }
     ]
   },
   {
-    category: "BYO Breakfast",
+    category: "🥯 Build Your Breakfast",
     categoryImage: "https://images.unsplash.com/photo-1592321675774-3cbc1d00fb0c?q=80&w=1000",
+    gradient: "from-yellow-400 to-orange-500",
     items: [
       {
-        name: "Bagel",
+        name: "Custom Bagel",
         price: 0.00,
-        description: "Choose from our selection of bagels and spreads",
+        description: "Choose from our selection of fresh bagels and spreads - from everything to sesame, with cream cheese, lox, or your favorite toppings",
         imageUrl: "https://images.unsplash.com/photo-1592321675774-3cbc1d00fb0c?q=80&w=1000",
         rules: ["Bagel Options", "Bagel Spreads"]
       },
       {
-        name: "Breakfast",
+        name: "Build Your Breakfast",
         price: 2.60,
-        description: "Build your own breakfast with your choice of bread, cheese, egg options, and more",
+        description: "Create your perfect breakfast with your choice of bread, eggs, cheese, meat, and fresh toppings",
         imageUrl: "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?q=80&w=1000",
         rules: ["Breakfast Add-ons", "Breakfast Bread", "Breakfast Cheese", "Breakfast Dressing", "Breakfast Egg Option", "Breakfast Egg Quantity", "Breakfast Meat"]
       }
     ]
   },
   {
-    category: "BYO Sandwiches",
+    category: "🥪 Gourmet Sandwiches & Heroes",
     categoryImage: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=1000",
+    gradient: "from-green-400 to-blue-500",
     items: [
-      {
-        name: "BYO Sandwiches",
-        price: 16.00,
-        description: "Build your own sandwich with your choice of bread, cheese, protein, and toppings",
-        imageUrl: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=1000",
-        rules: ["Bread", "Cheese", "Protein", "Toppings"]
-      }
-    ]
-  },
-  {
-    category: "Chopped Salad",
-    categoryImage: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000",
-    items: [
-      {
-        name: "BYO Salad",
-        price: 9.95,
-        description: "Build your own salad with your choice of base, add-ons, and dressing",
-        imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000",
-        rules: ["Salad Add-ons", "Salad Base", "Salad Dressing"]
-      }
-    ]
-  },
-  {
-    category: "Coffee",
-    categoryImage: "https://images.unsplash.com/photo-1503481766315-7a586b20f66d?q=80&w=1000",
-    items: [
-      { name: "Cappuccino, Columbian Coffee, Large", price: 2.76 },
-      { name: "Cappuccino, Columbian Coffee, Medium", price: 2.25 },
-      { name: "Cappuccino, Columbian Coffee, Small", price: 1.76 },
-      { name: "French Vanilla, Columbian Coffee, Large", price: 2.76 },
-      { name: "French Vanilla, Columbian Coffee, Medium", price: 2.25 },
-      { name: "French Vanilla, Columbian Coffee, Small", price: 1.76 },
-      { name: "Columbian Coffee, Large", price: 2.76 },
-      { name: "Columbian Coffee, Medium", price: 2.25 },
-      { name: "Columbian Coffee, Small", price: 1.76 },
-      { name: "Hot Coffee, Columbian Coffee, Large", price: 2.76, imageUrl: "https://images.unsplash.com/photo-1503481766315-7a586b20f66d?q=80&w=1000" },
-      { name: "Hot Coffee, Columbian Coffee, Medium", price: 2.25 },
-      { name: "Hot Coffee, Columbian Coffee, Small", price: 1.76 },
-      { name: "Hot Decaf Coffee, Columbian Coffee, Large", price: 2.76 },
-      { name: "Hot Decaf Coffee, Columbian Coffee, Medium", price: 2.25 },
-      { name: "Hot Decaf Coffee, Columbian Coffee, Small", price: 1.76 }
-    ]
-  },
-  {
-    category: "Tea",
-    categoryImage: "https://images.unsplash.com/photo-1546877625-cb8c71916608?q=80&w=1000",
-    items: [
-      { name: "Green Decaf Tea, Large", price: 2.76 },
-      { name: "Green Decaf Tea, Medium", price: 2.25 },
-      { name: "Green Decaf Tea, Small", price: 1.76 },
-      { name: "Green Tea, Large", price: 2.76, imageUrl: "https://images.unsplash.com/photo-1546877625-cb8c71916608?q=80&w=1000" },
-      { name: "Green Tea, Medium", price: 2.25 },
-      { name: "Green Tea, Small", price: 1.76 },
-      { name: "Hot Tea, Large", price: 2.76 },
-      { name: "Hot Tea, Medium", price: 2.25 },
-      { name: "Hot Tea, Small", price: 1.76 },
-      { name: "Hot Decaf Tea, Large", price: 2.76 },
-      { name: "Hot Decaf Tea, Medium", price: 2.25 },
-      { name: "Hot Decaf Tea, Small", price: 1.76 }
-    ]
-  },
-  {
-    category: "Cold Sandwiches",
-    categoryImage: "https://images.unsplash.com/photo-1621800043295-a73fe8894df0?q=80&w=1000",
-    items: [
-      {
-        name: "Balsamic Avocado Hero",
-        price: 17.95,
-        description: "Turkey breast, avocado, tomato, romaine lettuce and balsamic vinaigrette.",
-        imageUrl: "https://images.unsplash.com/photo-1621800043295-a73fe8894df0?q=80&w=1000"
-      },
-      {
-        name: "Cajun Roast Beef Hero",
-        price: 17.95,
-        description: "Cajun roast beef, Cheddar cheese, lettuce, roasted red peppers and creole mayo."
-      },
-      {
-        name: "California Hero",
-        price: 17.95,
-        description: "Turkey breast, avocado, lettuce, tomatoes and Russian dressing."
-      },
-      {
-        name: "Chicken Knock Out Hero",
-        price: 17.95,
-        description: "Fried chicken cutlet, hot cherry peppers, jalapeño Jack cheese, lettuce, tomato and horseradish dressing."
-      },
-      {
-        name: "Dagwood Hero",
-        price: 17.95,
-        description: "Roast beef, turkey, ham, American, Swiss, lettuce, tomato and mayo."
-      },
-      {
-        name: "Grandpa Ted Hero",
-        price: 17.95,
-        description: "Turkey breast, Genoa salami, cole-slaw and mustard."
-      },
-      {
-        name: "Honey Dipped Chicken Hero",
-        price: 17.95,
-        description: "Chicken cutlet, Cheddar cheese, romaine lettuce, tomato, and honey dip sauce."
-      },
-      {
-        name: "Italian Grilled Chicken Hero",
-        price: 17.95,
-        description: "Grilled chicken, lettuce, roasted red peppers, fresh Mozzarella and pesto sauce."
-      },
       {
         name: "Italian Hero",
         price: 17.95,
@@ -565,351 +403,133 @@ const menuData: Array<{
         imageUrl: "https://images.unsplash.com/photo-1511344407683-b1172dce025e?q=80&w=1000"
       },
       {
-        name: "Monte Christo Hero",
-        price: 17.95,
-        description: "Turkey breast, ham, Swiss cheese, lettuce, tomato and Russian dressing."
-      },
-      {
-        name: "Nazareth Hero",
-        price: 17.95,
-        description: "Fried chicken cutlet, bacon, Swiss cheese, cole-slaw and Russian dressing."
-      },
-      {
-        name: "Roast Beef Deluxe Hero",
-        price: 17.95,
-        description: "Roast beef, bacon, Cheddar, lettuce, tomato and mayo."
-      },
-      {
-        name: "Turkey Club Hero",
-        price: 17.95,
-        description: "Roast turkey breast, bacon, lettuce, tomato and mayo on a hero."
-      }
-    ]
-  },
-  {
-    category: "Desserts",
-    items: [
-      { name: "Chocolate Chip Cookies", price: 2.29, imageUrl: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?q=80&w=1000" },
-      { name: "Chocolate Pudding", price: 3.89 },
-      { name: "Rice Pudding", price: 4.54 }
-    ]
-  },
-  {
-    category: "Grill Menu",
-    items: [
-      {
-        name: "Beef gyro",
-        price: 12.94,
-        description: "Lettuce, tomato, cucumbers, onions, gyro sauce.",
-        imageUrl: "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?q=80&w=1000"
-      },
-      {
-        name: "Cuban Sandwich",
-        price: 18.12,
-        description: "Pulled pork, ham, Swiss cheese, pickles and tomatoes on a garlic bread hero."
-      },
-      {
-        name: "Falafel Wrap",
-        price: 11.64,
-        description: "Falafel, lettuce, onion, cucumber, tomato and tahini sauce."
-      },
-      {
-        name: "Grilled Monte Cristo",
-        price: 16.84,
-        description: "Ham, turkey, Swiss cheese, Russian dressing and tomato on Texas style bread."
-      },
-      {
         name: "Philly Cheese Steak",
         price: 14.24,
-        description: "Tender rib-eye steak, sautéed peppers, onions, and mixed Cheese.",
+        description: "Tender rib-eye steak, sautéed peppers, onions, and mixed cheese on a fresh hero roll",
         imageUrl: "https://images.unsplash.com/photo-1600628421066-f6bda6a7b976?q=80&w=1000"
       },
       {
-        name: "Wrap Supreme",
-        price: 11.64,
-        description: "Chicken tenders, lettuce, tomato, cheese, and ranch dressing."
-      }
-    ]
-  },
-  {
-    category: "Hot Sandwiches",
-    categoryImage: "https://images.unsplash.com/photo-1550507992-eb63ffee0847?q=80&w=1000",
-    items: [
-      {
         name: "Chicken Fiesta Hero",
         price: 17.95,
-        description: "Fried chicken cutlet, fresh mozzarella, roasted red peppers and spicy mayo on a toasted hero.",
+        description: "Fried chicken cutlet, fresh mozzarella, roasted red peppers and spicy mayo on a toasted hero",
         imageUrl: "https://images.unsplash.com/photo-1550507992-eb63ffee0847?q=80&w=1000"
       },
       {
-        name: "Chicken Italian Melt Hero",
-        price: 17.95,
-        description: "Fried chicken cutlet, mozzarella cheese, lettuce, tomato, onions, oil, vinegar on a toasted hero."
-      },
-      {
-        name: "Dare Devil Hero",
-        price: 17.95,
-        description: "Fried chicken cutlet, cheddar cheese, potato salad, lettuce and Russian dressing on a toasted hero"
-      },
-      {
-        name: "Half Hollow Hero",
-        price: 17.95,
-        description: "Sliced buffalo chicken, bacon, mozzarella, lettuce, tomato and Bleu cheese on a toasted garlic hero."
-      },
-      {
-        name: "Mac-Truck Hero",
-        price: 17.95,
-        description: "Fried chicken cutlet. Mozzarella, mac salad, bacon and honey mustard on a toasted garlic hero."
-      },
-      {
-        name: "Melville Spice Hero",
-        price: 17.95,
-        description: "Fried cajun chicken cutlet, bacon, cheddar cheese, lettuce, tomato, and Russian dressing on a toasted hero."
-      },
-      {
-        name: "Original Hero",
-        price: 17.95,
-        description: "Fried chicken cutlet, cucumber, lettuce, tomato, Mozzarella, ranch and hot sauce on a toasted hero."
-      },
-      {
-        name: "Passport Hero",
-        price: 17.95,
-        description: "Fried chicken cutlet, bacon, lettuce, ranch, barbeque sauce, American cheese on a toasted hero."
-      },
-      {
-        name: "Pat's Fiesta Hero",
-        price: 17.95,
-        description: "Fried chicken cutlet, roasted red peppers, Pecorino cheese, fresh Mozzarella, pesto sauce, toasted hero."
-      },
-      {
-        name: "Route 110 Hero",
-        price: 17.95,
-        description: "Grilled chicken, turkey, roasted red pepper, Jack cheese, lettuce and pesto sauce on a toasted hero."
-      },
-      {
-        name: "Southern Ranch Hero",
-        price: 17.95,
-        description: "Roast beef, roasted red peppers, Jack cheese, lettuce and ranch dressing on a toasted garlic hero."
-      },
-      {
-        name: "Spicy CAB Ride Hero",
-        price: 17.95,
-        description: "Fried chicken cutlet, avocado, bacon, mozzarella, cheddar, lettuce, tomato and spicy mayo on a toasted hero."
-      },
-      {
-        name: "Sweet Hills Hero",
-        price: 17.95,
-        description: "Honey turkey, bacon, Cheddar, Mozzarella, lettuce, and honey mustard on a toasted hero."
-      },
-      {
-        name: "Texas Hero",
-        price: 17.95,
-        description: "Fried chicken cutlet, bacon, fried onions, Mozzarella, Cheddar and barbeque sauce on a toasted garlic hero."
-      },
-      {
-        name: "X-Factor Hero",
-        price: 17.95,
-        description: "Fried chicken cutlet, mozzarella cheese, bacon, cole-slaw and Russian dressing on a toasted garlic hero."
+        name: "Build Your Own Sandwich",
+        price: 16.00,
+        description: "Create your perfect sandwich with premium Boar's Head meats, artisanal cheeses, fresh vegetables, and your choice of bread",
+        imageUrl: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=1000",
+        rules: ["Bread", "Cheese", "Protein", "Toppings"]
       }
     ]
   },
   {
-    category: "Iced Tea and Lemonade",
-    items: [
-      { name: "Home-Made Iced Tea, Large", price: 3.50, imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
-      { name: "Home-Made Iced Tea, Medium", price: 2.76 },
-      { name: "Home-Made Lemonade, Large", price: 3.50 },
-      { name: "Home-Made Lemonade, Medium", price: 2.76 },
-      { name: "Unsweetened Iced Tea, Large", price: 3.50 },
-      { name: "Unsweetened Iced Tea, Medium", price: 2.76 }
-    ]
-  },
-  {
-    category: "Muffins & Pastries",
-    items: [
-      { name: "Apple Turnover", price: 3.59 },
-      { name: "Banana Nut Muffin", price: 3.59 },
-      { name: "Blueberry Muffin", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1607958996333-41320fd96e49?q=80&w=1000" },
-      { name: "Bran Muffin", price: 3.59 },
-      { name: "Cheese Danish", price: 3.59 },
-      { name: "Chocolate Chip Muffin", price: 3.59 },
-      { name: "Chocolate Chocolate Muffin", price: 3.59 },
-      { name: "Corn Muffin", price: 3.59 },
-      { name: "Croissant", price: 3.89, imageUrl: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=1000" },
-      { name: "Strawberry Cheese Danish", price: 3.59 }
-    ]
-  },
-  {
-    category: "Omelets",
-    items: [
-      {
-        name: "American Omelet",
-        price: 10.32,
-        description: "ham, American cheese, and tomato.",
-        imageUrl: "https://images.unsplash.com/photo-1510693206972-df098062fc71?q=80&w=1000"
-      },
-      {
-        name: "Mexican Omelet",
-        price: 10.32,
-        description: "mushrooms, tomato, onions, jalapeno, and cheese."
-      },
-      {
-        name: "Sausage & Potato Omelet",
-        price: 10.32,
-        description: "sausage, home-fries, and cheddar cheese."
-      },
-      {
-        name: "Simon's Omelet",
-        price: 11.64,
-        description: "avocado, spinach, Feta cheese and salsa."
-      },
-      {
-        name: "Western Omelet",
-        price: 10.32,
-        description: "peppers, onions, and ham."
-      }
-    ]
-  },
-  {
-    category: "Paninis",
-    items: [
-      {
-        name: "California Panini",
-        price: 15.95,
-        description: "Turkey breast, tomato, avocado, Mozzarella cheese and Russian dressing.",
-        imageUrl: "https://images.unsplash.com/photo-1509722747041-616f39b57569?q=80&w=1000"
-      },
-      {
-        name: "Caprese Style Panini",
-        price: 15.95,
-        description: "Grilled chicken, mozzarella cheese, roasted red peppers, pesto sauce"
-      },
-      {
-        name: "Chicken Fiesta Panini",
-        price: 15.95,
-        description: "Fried chicken cutlet, fresh mozzarella, roasted red peppers and spicy mayo."
-      },
-      {
-        name: "Chicken Margherita Panini",
-        price: 15.95,
-        description: "Grilled chicken, tomatoes, fresh mozzarella, fresh basil and red onions."
-      },
-      {
-        name: "Delightful Panini",
-        price: 15.95,
-        description: "Turkey breast, Swiss cheese, honey mustard and cole-slaw."
-      },
-      {
-        name: "Desire Panini",
-        price: 15.95,
-        description: "House roast turkey breast, Swiss cheese, cole-slaw and Russian."
-      },
-      {
-        name: "Italian Chicken Panini",
-        price: 15.95,
-        description: "Grilled chicken, pesto sauce, roasted red pepper, and fresh mozzarella."
-      },
-      {
-        name: "Manhattan Panini",
-        price: 15.95,
-        description: "Roast beef, tomato, onions, bacon, Mozzarella cheese and Russian dressing."
-      },
-      {
-        name: "Monterey Panini",
-        price: 15.95,
-        description: "Virginia ham, sharp Cheddar cheese, plum tomato and bacon, and Russian dressing."
-      },
-      {
-        name: "Smokey Joe Panini",
-        price: 15.95,
-        description: "Smoked turkey, Cheddar cheese, bacon, crispy fried onions and Russian."
-      },
-      {
-        name: "Sunset Paninic",
-        price: 15.95,
-        description: "Turkey, mozzarella, tomato, avocado, ranch dressing."
-      },
-      {
-        name: "Texas Panini",
-        price: 15.95,
-        description: "Fried chicken cutlet, bacon, fried onions, cheddar cheese and barbeque sauce."
-      },
-      {
-        name: "Torino Panini",
-        price: 15.95,
-        description: "Fried chicken cutlet, Mozzarella, sundried tomato and pesto sauce."
-      },
-      {
-        name: "Tuna Cheddar Panini",
-        price: 15.95,
-        description: "Tuna, Cheddar cheese and tomatoes."
-      }
-    ]
-  },
-  {
-    category: "Salads",
+    category: "🥗 Fresh Salads & Healthy Options",
+    categoryImage: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000",
+    gradient: "from-green-300 to-emerald-600",
     items: [
       {
         name: "Chef Salad",
         price: 15.95,
-        description: "Mixed lettuce, ham, eggs, turkey, carrots, Cheddar cheese, cucumber, tomatoes and green peppers.",
+        description: "Mixed lettuce, ham, eggs, turkey, carrots, Cheddar cheese, cucumber, tomatoes and green peppers",
         imageUrl: "https://images.unsplash.com/photo-1607532941433-304659e8198a?q=80&w=1000"
-      },
-      {
-        name: "Cobb Salad",
-        price: 15.95,
-        description: "Mixed lettuce, bacon, chicken, Provolone cheese, eggs, tomatoes, and black olives."
       },
       {
         name: "Greek Salad",
         price: 15.95,
-        description: "Romaine lettuce, tomatoes, stuffed grape leaves, green peppers, Feta cheese and black olives."
+        description: "Romaine lettuce, tomatoes, stuffed grape leaves, green peppers, Feta cheese and black olives",
+        imageUrl: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?q=80&w=1000"
       },
       {
-        name: "Grilled Chicken Caesar Salad",
-        price: 15.95,
-        description: "Romaine lettuce, tomatoes, grilled chicken, Parmigiano cheese, croutons, and caesar dressing."
-      },
-      {
-        name: "Grilled Chicken Salad",
-        price: 15.95,
-        description: "Romaine lettuce, tomatoes, grilled chicken, green bell peppers, shredded carrots and cucumbers."
-      },
-      {
-        name: "Santa Fe Salad",
-        price: 15.95,
-        description: "Mixed lettuce, grilled chicken, beans, corn, Cheddar cheese, and crunchy cheese tortilla strips, and Santa Fe dressing."
+        name: "Build Your Own Salad",
+        price: 9.95,
+        description: "Fresh greens with your choice of proteins, toppings, and dressing",
+        imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000",
+        rules: ["Salad Add-ons", "Salad Base", "Salad Dressing"]
       }
     ]
   },
   {
-    category: "Sliced Cold Cuts",
+    category: "☕ Coffee & Tea",
+    categoryImage: "https://images.unsplash.com/photo-1503481766315-7a586b20f66d?q=80&w=1000",
+    gradient: "from-amber-600 to-brown-700",
     items: [
-      { name: "American cheese 1 lb.", price: 11.98 },
-      { name: "American cheese 1/2 lb.", price: 5.99 },
-      { name: "American cheese 1/4 lb.", price: 2.99 },
-      { name: "American cheese 3/4 lb.", price: 8.98 },
-      { name: "Boars Head Bologna 1 lb.", price: 11.98 },
-      { name: "Boars Head Bologna 1/2 lb.", price: 5.99 },
-      { name: "Boars Head Bologna 1/4 lb.", price: 2.99 },
-      { name: "Boars Head Bologna 3/4 lb.", price: 8.98 },
-      { name: "Boars Head Buffalo Chicken 1 lb.", price: 15.98, imageUrl: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?q=80&w=1000" },
-      { name: "Boars Head Buffalo Chicken 1/2 lb.", price: 7.99 },
-      { name: "Boars Head Buffalo Chicken 1/4 lb.", price: 3.99 },
-      { name: "Boars Head Buffalo Chicken 3/4 lb.", price: 11.98 },
-      { name: "Boars Head Honey Turkey 1 lb.", price: 15.98 },
-      { name: "Boars Head Honey Turkey 1/2 lb.", price: 7.99 },
-      { name: "Boars Head Honey Turkey 1/4 lb.", price: 3.99 },
-      { name: "Boars Head Honey Turkey 3/4 lb.", price: 11.98 }
+      { name: "Hot Coffee - Large", price: 2.76, description: "Rich Colombian coffee, freshly brewed", imageUrl: "https://images.unsplash.com/photo-1503481766315-7a586b20f66d?q=80&w=1000" },
+      { name: "Cappuccino - Large", price: 2.76, description: "Espresso with steamed milk and foam", imageUrl: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?q=80&w=1000" },
+      { name: "French Vanilla Coffee - Large", price: 2.76, description: "Smooth vanilla-flavored coffee", imageUrl: "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?q=80&w=1000" },
+      { name: "Green Tea - Large", price: 2.76, description: "Antioxidant-rich green tea", imageUrl: "https://images.unsplash.com/photo-1546877625-cb8c71916608?q=80&w=1000" }
     ]
   },
   {
-    category: "Snacks & Light Meals",
+    category: "🥤 Beverages & Refreshments",
+    categoryImage: "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000",
+    gradient: "from-blue-400 to-cyan-600",
     items: [
-      { name: "Yogurt Parfait", price: 6.99, imageUrl: "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1000" },
-      { name: "Overnight Oats & Berries", price: 6.99 },
-      { name: "Peanut Butter & Chocolate Overnight Oats", price: 6.99 },
-      { name: "Strawberry Yogurt Parfait", price: 6.99 }
+      { name: "Fresh Orange Juice", price: 3.59, description: "Freshly squeezed orange juice, packed with vitamin C", imageUrl: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000" },
+      { name: "Arizona Iced Tea", price: 3.59, description: "Classic iced tea with perfect sweetness", imageUrl: "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000" },
+      { name: "Home-Made Lemonade - Large", price: 3.50, description: "Fresh squeezed lemonade made daily", imageUrl: "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000" },
+      { name: "Coca-Cola 20oz", price: 3.59, description: "Classic refreshing cola", imageUrl: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=1000" }
+    ]
+  },
+  {
+    category: "🧁 Pastries & Desserts",
+    categoryImage: "https://images.unsplash.com/photo-1607958996333-41320fd96e49?q=80&w=1000",
+    gradient: "from-pink-400 to-purple-600",
+    items: [
+      { name: "Blueberry Muffin", price: 3.59, description: "Fresh baked with plump blueberries", imageUrl: "https://images.unsplash.com/photo-1607958996333-41320fd96e49?q=80&w=1000" },
+      { name: "Chocolate Chip Cookies", price: 2.29, description: "Warm, chewy cookies with chocolate chips", imageUrl: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?q=80&w=1000" },
+      { name: "Fresh Croissant", price: 3.89, description: "Buttery, flaky French pastry", imageUrl: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=1000" },
+      { name: "Apple Turnover", price: 3.59, description: "Flaky pastry filled with spiced apples", imageUrl: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1000" }
+    ]
+  },
+  {
+    category: "🍳 Specialty Omelets",
+    categoryImage: "https://images.unsplash.com/photo-1510693206972-df098062fc71?q=80&w=1000",
+    gradient: "from-yellow-300 to-red-500",
+    items: [
+      {
+        name: "American Omelet",
+        price: 10.32,
+        description: "Ham, American cheese, and fresh tomato in fluffy eggs",
+        imageUrl: "https://images.unsplash.com/photo-1510693206972-df098062fc71?q=80&w=1000"
+      },
+      {
+        name: "Western Omelet",
+        price: 10.32,
+        description: "Bell peppers, onions, and ham in a three-egg omelet",
+        imageUrl: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?q=80&w=1000"
+      },
+      {
+        name: "Simon's Omelet",
+        price: 11.64,
+        description: "Avocado, spinach, Feta cheese and fresh salsa",
+        imageUrl: "https://images.unsplash.com/photo-1526206062472-a9d4511ad433?q=80&w=1000"
+      }
+    ]
+  },
+  {
+    category: "🔥 Paninis & Grilled Specialties",
+    categoryImage: "https://images.unsplash.com/photo-1509722747041-616f39b57569?q=80&w=1000",
+    gradient: "from-orange-500 to-red-600",
+    items: [
+      {
+        name: "Caprese Panini",
+        price: 15.95,
+        description: "Grilled chicken, mozzarella cheese, roasted red peppers, pesto sauce",
+        imageUrl: "https://images.unsplash.com/photo-1509722747041-616f39b57569?q=80&w=1000"
+      },
+      {
+        name: "Cuban Sandwich",
+        price: 18.12,
+        description: "Pulled pork, ham, Swiss cheese, pickles and tomatoes on garlic bread",
+        imageUrl: "https://images.unsplash.com/photo-1565299585323-38174c31d0a4?q=80&w=1000"
+      },
+      {
+        name: "Texas Panini",
+        price: 15.95,
+        description: "Fried chicken cutlet, bacon, fried onions, cheddar cheese and BBQ sauce",
+        imageUrl: "https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?q=80&w=1000"
+      }
     ]
   }
 ];
@@ -918,27 +538,27 @@ const Menu = () => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  
+
   // Parse URL parameters on load
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const searchParam = queryParams.get('search');
-    
+
     if (searchParam) {
       setSearchQuery(searchParam);
     }
-    
+
     // Set initial load to false after a short delay
     const timer = setTimeout(() => {
       setIsInitialLoad(false);
     }, 100);
-    
+
     return () => clearTimeout(timer);
   }, [location.search]);
-  
+
   // Convert searchQuery to lowercase for case-insensitive comparison
   const searchLower = searchQuery.toLowerCase();
-  
+
   // Filter menu items based on search query
   const filteredCategories = menuData.map(category => {
     // If search query is empty, return all items
@@ -948,36 +568,30 @@ const Menu = () => {
 
     // Special handling for drink-related searches
     const isDrinkSearch = searchLower.includes("drink") || searchLower.includes("beverage");
-    
-    // Skip Sliced Cold Cuts entirely for drink searches
-    if (isDrinkSearch && category.category === "Sliced Cold Cuts") {
-      return { ...category, items: [] };
-    }
-    
+
     // Special handling for drink-related searches at the category level
     const isDrinkCategory = 
       category.category.toLowerCase().includes("drink") ||
       category.category.toLowerCase().includes("coffee") ||
       category.category.toLowerCase().includes("tea") ||
-      category.category.toLowerCase().includes("iced") ||
-      category.category.toLowerCase().includes("bottle");
-    
+      category.category.toLowerCase().includes("beverage");
+
     // Match drink categories for drink-related searches
     if (isDrinkSearch && isDrinkCategory) {
       return category;
     }
-    
+
     // Filter individual items
     const filteredItems = category.items.filter(item => {
       const nameMatch = item.name.toLowerCase().includes(searchLower);
       const descMatch = item.description && item.description.toLowerCase().includes(searchLower);
-      
+
       // Check for matches in rules if they exist
       let rulesMatch = false;
       if (item.rules) {
         rulesMatch = item.rules.some(rule => {
           // Look in rules data for this category
-          const ruleData = rulesData[category.category]?.[rule];
+          const ruleData = rulesData[category.category.replace(/🌟|🥯|🥪|🥗|☕|🥤|🧁|🍳|🔥|\s/g, '')]?.[rule];
           if (ruleData) {
             // Search in rule description and options
             const ruleTextToSearch = JSON.stringify(ruleData).toLowerCase();
@@ -986,10 +600,10 @@ const Menu = () => {
           return rule.toLowerCase().includes(searchLower);
         });
       }
-      
+
       return nameMatch || descMatch || rulesMatch;
     });
-    
+
     return { ...category, items: filteredItems };
   }).filter(category => category.items.length > 0);
 
@@ -998,54 +612,123 @@ const Menu = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-gray-100">
       <Navbar />
-      
-      <div className="bg-gradient-to-r from-food-primary/20 to-food-secondary/20 py-10 shadow-sm">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-food-dark mb-2 animate-fade-in">
-            OrderlyBite Menu
-          </h1>
-          <p className="text-gray-600 mb-6 text-lg">Explore our delicious offerings crafted with care</p>
-          
-          <div className="max-w-4xl mx-auto mb-8">
-            <SearchBar onSearch={handleSearch} />
+
+      {/* Enhanced Hero Section */}
+      <div className="relative bg-gradient-to-r from-food-primary via-orange-500 to-red-500 py-16 shadow-xl overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.3"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+        </div>
+
+        <div className="relative container mx-auto px-4">
+          <div className="text-center text-white">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 animate-fade-in drop-shadow-lg">
+              🍽️ OrderlyBite Menu
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 text-orange-100 max-w-3xl mx-auto">
+              Discover our carefully crafted selection of fresh, delicious meals made with premium ingredients
+            </p>
+
+            <div className="max-w-4xl mx-auto mb-8">
+              <SearchBar onSearch={handleSearch} />
+            </div>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-2xl font-bold">50+</div>
+                <div className="text-sm">Menu Items</div>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-2xl font-bold">Fresh</div>
+                <div className="text-sm">Daily Made</div>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-2xl font-bold">Local</div>
+                <div className="text-sm">Ingredients</div>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+                <div className="text-2xl font-bold">Fast</div>
+                <div className="text-sm">Service</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      
-      <div className="container mx-auto px-4 py-8">
+
+      {/* Menu Content */}
+      <div className="container mx-auto px-4 py-12">
         {filteredCategories.length > 0 ? (
-          <div className="space-y-6">
-            {filteredCategories.map((category) => (
+          <div className="space-y-12">
+            {filteredCategories.map((category, index) => (
               <div 
                 key={category.category} 
-                className={`border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm transition-all duration-300 ${isInitialLoad ? 'opacity-0' : 'opacity-100'}`}
+                className={`transform transition-all duration-700 ${
+                  isInitialLoad ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'
+                }`}
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <MenuCategory 
-                  title={category.category} 
-                  items={category.items}
-                  categoryImage={category.categoryImage}
-                  searchQuery={searchQuery}
-                />
+                {/* Category Header */}
+                <div className={`relative bg-gradient-to-r ${category.gradient || 'from-food-primary to-food-secondary'} rounded-2xl p-8 mb-8 shadow-xl overflow-hidden`}>
+                  <div className="absolute inset-0 bg-black/10"></div>
+                  <div className="relative flex items-center justify-between">
+                    <div className="flex items-center space-x-6">
+                      {category.categoryImage && (
+                        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white/30 shadow-lg">
+                          <img 
+                            src={category.categoryImage} 
+                            alt={category.category} 
+                            className="w-full h-full object-cover" 
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+                      <div>
+                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">
+                          {category.category}
+                        </h2>
+                        <p className="text-white/90 text-lg">
+                          {category.items.length} delicious options available
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Items Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  <MenuCategory 
+                    title="" 
+                    items={category.items}
+                    showTitle={false}
+                    searchQuery={searchQuery}
+                  />
+                </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-16">
-            <div className="text-food-primary mb-4 text-5xl">😕</div>
-            <p className="text-xl text-gray-600 mb-2">No menu items found matching "{searchQuery}"</p>
-            <p className="text-md text-gray-500 mb-4">Try a different search term or browse our categories</p>
+          <div className="text-center py-24">
+            <div className="text-8xl mb-6">🔍</div>
+            <h3 className="text-3xl font-bold text-gray-700 mb-4">No Results Found</h3>
+            <p className="text-xl text-gray-600 mb-6 max-w-md mx-auto">
+              We couldn't find any menu items matching "{searchQuery}"
+            </p>
+            <p className="text-lg text-gray-500 mb-8">
+              Try a different search term or browse our delicious categories below
+            </p>
             <button 
               onClick={() => setSearchQuery("")}
-              className="mt-2 bg-food-primary text-white py-2 px-4 rounded-md hover:bg-food-primary/90 transition-colors"
+              className="bg-gradient-to-r from-food-primary to-food-secondary text-white py-4 px-8 rounded-xl hover:shadow-lg transition-all duration-300 text-lg font-semibold"
             >
-              Clear search
+              Browse All Items
             </button>
           </div>
         )}
       </div>
-      
+
       <Footer />
     </div>
   );
