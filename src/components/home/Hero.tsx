@@ -1,4 +1,3 @@
-
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import TwilioContact from '../twilio/TwilioContact';
@@ -22,30 +21,46 @@ const Hero = () => {
 
         {/* Navigation Buttons */}
         <div className="flex flex-wrap gap-4 justify-center mb-12">
-          <button
-            onClick={() => handleNavigation('/menu')}
-            className="bg-white text-food-primary hover:bg-gray-100 px-8 py-3 text-lg font-semibold cursor-pointer border-none rounded-md transition-colors"
-          >
-            Order Now
-          </button>
-          <button
-            onClick={() => handleNavigation('/menu')}
-            className="border-2 border-white text-white hover:bg-white hover:text-food-primary px-8 py-3 text-lg font-semibold cursor-pointer bg-transparent rounded-md transition-colors"
-          >
-            View Menu
-          </button>
-          <button
-            onClick={() => handleNavigation('/menu')}
-            className="border-2 border-white text-white hover:bg-white hover:text-food-primary px-8 py-3 text-lg font-semibold cursor-pointer bg-transparent rounded-md transition-colors"
-          >
-            View Full Menu
-          </button>
+          <Button 
+                size="lg" 
+                onClick={handleOrderNow}
+                className="bg-white text-food-primary hover:bg-gray-50 border-2 border-white font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105"
+              >
+                Order Now
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                onClick={handleViewMenu}
+                className="border-white text-white hover:bg-white hover:text-food-primary font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105"
+              >
+                View Menu
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                onClick={handleViewFullMenu}
+                className="border-white text-white hover:bg-white hover:text-food-primary font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105"
+              >
+                View Full Menu
+              </Button>
         </div>
 
-        {/* Contact Form - Direct at top */}
-        <div className="max-w-4xl mx-auto">
-          <TwilioContact />
-        </div>
+        {/* Contact Section */}
+          <div className="mt-16 max-w-2xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+              <h3 className="text-2xl font-bold text-white mb-6 text-center">Contact Us Directly</h3>
+              <p className="text-white/90 text-center mb-6">Place your order or inquire about our daily specials</p>
+
+              <div className="bg-white rounded-xl p-6">
+                <h4 className="text-lg font-semibold text-food-primary mb-4">Send SMS</h4>
+                <MessageForm 
+                  phoneNumber="+18043601129"
+                  onMessageSent={(message) => console.log('Message sent:', message)}
+                />
+              </div>
+            </div>
+          </div>
       </div>
     </div>
   );

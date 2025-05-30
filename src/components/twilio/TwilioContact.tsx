@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MessageSquare, Phone, Settings, Trash2 } from "lucide-react";
-import MessageForm from './MessageForm';
+import { MessageForm } from './MessageForm';
 import CallForm from './CallForm';
 import TwilioSoftphone from './TwilioSoftphone';
 import { useSendSMS } from '@/hooks/useSendSMS';

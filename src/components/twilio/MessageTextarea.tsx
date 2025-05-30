@@ -9,7 +9,7 @@ interface MessageTextareaProps {
   isLoading?: boolean;
 }
 
-const MessageTextarea: React.FC<MessageTextareaProps> = ({ onSendMessage, isLoading = false }) => {
+export const MessageTextarea: React.FC<MessageTextareaProps> = ({ onSendMessage, isLoading = false }) => {
   const [message, setMessage] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {

@@ -7,8 +7,6 @@ import RestaurantInfo from "@/components/home/RestaurantInfo";
 import LoadingScreen from "@/components/home/LoadingScreen";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import SEO from "@/components/SEO";
-
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -26,11 +24,6 @@ const Index = () => {
 
   return (
     <>
-      <SEO 
-        title="OrderlyBite - Fresh Food Delivered Fast"
-        description="Experience the finest selection of freshly prepared meals, artisanal coffee, and gourmet sandwiches. Order online for fast delivery or pickup."
-        keywords="fresh food, delivery, gourmet sandwiches, coffee, breakfast, lunch"
-      />
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
         <Navbar />
 
