@@ -124,35 +124,122 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
   };
   
   // Always open categories when there's a search query, or let user control otherwise
-  const accordionValue = searchQuery ? title : undefined;
+  const [isOpen, setIsOpen] = React.useState(!!searchQuery);
   
+  React.useEffect(() => {
+    if (searchQuery) {
+      setIsOpen(true);
+    }
+  }, [searchQuery]);
+  
+  // If showTitle is false, just render the items directly
+  if (!showTitle) {
+    return (
+      <div className="mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {items.map((item, index) => {
+            const specificImage = item.imageUrl || getSpecificImage(item.name);
+            
+            return (
+              <Card key={`${title}-${index}`} className="overflow-hidden hover:shadow-2xl transition-all duration-500 group transform hover:-translate-y-2 border-0 shadow-lg bg-white">
+                <div className="h-56 overflow-hidden relative bg-gradient-to-br from-gray-50 to-gray-100">
+                  <img
+                    src={specificImage}
+                    alt={item.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.src = getSpecificImage(item.name);
+                    }}
+                  />
+                  
+                  {/* Price Badge */}
+                  <div className="absolute top-4 right-4 bg-gradient-to-r from-food-primary to-food-secondary text-white px-3 py-1 rounded-full font-bold text-sm shadow-lg">
+                    ${item.price.toFixed(2)}
+                  </div>
+                  
+                  {/* Quality Indicator */}
+                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center space-x-1">
+                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                    <span className="text-xs font-semibold text-gray-700">Fresh</span>
+                  </div>
+                  
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+                
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-start mb-3">
+                    <h3 className="font-bold text-lg text-food-dark leading-tight group-hover:text-food-primary transition-colors">
+                      {item.name}
+                    </h3>
+                  </div>
+                  
+                  {item.description && (
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">
+                      {item.description}
+                    </p>
+                  )}
+
+                  {item.rules && item.rules.length > 0 && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                      <div className="flex items-center space-x-2 text-blue-700 text-sm">
+                        <Clock className="w-4 h-4" />
+                        <span className="font-semibold">Customizable</span>
+                      </div>
+                      <p className="text-blue-600 text-xs mt-1">
+                        {item.rules.slice(0, 2).join(", ")}{item.rules.length > 2 && ` +${item.rules.length - 2} more`}
+                      </p>
+                    </div>
+                  )}
+                  
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div className="text-2xl font-bold text-food-primary">
+                      ${item.price.toFixed(2)}
+                    </div>
+                    <Button 
+                      size="sm" 
+                      onClick={() => handleAddToCart(item)}
+                      className="bg-gradient-to-r from-food-secondary to-food-primary hover:from-food-primary hover:to-food-secondary text-white px-6 py-2 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                    >
+                      <Plus size={16} className="mr-2" /> 
+                      Add to Cart
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mb-8">
-      <Accordion type="single" collapsible className="w-full">
+      <Accordion type="single" collapsible className="w-full" value={isOpen ? title : ""} onValueChange={(value) => setIsOpen(value === title)}>
         <AccordionItem value={title} className="border-none">
-          {showTitle && title && (
-            <AccordionTrigger className="flex justify-between bg-gradient-to-r from-food-primary/10 to-food-secondary/10 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
-              <div className="flex items-center space-x-6">
-                {categoryImage ? (
-                  <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-100 border-4 border-white shadow-md">
-                    <img 
-                      src={categoryImage} 
-                      alt={title} 
-                      className="w-full h-full object-cover" 
-                      loading="lazy"
-                      onError={(e) => {
-                        e.currentTarget.src = getSpecificImage(title);
-                      }}
-                    />
-                  </div>
-                ) : null}
-                <div>
-                  <h2 className="text-3xl font-bold text-food-dark mb-1">{title}</h2>
-                  <p className="text-gray-600">{items.length} delicious options</p>
+          <AccordionTrigger className="flex justify-between bg-gradient-to-r from-food-primary/10 to-food-secondary/10 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+            <div className="flex items-center space-x-6">
+              {categoryImage ? (
+                <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-100 border-4 border-white shadow-md">
+                  <img 
+                    src={categoryImage} 
+                    alt={title} 
+                    className="w-full h-full object-cover" 
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.src = getSpecificImage(title);
+                    }}
+                  />
                 </div>
+              ) : null}
+              <div>
+                <h2 className="text-3xl font-bold text-food-dark mb-1">{title}</h2>
+                <p className="text-gray-600">{items.length} delicious options</p>
               </div>
-            </AccordionTrigger>
-          )}
+            </div>
+          </AccordionTrigger>
           
           <AccordionContent className="pt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
