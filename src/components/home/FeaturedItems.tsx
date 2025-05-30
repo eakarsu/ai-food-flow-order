@@ -1,6 +1,4 @@
-` tags. I will pay close attention to the instructions to avoid forbidden words and ensure the code is complete and functional.
 
-```typescript
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
