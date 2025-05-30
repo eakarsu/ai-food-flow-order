@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,15 +13,19 @@ interface MessageFormProps {
 
 const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber = '', onMessageSent }) => {
   const [message, setMessage] = useState('');
-  const { sendSMS, isLoading } = useSendSMS();
+  
+  // Use the hook with the phoneNumber parameter
+  const { loading, sendSMS } = useSendSMS({ phoneNumber });
 
   const handleSendMessage = async () => {
     if (!message.trim() || !phoneNumber || phoneNumber.trim() === '') return;
 
     try {
-      await sendSMS(phoneNumber, message);
-      onMessageSent?.(message);
-      setMessage('');
+      const success = await sendSMS(message);
+      if (success) {
+        onMessageSent?.(message);
+        setMessage('');
+      }
     } catch (error) {
       console.error('Failed to send message:', error);
     }
@@ -47,17 +52,17 @@ const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber = '', onMessageSe
             value={message}
             onChange={setMessage}
             placeholder="Enter your message here..."
-            disabled={isLoading}
+            disabled={loading}
           />
         </div>
         <div className="flex justify-end">
           <Button
             onClick={handleSendMessage}
-            disabled={!message.trim() || !phoneNumber || phoneNumber.trim() === '' || isLoading}
+            disabled={!message.trim() || !phoneNumber || phoneNumber.trim() === '' || loading}
             className="bg-food-primary hover:bg-food-primary/90 text-white px-6 py-2 flex items-center space-x-2"
           >
             <Send className="h-4 w-4" />
-            <span>{isLoading ? 'Sending...' : 'Send Message'}</span>
+            <span>{loading ? 'Sending...' : 'Send Message'}</span>
           </Button>
         </div>
       </CardContent>
