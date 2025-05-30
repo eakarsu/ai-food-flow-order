@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,9 +10,9 @@ interface MessageFormProps {
   onMessageSent?: (message: string) => void;
 }
 
-const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber: propPhoneNumber, onMessageSent }) => {
+const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber, onMessageSent }) => {
   const [message, setMessage] = useState('');
-  const { sendSMS, isLoading } = useSendSMS(propPhoneNumber || '+18001234567');
+  const { sendSMS, isLoading } = useSendSMS(phoneNumber || '+18001234567');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +45,7 @@ const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber: propPhoneNumber,
         <Textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyPress}
           placeholder="Enter your message here..."
           className="min-h-[100px] resize-none"
           disabled={isLoading}
