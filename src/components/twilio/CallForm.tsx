@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Phone } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -8,11 +7,19 @@ import { Label } from "@/components/ui/label";
 
 interface CallFormProps {
   phoneNumber: string;
-  setPhoneNumber: (value: string) => void;
+  setPhoneNumber: (phone: string) => void;
   handleMakeCall: () => void;
 }
 
 const CallForm = ({ phoneNumber, setPhoneNumber, handleMakeCall }: CallFormProps) => {
+  console.log("CallForm: Rendering with phoneNumber:", phoneNumber);
+
+  const handleCallClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    console.log("CallForm: Call button clicked");
+    handleMakeCall();
+  };
+
   const { toast } = useToast();
 
   const validateAndCall = () => {
@@ -40,18 +47,19 @@ const CallForm = ({ phoneNumber, setPhoneNumber, handleMakeCall }: CallFormProps
           onChange={(e) => setPhoneNumber(e.target.value)}
         />
       </div>
-      
+
       <p className="text-sm text-gray-500 mt-4">
         Click the "Call Customer" button to initiate a browser-based call using Twilio's Voice SDK.
       </p>
 
       <div className="flex justify-end border-t pt-4">
         <Button 
-          onClick={validateAndCall}
-          className="bg-food-primary hover:bg-food-primary/90"
+          type="button"
+          onClick={handleCallClick}
+          className="w-full bg-food-primary hover:bg-food-primary/90 cursor-pointer"
         >
-          <Phone className="mr-2" size={16} />
-          Call Customer
+          <Phone className="mr-2 h-4 w-4" />
+          Make Call
         </Button>
       </div>
     </div>
