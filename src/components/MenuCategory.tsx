@@ -45,73 +45,119 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
   const getSpecificImage = (itemName: string) => {
     const nameLower = itemName.toLowerCase();
     
-    // Specific food items
+    // Specific breakfast items
     if (nameLower.includes("acai bowl") || nameLower.includes("acai")) {
       return "https://images.unsplash.com/photo-1590301157890-4810ed352733?q=80&w=1000";
     }
     if (nameLower.includes("french toast")) {
       return "https://images.unsplash.com/photo-1484723091739-30a097e8f929?q=80&w=1000";
     }
+    if (nameLower.includes("melville platter") || nameLower.includes("breakfast platter")) {
+      return "https://images.unsplash.com/photo-1529604278261-8bfcdb8a6f1d?q=80&w=1000";
+    }
+    if (nameLower.includes("custom bagel") || nameLower.includes("bagel")) {
+      return "https://images.unsplash.com/photo-1592321675774-3cbc1d00fb0c?q=80&w=1000";
+    }
+    if (nameLower.includes("build your breakfast") || nameLower.includes("build your own breakfast")) {
+      return "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?q=80&w=1000";
+    }
+    
+    // Sandwiches and heroes
+    if (nameLower.includes("italian hero")) {
+      return "https://images.unsplash.com/photo-1511344407683-b1172dce025e?q=80&w=1000";
+    }
     if (nameLower.includes("philly") || nameLower.includes("cheese steak")) {
       return "https://images.unsplash.com/photo-1600628421066-f6bda6a7b976?q=80&w=1000";
     }
-    if (nameLower.includes("italian hero") || nameLower.includes("italian sandwich")) {
-      return "https://images.unsplash.com/photo-1511344407683-b1172dce025e?q=80&w=1000";
+    if (nameLower.includes("chicken fiesta")) {
+      return "https://images.unsplash.com/photo-1550507992-eb63ffee0847?q=80&w=1000";
+    }
+    if (nameLower.includes("build your own sandwich") || nameLower.includes("build your sandwich")) {
+      return "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=1000";
+    }
+    
+    // Salads
+    if (nameLower.includes("chef salad")) {
+      return "https://images.unsplash.com/photo-1607532941433-304659e8198a?q=80&w=1000";
     }
     if (nameLower.includes("greek salad")) {
       return "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?q=80&w=1000";
     }
-    if (nameLower.includes("chef salad")) {
-      return "https://images.unsplash.com/photo-1607532941433-304659e8198a?q=80&w=1000";
-    }
-    if (nameLower.includes("omelet") || nameLower.includes("omelette")) {
-      return "https://images.unsplash.com/photo-1510693206972-df098062fc71?q=80&w=1000";
-    }
-    if (nameLower.includes("panini")) {
-      return "https://images.unsplash.com/photo-1509722747041-616f39b57569?q=80&w=1000";
-    }
-    if (nameLower.includes("cuban sandwich")) {
-      return "https://images.unsplash.com/photo-1565299585323-38174c31d0a4?q=80&w=1000";
-    }
-    if (nameLower.includes("gyro")) {
-      return "https://images.unsplash.com/photo-1529006557810-274b9b2fc783?q=80&w=1000";
+    if (nameLower.includes("build your own salad") || nameLower.includes("build your salad")) {
+      return "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000";
     }
 
-    // Beverages
-    if (nameLower.includes("coffee") || nameLower.includes("cappuccino") || nameLower.includes("espresso")) {
+    // Coffee and hot beverages
+    if (nameLower.includes("hot coffee") || nameLower.includes("coffee")) {
+      return "https://images.unsplash.com/photo-1503481766315-7a586b20f66d?q=80&w=1000";
+    }
+    if (nameLower.includes("cappuccino")) {
+      return "https://images.unsplash.com/photo-1572442388796-11668a67e53d?q=80&w=1000";
+    }
+    if (nameLower.includes("french vanilla")) {
       return "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?q=80&w=1000";
     }
-    if (nameLower.includes("tea") && !nameLower.includes("iced tea")) {
+    if (nameLower.includes("green tea") || nameLower.includes("tea")) {
       return "https://images.unsplash.com/photo-1546877625-cb8c71916608?q=80&w=1000";
     }
-    if (nameLower.includes("iced tea") || nameLower.includes("arizona")) {
+
+    // Cold beverages
+    if (nameLower.includes("orange juice") || nameLower.includes("fresh orange")) {
+      return "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000";
+    }
+    if (nameLower.includes("arizona") || nameLower.includes("iced tea")) {
       return "https://images.unsplash.com/photo-1556679343-cbc6e39c07dc?q=80&w=1000";
     }
     if (nameLower.includes("lemonade")) {
       return "https://images.unsplash.com/photo-1595983033734-6da0cf8e4137?q=80&w=1000";
     }
-    if (nameLower.includes("orange juice") || nameLower.includes("juice")) {
-      return "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000";
-    }
-    if (nameLower.includes("coke") || nameLower.includes("pepsi") || nameLower.includes("sprite") || nameLower.includes("soda")) {
+    if (nameLower.includes("coca-cola") || nameLower.includes("coke") || nameLower.includes("cola")) {
       return "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=1000";
     }
 
-    // Breakfast items
-    if (nameLower.includes("bagel")) {
-      return "https://images.unsplash.com/photo-1592321675774-3cbc1d00fb0c?q=80&w=1000";
-    }
-    if (nameLower.includes("muffin")) {
+    // Pastries and desserts
+    if (nameLower.includes("blueberry muffin") || nameLower.includes("muffin")) {
       return "https://images.unsplash.com/photo-1607958996333-41320fd96e49?q=80&w=1000";
+    }
+    if (nameLower.includes("chocolate chip cookies") || nameLower.includes("cookies")) {
+      return "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?q=80&w=1000";
     }
     if (nameLower.includes("croissant")) {
       return "https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=1000";
     }
-    if (nameLower.includes("cookies")) {
-      return "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?q=80&w=1000";
+    if (nameLower.includes("apple turnover") || nameLower.includes("turnover")) {
+      return "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1000";
     }
 
-    // Sandwiches and heroes
+    // Omelets
+    if (nameLower.includes("american omelet")) {
+      return "https://images.unsplash.com/photo-1510693206972-df098062fc71?q=80&w=1000";
+    }
+    if (nameLower.includes("western omelet")) {
+      return "https://images.unsplash.com/photo-1565299507177-b0ac66763828?q=80&w=1000";
+    }
+    if (nameLower.includes("simon's omelet") || nameLower.includes("simons omelet")) {
+      return "https://images.unsplash.com/photo-1526206062472-a9d4511ad433?q=80&w=1000";
+    }
+    if (nameLower.includes("omelet") || nameLower.includes("omelette")) {
+      return "https://images.unsplash.com/photo-1510693206972-df098062fc71?q=80&w=1000";
+    }
+
+    // Paninis and grilled items
+    if (nameLower.includes("caprese panini")) {
+      return "https://images.unsplash.com/photo-1509722747041-616f39b57569?q=80&w=1000";
+    }
+    if (nameLower.includes("cuban sandwich")) {
+      return "https://images.unsplash.com/photo-1565299585323-38174c31d0a4?q=80&w=1000";
+    }
+    if (nameLower.includes("texas panini")) {
+      return "https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?q=80&w=1000";
+    }
+    if (nameLower.includes("panini")) {
+      return "https://images.unsplash.com/photo-1509722747041-616f39b57569?q=80&w=1000";
+    }
+
+    // General categories
     if (nameLower.includes("sandwich") || nameLower.includes("hero")) {
       return "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=1000";
     }
@@ -119,16 +165,18 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
       return "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000";
     }
     
-    // Default for other items
+    // Default food image
     return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000";
   };
   
-  // Always open categories when there's a search query, or let user control otherwise
-  const [isOpen, setIsOpen] = React.useState(!!searchQuery);
+  // Only open categories when there's a search query or user clicks
+  const [isOpen, setIsOpen] = React.useState(false);
   
   React.useEffect(() => {
     if (searchQuery) {
       setIsOpen(true);
+    } else {
+      setIsOpen(false); // Close when search is cleared
     }
   }, [searchQuery]);
   
