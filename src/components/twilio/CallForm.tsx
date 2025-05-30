@@ -1,25 +1,51 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Phone, PhoneCall } from "lucide-react";
-import { useCallManagement } from '@/hooks/useCallManagement';
+import { useToast } from "@/hooks/use-toast";
 
 interface CallFormProps {
-  phoneNumber: string;
+  phoneNumber?: string;
   onCallInitiated?: () => void;
 }
 
-const CallForm: React.FC<CallFormProps> = ({ phoneNumber, onCallInitiated }) => {
-  const { initiateCall, isConnecting } = useCallManagement();
+const CallForm: React.FC<CallFormProps> = ({ phoneNumber = '', onCallInitiated }) => {
+  const [isConnecting, setIsConnecting] = useState(false);
+  const { toast } = useToast();
 
   const handleMakeCall = async () => {
-    if (!phoneNumber) return;
+    if (!phoneNumber || phoneNumber.trim() === '') {
+      toast({
+        title: "Phone number required",
+        description: "Please enter a phone number to call",
+        variant: "destructive",
+      });
+      return;
+    }
 
+    setIsConnecting(true);
+    
     try {
-      await initiateCall(phoneNumber);
+      // Simulate call initiation - replace with actual Twilio implementation
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       onCallInitiated?.();
+      
+      toast({
+        title: "Call Initiated",
+        description: `Calling ${phoneNumber}`,
+      });
     } catch (error) {
       console.error('Failed to initiate call:', error);
+      
+      toast({
+        title: "Failed to Make Call",
+        description: "An error occurred while initiating the call",
+        variant: "destructive"
+      });
+    } finally {
+      setIsConnecting(false);
     }
   };
 
@@ -33,10 +59,10 @@ const CallForm: React.FC<CallFormProps> = ({ phoneNumber, onCallInitiated }) => 
       </CardHeader>
       <CardContent>
         <Button
-            onClick={handleMakeCall}
-            disabled={!phoneNumber || phoneNumber.trim() === '' || isConnecting}
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 flex items-center justify-center space-x-2"
-          >
+          onClick={handleMakeCall}
+          disabled={!phoneNumber || phoneNumber.trim() === '' || isConnecting}
+          className="w-full bg-green-600 hover:bg-green-700 text-white py-3 flex items-center justify-center space-x-2"
+        >
           <PhoneCall className="h-5 w-5" />
           <span>{isConnecting ? 'Connecting...' : 'Make Call'}</span>
         </Button>
