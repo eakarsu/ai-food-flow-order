@@ -1,5 +1,4 @@
 import TwilioContact from '../twilio/TwilioContact';
-import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -12,29 +11,7 @@ const Hero = () => {
           Fresh, delicious meals made just for you
         </p>
         
-        {/* Quick Action Buttons */}
-        <div className="max-w-xl mx-auto mb-8">
-          <div className="bg-white rounded-lg p-4 shadow-lg">
-            <h3 className="text-xl font-semibold text-food-primary mb-3">Ready to Order?</h3>
-            <p className="text-gray-600 mb-4">Browse our menu or contact us directly</p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link
-                to="/menu"
-                className="inline-flex items-center justify-center px-6 py-3 bg-food-primary text-white rounded-lg hover:bg-food-primary/90 transition-colors cursor-pointer"
-              >
-                View Menu
-              </Link>
-              <Link
-                to="/contact"
-                className="inline-flex items-center justify-center px-6 py-3 border border-food-primary text-food-primary rounded-lg hover:bg-food-primary hover:text-white transition-colors cursor-pointer"
-              >
-                Contact Us
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* SMS and Call Feature */}
+        {/* Contact Form - Direct at top */}
         <div className="max-w-4xl mx-auto">
           <TwilioContact />
         </div>
