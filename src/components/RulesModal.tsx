@@ -4,8 +4,17 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { FileText } from "lucide-react";
 
 interface RulesModalProps {
-  trigger?: React.ReactNode;
+  isOpen: boolean;
+  onClose: () => void;
+  rules?: string[];
 }
+
+const defaultRules = [
+  "All orders must be placed during business hours",
+  "Payment is required at time of order",
+  "Fresh ingredients are used daily",
+  "SMS and phone ordering available"
+];
 
 const RulesModal = ({ trigger }: RulesModalProps) => {
   // Define default rules with fallbacks
@@ -46,7 +55,7 @@ const RulesModal = ({ trigger }: RulesModalProps) => {
             </p>
             <ul className="space-y-3">
               {rules && rules.length > 0 ? (
-                rules.map((rule, index) => (
+                rules?.map((rule, index) => (
                   <li key={index} className="flex items-start">
                     <span className="flex-shrink-0 w-6 h-6 bg-food-primary text-white text-sm rounded-full flex items-center justify-center mr-3 mt-0.5">
                       {index + 1}

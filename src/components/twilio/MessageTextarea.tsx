@@ -24,20 +24,17 @@ const MessageTextarea = ({ message, onChange }: MessageTextareaProps) => {
   };
 
   return (
-    <div className="space-y-2" onClick={handleClick}>
-      <Label htmlFor="message-input" className="text-sm font-medium text-gray-700">
-        Your Message
-      </Label>
+    <div className="space-y-2">
+      <Label htmlFor="message" className="text-sm font-medium text-gray-700">Message</Label>
       <Textarea
-        id="message-input"
+        id="message"
         placeholder="Enter your message here..."
-        value={message || ""}
-        onChange={handleChange}
-        onFocus={handleFocus}
-        onClick={handleClick}
-        className="min-h-[100px] resize-none bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+        value={message}
+        onChange={(e) => onChange(e.target.value)}
+        className="min-h-[120px] resize-none pointer-events-auto"
         style={{ pointerEvents: 'auto' }}
-        tabIndex={0}
+        rows={5}
+        disabled={false}
       />
     </div>
   );

@@ -119,8 +119,7 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
           type="button"
           onClick={handleSendMessage} 
           disabled={loading || !message.trim()}
-          className="bg-food-primary hover:bg-food-primary/90 cursor-pointer"
-          style={{ pointerEvents: 'auto' }}
+          className="bg-food-primary hover:bg-food-primary/90 cursor-pointer pointer-events-auto"
         >
           {loading ? "Sending..." : (
             <>

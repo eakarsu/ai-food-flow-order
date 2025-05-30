@@ -54,8 +54,8 @@ const CallForm = ({ phoneNumber, setPhoneNumber, handleMakeCall }: CallFormProps
         <Button 
           type="button"
           onClick={handleCallClick}
-          className="w-full bg-food-primary hover:bg-food-primary/90 cursor-pointer"
-          style={{ pointerEvents: 'auto' }}
+          className="w-full bg-food-primary hover:bg-food-primary/90 cursor-pointer pointer-events-auto"
+          disabled={false}
         >
           <Phone className="mr-2 h-4 w-4" />
           Make Call
