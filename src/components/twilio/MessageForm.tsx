@@ -10,8 +10,7 @@ interface MessageFormProps {
   onMessageSent?: (message: string) => void;
 }
 
-const MessageForm: React.FC<MessageFormProps> = (props = {}) => {
-  const { phoneNumber = '', onMessageSent } = props;
+const MessageForm = ({ phoneNumber, onMessageSent }: { phoneNumber: string; onMessageSent: (message: string) => void }) => {
   const [message, setMessage] = useState('');
   const { sendSMS, isLoading } = useSendSMS();
 
