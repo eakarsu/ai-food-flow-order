@@ -107,9 +107,14 @@ const TwilioContact = () => {
     console.log("TwilioContact: Tab changed to:", value);
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Prevent card click from interfering with form interactions
+    e.stopPropagation();
+  };
+
   return (
     <>
-      <Card className="w-full mx-auto bg-white shadow-lg">
+      <Card className="w-full mx-auto bg-white shadow-lg" onClick={handleCardClick}>
         <CardHeader className="bg-food-primary/10 rounded-t-lg pb-4">
           <div className="flex justify-between items-center">
             <div>
@@ -128,6 +133,10 @@ const TwilioContact = () => {
                   variant="ghost" 
                   size="sm"
                   className="text-food-primary"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    console.log("TwilioContact: Settings button clicked");
+                  }}
                 >
                   <Settings size={16} />
                 </Button>
@@ -149,11 +158,19 @@ const TwilioContact = () => {
             onValueChange={handleTabChange}
           >
             <TabsList className="grid grid-cols-2 mb-4">
-              <TabsTrigger value="sms" className="flex items-center">
+              <TabsTrigger 
+                value="sms" 
+                className="flex items-center"
+                onClick={() => console.log("TwilioContact: SMS tab clicked")}
+              >
                 <MessageSquare className="mr-2" size={16} />
                 Send SMS
               </TabsTrigger>
-              <TabsTrigger value="call" className="flex items-center">
+              <TabsTrigger 
+                value="call" 
+                className="flex items-center"
+                onClick={() => console.log("TwilioContact: Call tab clicked")}
+              >
                 <Phone className="mr-2" size={16} />
                 Make Call
               </TabsTrigger>
