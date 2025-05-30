@@ -12,7 +12,7 @@ const TwilioContact = () => {
   const [phoneNumber, setPhoneNumber] = useState('+18001234567');
   const [activeMode, setActiveMode] = useState<'sms' | 'call' | null>('sms');
   const [showSoftphone, setShowSoftphone] = useState(false);
-  const { messageHistory, clearHistory } = useSendSMS({ phoneNumber });
+  const { messageHistory, clearHistory } = useSendSMS(phoneNumber);
 
   const handleMessageSent = (message: string) => {
     // Message handling is now done in the useSendSMS hook

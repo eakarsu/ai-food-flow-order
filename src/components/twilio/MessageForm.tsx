@@ -11,7 +11,7 @@ interface MessageFormProps {
 
 const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber: propPhoneNumber, onMessageSent }) => {
   const [message, setMessage] = useState('');
-  const { sendSMS, isLoading } = useSendSMS({ phoneNumber: propPhoneNumber || '+18001234567' });
+  const { sendSMS, isLoading } = useSendSMS(propPhoneNumber || '+18001234567');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
