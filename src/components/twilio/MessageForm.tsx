@@ -69,4 +69,3 @@ export const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber, onMessage
 };
 
 export default MessageForm;
-export { MessageForm };
