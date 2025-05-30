@@ -21,7 +21,10 @@ export default defineConfig(({ mode }) => { // Add ({ mode })
       port: 8080,
       allowedHosts: [
         '.replit.dev',
-        '.repl.co'
+        '.repl.co',
+        /.*\.replit\.dev$/,
+        /.*\.worf\.replit\.dev$/,
+        /.*\.riker\.replit\.dev$/
       ]
     },
     resolve: {
