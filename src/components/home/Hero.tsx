@@ -1,3 +1,4 @@
+
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import TwilioContact from '../twilio/TwilioContact';
@@ -6,19 +7,21 @@ import MessageForm from '../twilio/MessageForm';
 const Hero = () => {
   const navigate = useNavigate();
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
-  };
-
-  const handleOrderNow = () => {
+  const handleOrderNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     navigate('/menu');
   };
 
-  const handleViewMenu = () => {
+  const handleViewMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     navigate('/menu');
   };
 
-  const handleViewFullMenu = () => {
+  const handleViewFullMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     navigate('/menu');
   };
 
@@ -35,45 +38,48 @@ const Hero = () => {
         {/* Navigation Buttons */}
         <div className="flex flex-wrap gap-4 justify-center mb-12">
           <Button 
-                size="lg" 
-                onClick={handleOrderNow}
-                className="bg-white text-food-primary hover:bg-gray-50 border-2 border-white font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105"
-              >
-                Order Now
-              </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                onClick={handleViewMenu}
-                className="border-white text-white hover:bg-white hover:text-food-primary font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105"
-              >
-                View Menu
-              </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                onClick={handleViewFullMenu}
-                className="border-white text-white hover:bg-white hover:text-food-primary font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105"
-              >
-                View Full Menu
-              </Button>
+            size="lg" 
+            onClick={handleOrderNow}
+            className="bg-white text-food-primary hover:bg-gray-50 border-2 border-white font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105 cursor-pointer"
+            type="button"
+          >
+            Order Now
+          </Button>
+          <Button 
+            variant="outline" 
+            size="lg" 
+            onClick={handleViewMenu}
+            className="border-white text-white hover:bg-white hover:text-food-primary font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105 cursor-pointer"
+            type="button"
+          >
+            View Menu
+          </Button>
+          <Button 
+            variant="outline" 
+            size="lg" 
+            onClick={handleViewFullMenu}
+            className="border-white text-white hover:bg-white hover:text-food-primary font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105 cursor-pointer"
+            type="button"
+          >
+            View Full Menu
+          </Button>
         </div>
 
         {/* Contact Section */}
-          <div className="mt-16 max-w-2xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
-              <h3 className="text-2xl font-bold text-white mb-6 text-center">Contact Us Directly</h3>
-              <p className="text-white/90 text-center mb-6">Place your order or inquire about our daily specials</p>
+        <div className="mt-16 max-w-2xl mx-auto">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+            <h3 className="text-2xl font-bold text-white mb-6 text-center">Contact Us Directly</h3>
+            <p className="text-white/90 text-center mb-6">Place your order or inquire about our daily specials</p>
 
-              <div className="bg-white rounded-xl p-6">
-                <h4 className="text-lg font-semibold text-food-primary mb-4">Send SMS</h4>
-                <MessageForm 
-                  phoneNumber="+18043601129"
-                  onMessageSent={(message) => console.log('Message sent:', message)}
-                />
-              </div>
+            <div className="bg-white rounded-xl p-6">
+              <h4 className="text-lg font-semibold text-food-primary mb-4">Send SMS</h4>
+              <MessageForm 
+                phoneNumber="+18043601129"
+                onMessageSent={(message) => console.log('Message sent:', message)}
+              />
             </div>
           </div>
+        </div>
       </div>
     </div>
   );

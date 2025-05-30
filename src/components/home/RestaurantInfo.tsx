@@ -103,14 +103,26 @@ const RestaurantInfo = () => {
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
               <Button 
                 size="lg" 
-                className="bg-food-primary hover:bg-food-primary/90 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.location.href = '/menu';
+                }}
+                className="bg-food-primary hover:bg-food-primary/90 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+                type="button"
               >
                 Order Now
               </Button>
               <Button 
                 variant="outline" 
                 size="lg"
-                className="border-food-primary text-food-primary hover:bg-food-primary hover:text-white font-semibold px-8 py-3 rounded-xl transition-all duration-300"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.location.href = '/menu';
+                }}
+                className="border-food-primary text-food-primary hover:bg-food-primary hover:text-white font-semibold px-8 py-3 rounded-xl transition-all duration-300 cursor-pointer"
+                type="button"
               >
                 View Menu
               </Button>
