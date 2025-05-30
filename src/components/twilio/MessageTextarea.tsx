@@ -8,7 +8,7 @@ interface MessageTextareaProps {
   disabled?: boolean;
 }
 
-const MessageTextarea = ({ value, onChange, placeholder, disabled }: MessageTextareaProps) => {
+const MessageTextarea = ({ value, onChange, placeholder = "Enter your message here...", disabled = false }: MessageTextareaProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value);
   };
@@ -19,7 +19,7 @@ const MessageTextarea = ({ value, onChange, placeholder, disabled }: MessageText
       onChange={handleChange}
       placeholder={placeholder}
       disabled={disabled}
-      className="min-h-[100px] resize-none"
+      className="min-h-[100px] resize-none w-full"
       rows={4}
     />
   );

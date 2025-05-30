@@ -55,11 +55,15 @@ const TwilioContact = () => {
               {/* Send SMS and Make Call Buttons */}
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <Button
+                  type="button"
                   variant="outline"
-                  onClick={() => setActiveMode('sms')}
-                  className={`py-3 flex items-center justify-center space-x-2 cursor-pointer ${
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActiveMode('sms');
+                  }}
+                  className={`py-3 flex items-center justify-center space-x-2 cursor-pointer transition-colors ${
                     activeMode === 'sms' 
-                      ? 'bg-food-primary text-white border-food-primary' 
+                      ? 'bg-food-primary text-white border-food-primary hover:bg-food-primary/90' 
                       : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                   }`}
                 >
@@ -67,14 +71,16 @@ const TwilioContact = () => {
                   <span>Send SMS</span>
                 </Button>
                 <Button
+                  type="button"
                   variant="outline"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
                     setActiveMode('call');
                     setShowSoftphone(true);
                   }}
-                  className={`py-3 flex items-center justify-center space-x-2 cursor-pointer ${
+                  className={`py-3 flex items-center justify-center space-x-2 cursor-pointer transition-colors ${
                     activeMode === 'call' 
-                      ? 'bg-blue-600 text-white border-blue-600' 
+                      ? 'bg-blue-600 text-white border-blue-600 hover:bg-blue-700' 
                       : 'bg-blue-50 text-blue-700 border-blue-300 hover:bg-blue-100'
                   }`}
                 >

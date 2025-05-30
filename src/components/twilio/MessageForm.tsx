@@ -12,9 +12,8 @@ interface MessageFormProps {
 
 const MessageForm = ({ phoneNumber, onMessageSent }: MessageFormProps) => {
   const [message, setMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const { sendMessage } = useSendSMS({ phoneNumber });
+  const { loading, sendSMS } = useSendSMS({ phoneNumber });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,44 +36,35 @@ const MessageForm = ({ phoneNumber, onMessageSent }: MessageFormProps) => {
       return;
     }
 
-    setIsSubmitting(true);
     try {
-      await sendMessage(message);
-      setMessage('');
-      onMessageSent?.(message);
-      toast({
-        title: "Success",
-        description: "Message sent successfully!",
-      });
+      const success = await sendSMS(message);
+      if (success) {
+        setMessage('');
+        onMessageSent?.(message);
+      }
     } catch (error) {
       console.error('Error sending message:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
-      <div className="flex-1">
-        <MessageTextarea
-          value={message}
-          onChange={setMessage}
-          placeholder="Enter your message here..."
-          disabled={isSubmitting}
-        />
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <MessageTextarea
+        value={message}
+        onChange={setMessage}
+        placeholder="Enter your message here..."
+        disabled={loading}
+      />
+      <div className="flex justify-end">
+        <Button
+          type="submit"
+          disabled={loading || !message.trim()}
+          className="px-6 py-2 bg-food-primary text-white hover:bg-food-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <Send className="h-4 w-4 mr-2" />
+          {loading ? 'Sending...' : 'Send Message'}
+        </Button>
       </div>
-      <Button
-        type="submit"
-        disabled={isSubmitting || !message.trim()}
-        className="px-6 py-2 bg-food-primary text-white hover:bg-food-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <Send className="h-4 w-4" />
-      </Button>
     </form>
   );
 };
