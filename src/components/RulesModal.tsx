@@ -212,20 +212,25 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose, onSubmit, item
     let additionalPrice = 0;
     Object.entries(selections).forEach(([ruleCategory, selection]) => {
       const rule = rulesData[ruleCategory];
-      if (!rule) return;
+      if (!rule || !rule.options) return;
 
       if (rule.type === 'single' && selection) {
-        const option = rule.options?.find((opt: any) => opt.name === selection);
-        if (option) additionalPrice += option.price || 0;
+        const option = rule.options.find((opt: any) => opt.name === selection);
+        if (option && typeof option.price === 'number') {
+          additionalPrice += option.price;
+        }
       } else if (rule.type === 'multiple' && Array.isArray(selection)) {
         selection.forEach(selectedOption => {
-          const option = rule.options?.find((opt: any) => opt.name === selectedOption);
-          if (option) additionalPrice += option.price || 0;
+          const option = rule.options.find((opt: any) => opt.name === selectedOption);
+          if (option && typeof option.price === 'number') {
+            additionalPrice += option.price;
+          }
         });
       }
     });
     
-    setTotalPrice((item.price || 0) + additionalPrice);
+    const basePrice = typeof item.price === 'number' ? item.price : 0;
+    setTotalPrice(basePrice + additionalPrice);
   }, [selections, item]);
 
   const handleSingleSelection = (ruleCategory: string, optionName: string) => {
@@ -287,7 +292,7 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose, onSubmit, item
         </DialogHeader>
 
         <div className="space-y-6">
-          {item.rules.map((ruleCategory) => {
+          {(item.rules || []).map((ruleCategory) => {
             const rule = rulesData[ruleCategory];
             if (!rule || !rule.options) return null;
 
@@ -351,7 +356,7 @@ const RulesModal: React.FC<RulesModalProps> = ({ isOpen, onClose, onSubmit, item
 
         <DialogFooter className="flex justify-between items-center">
           <div className="text-xl font-bold text-food-primary">
-            Total: ${totalPrice.toFixed(2)}
+            Total: ${(typeof totalPrice === 'number' ? totalPrice : 0).toFixed(2)}
           </div>
           <div className="space-x-2">
             <Button variant="outline" onClick={onClose}>

@@ -505,7 +505,7 @@ const menuData: Array<{
       { name: "Chocolate Chip Muffin", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1000" },
       { name: "Chocolate Chocolate Muffin", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1000" },
       { name: "Corn Muffin", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1000" },
-      { name: "Croissant", price: 3089.00, imageUrl: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000" },
+      { name: "Croissant", price: 3.89, imageUrl: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000" },
       { name: "Strawberry Cheese Danish", price: 3.59, imageUrl: "https://images.unsplash.com/photo-1509365465985-25d11c17e812?q=80&w=1000" }
     ]
   },
