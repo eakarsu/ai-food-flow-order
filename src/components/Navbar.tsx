@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/sheet";
 import { useCart } from "@/context/CartContext";
 
-export const Navbar = () => {
+const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { items } = useCart();
@@ -105,3 +105,5 @@ export const Navbar = () => {
     </nav>
   );
 };
+
+export default Navbar;
