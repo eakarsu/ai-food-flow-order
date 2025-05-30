@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Textarea } from "@/components/ui/textarea";
 
@@ -7,19 +6,10 @@ interface MessageTextareaProps {
   onChange: (value: string) => void;
   placeholder?: string;
   disabled?: boolean;
-  className?: string;
 }
 
-const MessageTextarea: React.FC<MessageTextareaProps> = ({
-  value,
-  onChange,
-  placeholder = "Enter your message here...",
-  disabled = false,
-  className = ""
-}) => {
+const MessageTextarea = ({ value, onChange, placeholder, disabled }: MessageTextareaProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
     onChange(e.target.value);
   };
 
@@ -29,7 +19,7 @@ const MessageTextarea: React.FC<MessageTextareaProps> = ({
       onChange={handleChange}
       placeholder={placeholder}
       disabled={disabled}
-      className={`min-h-[100px] resize-none ${className}`}
+      className="min-h-[100px] resize-none"
       rows={4}
     />
   );

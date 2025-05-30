@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useSendSMS } from '@/hooks/useSendSMS';
 import MessageTextarea from './MessageTextarea';
 
 interface MessageFormProps {
@@ -10,15 +10,15 @@ interface MessageFormProps {
   onMessageSent?: (message: string) => void;
 }
 
-const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber, onMessageSent }) => {
+const MessageForm = ({ phoneNumber, onMessageSent }: MessageFormProps) => {
   const [message, setMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { sendMessage } = useSendSMS({ phoneNumber });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    e.stopPropagation();
-    
+
     if (!message.trim()) {
       toast({
         title: "Error",
@@ -28,58 +28,52 @@ const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber, onMessageSent })
       return;
     }
 
-    if (!phoneNumber || phoneNumber.trim() === '') {
+    if (!phoneNumber.trim()) {
       toast({
-        title: "Error", 
+        title: "Error",
         description: "Please enter a phone number",
         variant: "destructive",
       });
       return;
     }
 
-    setIsLoading(true);
-    
+    setIsSubmitting(true);
     try {
-      // Simulate SMS sending - replace with actual SMS service
-      console.log('Sending SMS to:', phoneNumber);
-      console.log('Message:', message);
-      
-      // Call the parent callback
+      await sendMessage(message);
+      setMessage('');
       onMessageSent?.(message);
-      
       toast({
         title: "Success",
         description: "Message sent successfully!",
       });
-      
-      setMessage('');
     } catch (error) {
-      console.error('Error sending SMS:', error);
+      console.error('Error sending message:', error);
       toast({
         title: "Error",
         description: "Failed to send message. Please try again.",
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
-      <MessageTextarea
-        value={message}
-        onChange={setMessage}
-        placeholder="Enter your message here..."
-        disabled={isLoading}
-      />
+    <form onSubmit={handleSubmit} className="flex gap-2">
+      <div className="flex-1">
+        <MessageTextarea
+          value={message}
+          onChange={setMessage}
+          placeholder="Enter your message here..."
+          disabled={isSubmitting}
+        />
+      </div>
       <Button
         type="submit"
-        disabled={isLoading || !message.trim() || !phoneNumber.trim()}
-        className="w-full bg-food-primary hover:bg-food-primary/90 text-white py-2 flex items-center justify-center space-x-2 cursor-pointer"
+        disabled={isSubmitting || !message.trim()}
+        className="px-6 py-2 bg-food-primary text-white hover:bg-food-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Send className="h-4 w-4" />
-        <span>{isLoading ? 'Sending...' : 'Send Message'}</span>
       </Button>
     </form>
   );

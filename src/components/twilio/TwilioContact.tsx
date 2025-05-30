@@ -56,26 +56,19 @@ const TwilioContact = () => {
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <Button
                   variant="outline"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setActiveMode('sms');
-                  }}
+                  onClick={() => setActiveMode('sms')}
                   className={`py-3 flex items-center justify-center space-x-2 cursor-pointer ${
                     activeMode === 'sms' 
                       ? 'bg-food-primary text-white border-food-primary' 
                       : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                   }`}
-                  type="button"
                 >
                   <MessageSquare className="h-4 w-4" />
                   <span>Send SMS</span>
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
+                  onClick={() => {
                     setActiveMode('call');
                     setShowSoftphone(true);
                   }}
@@ -84,7 +77,6 @@ const TwilioContact = () => {
                       ? 'bg-blue-600 text-white border-blue-600' 
                       : 'bg-blue-50 text-blue-700 border-blue-300 hover:bg-blue-100'
                   }`}
-                  type="button"
                 >
                   <Phone className="h-4 w-4" />
                   <span>Make Call</span>
@@ -113,15 +105,10 @@ const TwilioContact = () => {
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm font-medium text-gray-700">Message History</h4>
                   <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      clearHistory();
-                    }}
+                    onClick={() => clearHistory()}
                     variant="ghost"
                     size="sm"
                     className="text-gray-500 hover:text-gray-700 cursor-pointer"
-                    type="button"
                   >
                     <Trash2 className="h-4 w-4 mr-1" />
                     Clear
