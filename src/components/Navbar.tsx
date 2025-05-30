@@ -23,10 +23,10 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
-  // Enhanced navigation handler for iOS compatibility
-  const handleLinkClick = (path: string, event: React.MouseEvent | React.TouchEvent) => {
-    event.preventDefault();
+  // Enhanced navigation handler
+  const handleLinkClick = (path: string) => {
     navigate(path);
+    setIsMenuOpen(false);
   };
 
   return (
@@ -41,22 +41,19 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-10">
             <button 
-              onClick={(e) => handleLinkClick('/', e)}
-              onTouchEnd={(e) => handleLinkClick('/', e)}
+              onClick={() => handleLinkClick('/')}
               className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer bg-transparent border-none p-0 font-inherit"
             >
               Home
             </button>
             <button 
-              onClick={(e) => handleLinkClick('/restaurants', e)}
-              onTouchEnd={(e) => handleLinkClick('/restaurants', e)}
+              onClick={() => handleLinkClick('/restaurants')}
               className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer bg-transparent border-none p-0 font-inherit"
             >
               Restaurant
             </button>
             <button 
-              onClick={(e) => handleLinkClick('/blog', e)}
-              onTouchEnd={(e) => handleLinkClick('/blog', e)}
+              onClick={() => handleLinkClick('/blog')}
               className="text-gray-700 hover:text-food-primary transition-colors cursor-pointer bg-transparent border-none p-0 font-inherit"
             >
               Blog
@@ -122,28 +119,24 @@ const Navbar = () => {
               </button>
               <button 
                 onClick={() => handleNavigation('/restaurants')}
-                onTouchEnd={() => handleNavigation('/restaurants')}
                 className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left w-full bg-transparent border-none cursor-pointer"
               >
                 Restaurant
               </button>
               <button 
                 onClick={() => handleNavigation('/blog')}
-                onTouchEnd={() => handleNavigation('/blog')}
                 className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left w-full bg-transparent border-none cursor-pointer"
               >
                 Blog
               </button>
               <button 
                 onClick={() => handleNavigation('/about')}
-                onTouchEnd={() => handleNavigation('/about')}
                 className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left w-full bg-transparent border-none cursor-pointer"
               >
                 About
               </button>
               <button 
                 onClick={() => handleNavigation('/contact')}
-                onTouchEnd={() => handleNavigation('/contact')}
                 className="text-gray-700 py-2 px-3 hover:bg-gray-100 rounded-md text-left w-full bg-transparent border-none cursor-pointer"
               >
                 Contact

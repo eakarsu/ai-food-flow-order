@@ -18,32 +18,20 @@ const Hero = () => {
         {/* Navigation Buttons */}
         <div className="flex flex-wrap gap-4 justify-center mb-12">
           <Button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/menu');
-            }}
+            onClick={() => navigate('/menu')}
             className="bg-white text-food-primary hover:bg-gray-100 px-8 py-3 text-lg font-semibold cursor-pointer"
           >
             Order Now
           </Button>
           <Button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/menu');
-            }}
+            onClick={() => navigate('/menu')}
             variant="outline"
             className="border-white text-white hover:bg-white hover:text-food-primary px-8 py-3 text-lg font-semibold cursor-pointer"
           >
             View Menu
           </Button>
           <Button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/menu');
-            }}
+            onClick={() => navigate('/menu')}
             variant="outline"
             className="border-white text-white hover:bg-white hover:text-food-primary px-8 py-3 text-lg font-semibold cursor-pointer"
           >
