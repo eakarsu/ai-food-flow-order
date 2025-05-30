@@ -14,16 +14,14 @@ interface CallFormProps {
 const CallForm = ({ phoneNumber, setPhoneNumber, handleMakeCall }: CallFormProps) => {
   console.log("CallForm: Rendering with phoneNumber:", phoneNumber);
 
-  const handleCallClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    console.log("CallForm: Call button clicked");
-    handleMakeCall();
-  };
-
   const { toast } = useToast();
 
-  const validateAndCall = () => {
-    if (!phoneNumber) {
+  const handleCallClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("CallForm: Call button clicked");
+    
+    if (!phoneNumber || phoneNumber.trim() === '') {
       toast({
         title: "Phone number required",
         description: "Please enter a valid phone number",
@@ -31,7 +29,7 @@ const CallForm = ({ phoneNumber, setPhoneNumber, handleMakeCall }: CallFormProps
       });
       return;
     }
-
+    
     handleMakeCall();
   };
 
@@ -57,6 +55,7 @@ const CallForm = ({ phoneNumber, setPhoneNumber, handleMakeCall }: CallFormProps
           type="button"
           onClick={handleCallClick}
           className="w-full bg-food-primary hover:bg-food-primary/90 cursor-pointer"
+          style={{ pointerEvents: 'auto' }}
         >
           <Phone className="mr-2 h-4 w-4" />
           Make Call

@@ -7,6 +7,7 @@ import { useSendSMS } from "@/hooks/useSendSMS";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 
 interface MessageFormProps {
   phoneNumber: string;
@@ -17,6 +18,7 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
   console.log("MessageForm: Rendering with phoneNumber:", phoneNumber);
   const [message, setMessage] = useState("");
   const { loading, messageHistory, sendSMS, clearHistory } = useSendSMS({ phoneNumber });
+  const { toast } = useToast();
 
   const handleSendMessage = async (e?: React.FormEvent) => {
     if (e) {
@@ -114,9 +116,11 @@ const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
 
       <div className="flex justify-end border-t pt-4">
         <Button 
+          type="button"
           onClick={handleSendMessage} 
           disabled={loading || !message.trim()}
-          className="bg-food-primary hover:bg-food-primary/90"
+          className="bg-food-primary hover:bg-food-primary/90 cursor-pointer"
+          style={{ pointerEvents: 'auto' }}
         >
           {loading ? "Sending..." : (
             <>

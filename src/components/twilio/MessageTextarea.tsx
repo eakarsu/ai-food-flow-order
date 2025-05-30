@@ -13,25 +13,31 @@ const MessageTextarea = ({ message, onChange }: MessageTextareaProps) => {
     onChange(e.target.value);
   };
 
-  const handleFocus = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log("MessageTextarea: Clicked");
+  };
+
+  const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    e.stopPropagation();
     console.log("MessageTextarea: Focused");
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" onClick={handleClick}>
       <Label htmlFor="message-input" className="text-sm font-medium text-gray-700">
         Your Message
       </Label>
       <Textarea
         id="message-input"
         placeholder="Enter your message here..."
-        value={message}
+        value={message || ""}
         onChange={handleChange}
         onFocus={handleFocus}
-        className="min-h-[100px] resize-none"
-        disabled={false}
-        readOnly={false}
-        autoComplete="off"
+        onClick={handleClick}
+        className="min-h-[100px] resize-none bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+        style={{ pointerEvents: 'auto' }}
+        tabIndex={0}
       />
     </div>
   );

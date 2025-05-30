@@ -108,7 +108,11 @@ const TwilioContact = () => {
   };
 
   const handleCardClick = (e: React.MouseEvent) => {
-    // Prevent card click from interfering with form interactions
+    // Only prevent if clicking on the card itself, not form elements
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'TEXTAREA' || target.tagName === 'INPUT' || target.tagName === 'BUTTON') {
+      return; // Allow form interactions
+    }
     e.stopPropagation();
   };
 
