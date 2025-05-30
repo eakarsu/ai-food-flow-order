@@ -1,6 +1,10 @@
+import { useNavigate } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
 import TwilioContact from '../twilio/TwilioContact';
 
 const Hero = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-gradient-to-r from-food-primary to-food-secondary text-white py-20">
       <div className="container mx-auto px-4 text-center">
@@ -10,6 +14,30 @@ const Hero = () => {
         <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto animate-fade-in opacity-90">
           Fresh, delicious meals made just for you
         </p>
+        
+        {/* Navigation Buttons */}
+        <div className="flex flex-wrap gap-4 justify-center mb-12">
+          <Button
+            onClick={() => navigate('/menu')}
+            className="bg-white text-food-primary hover:bg-gray-100 px-8 py-3 text-lg font-semibold"
+          >
+            Order Now
+          </Button>
+          <Button
+            onClick={() => navigate('/menu')}
+            variant="outline"
+            className="border-white text-white hover:bg-white hover:text-food-primary px-8 py-3 text-lg font-semibold"
+          >
+            View Menu
+          </Button>
+          <Button
+            onClick={() => navigate('/menu')}
+            variant="outline"
+            className="border-white text-white hover:bg-white hover:text-food-primary px-8 py-3 text-lg font-semibold"
+          >
+            View Full Menu
+          </Button>
+        </div>
         
         {/* Contact Form - Direct at top */}
         <div className="max-w-4xl mx-auto">

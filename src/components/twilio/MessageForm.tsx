@@ -15,13 +15,28 @@ const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber = '', onMessageSe
 
   const handleSendMessage = async () => {
     if (!message.trim()) {
+      console.log('Message is empty');
       return;
     }
 
-    const success = await sendSMS(message);
-    if (success) {
-      onMessageSent?.(message);
-      setMessage('');
+    if (!phoneNumber || phoneNumber.trim() === '') {
+      console.log('Phone number is empty');
+      return;
+    }
+
+    console.log('Sending message:', message, 'to:', phoneNumber);
+    
+    try {
+      const success = await sendSMS(message);
+      if (success) {
+        onMessageSent?.(message);
+        setMessage('');
+        console.log('Message sent successfully');
+      } else {
+        console.log('Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
     }
   };
 

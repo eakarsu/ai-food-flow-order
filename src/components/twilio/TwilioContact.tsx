@@ -6,10 +6,13 @@ import { Input } from "@/components/ui/input";
 import { MessageSquare, Phone, Settings, Trash2 } from "lucide-react";
 import MessageForm from './MessageForm';
 import CallForm from './CallForm';
+import TwilioSoftphone from './TwilioSoftphone';
 import { useSendSMS } from '@/hooks/useSendSMS';
 
 const TwilioContact = () => {
   const [phoneNumber, setPhoneNumber] = useState('+18001234567');
+  const [activeMode, setActiveMode] = useState<'sms' | 'call' | null>('sms');
+  const [showSoftphone, setShowSoftphone] = useState(false);
   const { messageHistory, clearHistory } = useSendSMS({ phoneNumber });
 
   const handleMessageSent = (message: string) => {
@@ -53,14 +56,27 @@ const TwilioContact = () => {
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <Button
                   variant="outline"
-                  className="bg-white text-gray-700 border-gray-300 py-3 flex items-center justify-center space-x-2"
+                  onClick={() => setActiveMode('sms')}
+                  className={`py-3 flex items-center justify-center space-x-2 ${
+                    activeMode === 'sms' 
+                      ? 'bg-food-primary text-white border-food-primary' 
+                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                  }`}
                 >
                   <MessageSquare className="h-4 w-4" />
                   <span>Send SMS</span>
                 </Button>
                 <Button
                   variant="outline"
-                  className="bg-blue-50 text-blue-700 border-blue-300 py-3 flex items-center justify-center space-x-2"
+                  onClick={() => {
+                    setActiveMode('call');
+                    setShowSoftphone(true);
+                  }}
+                  className={`py-3 flex items-center justify-center space-x-2 ${
+                    activeMode === 'call' 
+                      ? 'bg-blue-600 text-white border-blue-600' 
+                      : 'bg-blue-50 text-blue-700 border-blue-300 hover:bg-blue-100'
+                  }`}
                 >
                   <Phone className="h-4 w-4" />
                   <span>Make Call</span>
@@ -129,24 +145,25 @@ const TwilioContact = () => {
                 </div>
               </div>
 
-              {/* Message Input */}
-              <div className="space-y-2">
-                <h4 className="text-sm font-medium text-gray-700">Your Message</h4>
-                <MessageForm 
-                  phoneNumber={phoneNumber}
-                  onMessageSent={handleMessageSent}
-                />
-              </div>
+              {/* Message Input - Only show when SMS mode is active */}
+              {activeMode === 'sms' && (
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium text-gray-700">Your Message</h4>
+                  <MessageForm 
+                    phoneNumber={phoneNumber}
+                    onMessageSent={handleMessageSent}
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
 
-          {/* Hidden Call Form Component */}
-          <div className="hidden">
-            <CallForm 
-              phoneNumber={phoneNumber}
-              onCallInitiated={() => {}}
-            />
-          </div>
+          {/* Twilio Softphone for calls */}
+          <TwilioSoftphone
+            phoneNumber={phoneNumber}
+            open={showSoftphone}
+            onOpenChange={setShowSoftphone}
+          />
         </CardContent>
       </Card>
     </div>
