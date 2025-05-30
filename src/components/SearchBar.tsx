@@ -1,60 +1,30 @@
-
-import { Search } from 'lucide-react';
-import { Input } from "@/components/ui/input";
-import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
+import React from "react";
+import { Input } from "./ui/input";
+import { Search } from "lucide-react";
 
 interface SearchBarProps {
-  onSearch?: (query: string) => void;
-  initialQuery?: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  className?: string;
 }
 
-const SearchBar = ({ onSearch, initialQuery = "" }: SearchBarProps) => {
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
-  
-  useEffect(() => {
-    // Update the search query when the initial query changes
-    setSearchQuery(initialQuery);
-  }, [initialQuery]);
-  
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && onSearch) {
-      onSearch(searchQuery);
-    }
-  };
-  
-  const handleSearchClick = () => {
-    if (onSearch) {
-      onSearch(searchQuery);
-    }
-  };
-
+const SearchBar: React.FC<SearchBarProps> = ({ 
+  value, 
+  onChange, 
+  placeholder = "Search...", 
+  className = "" 
+}) => {
   return (
-    <div className="rounded-lg overflow-hidden shadow-md bg-white p-4">
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-grow">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-          <Input 
-            placeholder="Search for restaurants or dishes..." 
-            className="pl-10 border-gray-200 focus-visible:ring-food-primary text-gray-800" 
-            value={searchQuery}
-            onChange={handleSearchChange}
-            onKeyDown={handleKeyDown}
-            style={{ color: '#333' }}
-          />
-        </div>
-        <Button 
-          onClick={handleSearchClick}
-          className="bg-food-primary hover:bg-food-primary/90 text-white"
-        >
-          Search
-        </Button>
-      </div>
+    <div className={`relative ${className}`}>
+      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+      <Input
+        type="text"
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="pl-10 pr-4 py-2 w-full border-2 border-gray-200 rounded-lg focus:border-food-primary focus:ring-2 focus:ring-food-primary/20 transition-all duration-200"
+      />
     </div>
   );
 };
