@@ -123,12 +123,12 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
     return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000";
   };
   
-  // Set a stable value for the accordion to prevent re-rendering issues
+  // Always open categories when there's a search query, or let user control otherwise
   const accordionValue = searchQuery ? title : undefined;
   
   return (
     <div className="mb-8">
-      <Accordion type="single" collapsible defaultValue={accordionValue}>
+      <Accordion type="single" collapsible className="w-full">
         <AccordionItem value={title} className="border-none">
           {showTitle && title && (
             <AccordionTrigger className="flex justify-between bg-gradient-to-r from-food-primary/10 to-food-secondary/10 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">

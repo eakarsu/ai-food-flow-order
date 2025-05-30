@@ -1,69 +1,100 @@
-import { useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
-import { Clock, Star, Users, Shield } from "lucide-react";
+
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Clock, MapPin, Phone, Star } from 'lucide-react';
 
 const RestaurantInfo = () => {
   const restaurantData = {
     name: "OrderlyBite",
-    description: "Experience the finest selection of freshly prepared meals, artisanal coffee, and gourmet sandwiches. Our commitment to quality ingredients and exceptional service makes every bite memorable.",
-    imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-    features: [
-      {
-        icon: Clock,
-        title: "Fast Service",
-        description: "Quick preparation and delivery times"
-      },
-      {
-        icon: Star,
-        title: "Premium Quality",
-        description: "Only the finest, freshest ingredients"
-      },
-      {
-        icon: Users,
-        title: "Friendly Staff",
-        description: "Exceptional customer service every time"
-      },
-      {
-        icon: Shield,
-        title: "Health & Safety",
-        description: "Highest standards of cleanliness and safety"
-      }
-    ]
+    imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000",
+    rating: 4.8,
+    cuisine: "American, Sandwiches, Breakfast",
+    deliveryTime: "25-40 min",
+    address: "2807 Hampton Woods Dr, Henrico, VA 23233",
+    phone: "+1-804-360-1129",
+    description: "Fresh, made-to-order meals with AI-powered recommendations"
   };
 
   return (
-    <div className="container mx-auto px-4">
-      <div className="grid md:grid-cols-2 gap-12 items-center">
-        <div className="space-y-6">
-          <div>
-            <h3 className="text-3xl font-bold text-food-dark mb-4">
-              {restaurantData.name}
-            </h3>
-            <p className="text-gray-600 text-lg leading-relaxed">
-              {restaurantData.description}
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-4">
-            {restaurantData.features.map((feature, index) => (
-              <div key={index} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                <feature.icon className="w-6 h-6 text-food-primary mt-1 flex-shrink-0" />
-                <div>
-                  <h4 className="font-semibold text-food-dark mb-1">{feature.title}</h4>
-                  <p className="text-sm text-gray-600">{feature.description}</p>
+    <div className="bg-white py-16">
+      <div className="container mx-auto px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Restaurant Image */}
+            <div className="relative">
+              <div className="rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src={restaurantData.imageUrl} 
+                  alt={restaurantData.name}
+                  className="w-full h-96 object-cover"
+                  loading="lazy"
+                />
+              </div>
+              
+              {/* Floating Rating Card */}
+              <div className="absolute -bottom-6 -right-6 bg-white rounded-xl shadow-lg p-4">
+                <div className="flex items-center space-x-2">
+                  <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                  <span className="font-bold text-lg">{restaurantData.rating}</span>
+                  <span className="text-gray-600 text-sm">(500+ reviews)</span>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        <div className="relative">
-          <img
-            src={restaurantData.imageUrl}
-            alt="OrderlyBite Restaurant"
-            className="rounded-2xl shadow-2xl w-full h-96 object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl"></div>
+            {/* Restaurant Details */}
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-4xl font-bold text-food-dark mb-2">{restaurantData.name}</h2>
+                <p className="text-xl text-gray-600 mb-4">{restaurantData.description}</p>
+                <p className="text-lg text-food-primary font-semibold">{restaurantData.cuisine}</p>
+              </div>
+
+              {/* Info Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Card className="border-l-4 border-l-food-primary">
+                  <CardContent className="p-4">
+                    <div className="flex items-center space-x-3">
+                      <Clock className="w-5 h-5 text-food-primary" />
+                      <div>
+                        <p className="font-semibold text-sm">Delivery Time</p>
+                        <p className="text-food-dark">{restaurantData.deliveryTime}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-l-4 border-l-food-secondary">
+                  <CardContent className="p-4">
+                    <div className="flex items-center space-x-3">
+                      <MapPin className="w-5 h-5 text-food-secondary" />
+                      <div>
+                        <p className="font-semibold text-sm">Location</p>
+                        <p className="text-food-dark text-xs">Henrico, VA</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-l-4 border-l-green-500">
+                  <CardContent className="p-4">
+                    <div className="flex items-center space-x-3">
+                      <Phone className="w-5 h-5 text-green-500" />
+                      <div>
+                        <p className="font-semibold text-sm">Contact</p>
+                        <p className="text-food-dark text-xs">{restaurantData.phone}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Full Address */}
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h3 className="font-semibold text-food-dark mb-2">Full Address</h3>
+                <p className="text-gray-700">{restaurantData.address}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
