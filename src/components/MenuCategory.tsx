@@ -169,15 +169,18 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
     return "https://images.unsplash.com/photo-1565958011703-44f9829ba187?q=80&w=1000";
   };
   
-  // Categories should be open by default to show all menu items
-  const [isOpen, setIsOpen] = React.useState(true);
+  // Categories should be closed by default, only open when user clicks
+  const [isOpen, setIsOpen] = React.useState(false);
   
   React.useEffect(() => {
-    // Keep categories open by default, only close if user explicitly closes them
+    // Open categories when user searches
     if (searchQuery && searchQuery.trim() !== '') {
       setIsOpen(true);
     }
-    // Don't auto-close when search is cleared - let user control visibility
+    // Close when search is cleared
+    if (!searchQuery || searchQuery.trim() === '') {
+      setIsOpen(false);
+    }
   }, [searchQuery]);
   
   // If showTitle is false, just render the items directly
