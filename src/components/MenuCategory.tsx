@@ -173,7 +173,7 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
   const [isOpen, setIsOpen] = React.useState(false);
   
   React.useEffect(() => {
-    if (searchQuery) {
+    if (searchQuery && searchQuery.trim() !== '') {
       setIsOpen(true);
     } else {
       setIsOpen(false); // Close when search is cleared

@@ -670,38 +670,12 @@ const Menu = () => {
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                {/* Category Header */}
-                <div className={`relative bg-gradient-to-r ${category.gradient || 'from-food-primary to-food-secondary'} rounded-2xl p-8 mb-8 shadow-xl overflow-hidden`}>
-                  <div className="absolute inset-0 bg-black/10"></div>
-                  <div className="relative flex items-center justify-between">
-                    <div className="flex items-center space-x-6">
-                      {category.categoryImage && (
-                        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white/30 shadow-lg">
-                          <img 
-                            src={category.categoryImage} 
-                            alt={category.category} 
-                            className="w-full h-full object-cover" 
-                            loading="lazy"
-                          />
-                        </div>
-                      )}
-                      <div>
-                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">
-                          {category.category}
-                        </h2>
-                        <p className="text-white/90 text-lg">
-                          {category.items.length} delicious options available
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Items Grid */}
                 <MenuCategory 
                   title={category.category} 
                   items={category.items}
-                  showTitle={false}
+                  categoryImage={category.categoryImage}
+                  showTitle={true}
                   searchQuery={searchQuery}
                 />
               </div>
