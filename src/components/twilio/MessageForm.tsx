@@ -46,7 +46,7 @@ export const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber, onMessage
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyPress}
           placeholder="Enter your message here..."
-          className="min-h-[100px] resize-none"
+          className="min-h-[100px] resize-none text-gray-900 bg-white border border-gray-300 focus:border-red-500 focus:ring-red-500"
           disabled={isLoading}
         />
       </div>
