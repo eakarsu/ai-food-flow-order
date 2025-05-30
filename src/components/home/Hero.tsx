@@ -1,4 +1,3 @@
-
 const Hero = () => {
   return (
     <div className="bg-gradient-to-r from-food-primary to-food-secondary text-white py-20">
@@ -29,6 +28,8 @@ const Hero = () => {
             </div>
           </div>
         </div>
+        {/* Adding TwilioContact component here */}
+        <TwilioContact />
       </div>
     </div>
   );
