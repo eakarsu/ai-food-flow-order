@@ -1,4 +1,3 @@
-
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import TwilioContact from '../twilio/TwilioContact';
@@ -44,24 +43,6 @@ const Hero = () => {
             type="button"
           >
             Order Now
-          </Button>
-          <Button 
-            variant="outline" 
-            size="lg" 
-            onClick={handleViewMenu}
-            className="border-white text-white hover:bg-white hover:text-food-primary font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105 cursor-pointer"
-            type="button"
-          >
-            View Menu
-          </Button>
-          <Button 
-            variant="outline" 
-            size="lg" 
-            onClick={handleViewFullMenu}
-            className="border-white text-white hover:bg-white hover:text-food-primary font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105 cursor-pointer"
-            type="button"
-          >
-            View Full Menu
           </Button>
         </div>
 
