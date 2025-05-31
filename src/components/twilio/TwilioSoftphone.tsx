@@ -135,7 +135,11 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
           <Alert variant="destructive" className="mb-4">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Microphone access is required for calls. Please allow microphone access in your browser settings.
+              Microphone access is required for calls. Please:
+              <br />• Click the microphone icon in your browser's address bar
+              <br />• Select "Allow" for microphone access
+              <br />• Refresh the page and try again
+              <br />• On mobile, grant permission when prompted
             </AlertDescription>
           </Alert>
         )}

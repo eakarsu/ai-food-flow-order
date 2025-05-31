@@ -117,7 +117,7 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         console.error("Microphone permission denied:", permissionError);
         toast({
           title: "Microphone Access Required",
-          description: "Please allow microphone access to make calls.",
+          description: "Click the microphone icon in your browser's address bar and select 'Allow'. Then try calling again.",
           variant: "destructive",
         });
         setIsConnecting(false);

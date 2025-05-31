@@ -27,10 +27,19 @@ const Hero = () => {
     navigate('/menu');
   };
 
-  const handleMakeCall = (e: React.MouseEvent) => {
+  const handleMakeCall = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setSoftphoneOpen(true);
+    
+    // Check for microphone permission first
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      setSoftphoneOpen(true);
+    } catch (error) {
+      console.error("Microphone permission error:", error);
+      // Show alert to guide user
+      alert("Microphone access is required for calls. Please:\n\n1. Click the microphone icon in your browser's address bar\n2. Select 'Allow' for microphone access\n3. Try calling again\n\nOn mobile devices, make sure to grant microphone permission when prompted.");
+    }
   };
 
   return (
