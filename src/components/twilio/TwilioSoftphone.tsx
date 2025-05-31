@@ -101,8 +101,12 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
       })
         .then(response => {
           setTokenAvailable(response.ok || response.status === 401); // 401 means endpoint exists but needs auth
+          if (!response.ok && response.status !== 401) {
+            console.warn(`Token endpoint returned status: ${response.status}`);
+          }
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error("Token endpoint test failed:", error);
           setTokenAvailable(false);
         });
     }
@@ -150,7 +154,14 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
           <Alert variant="destructive" className="mb-4">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Unable to connect to token service. Please check your server configuration.
+              Unable to connect to voice service. 
+              <br />
+              <button 
+                onClick={() => window.open(`tel:${twilioNumber}`, '_self')}
+                className="mt-2 text-sm underline text-red-600 hover:text-red-800"
+              >
+                Click here to call {twilioNumber} directly
+              </button>
             </AlertDescription>
           </Alert>
         )}

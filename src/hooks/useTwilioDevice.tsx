@@ -136,27 +136,54 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         return;
       }
       
-      // Fetch token from the token endpoint
+      // Fetch token from the token endpoint with better error handling
       console.log("Fetching token from:", tokenUrl);
-      const tokenResponse = await fetch(tokenUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        mode: 'cors',
-        body: JSON.stringify({ identity: "customer-service-agent" }),
-      });
+      let tokenResponse;
+      let tokenData;
+      let token;
       
-      if (!tokenResponse.ok) {
-        throw new Error(`Failed to get token. Status: ${tokenResponse.status}`);
-      }
-      
-      const tokenData = await tokenResponse.json();
-      const token = tokenData.token;
-      
-      if (!token) {
-        throw new Error("Token endpoint did not return a valid token");
+      try {
+        tokenResponse = await fetch(tokenUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          mode: 'cors',
+          body: JSON.stringify({ identity: "customer-service-agent" }),
+        });
+        
+        if (!tokenResponse.ok) {
+          console.error(`Token endpoint returned status: ${tokenResponse.status}`);
+          throw new Error(`Token service unavailable (${tokenResponse.status})`);
+        }
+        
+        tokenData = await tokenResponse.json();
+        token = tokenData.token;
+        
+        if (!token) {
+          console.error("Token endpoint response:", tokenData);
+          throw new Error("Invalid token received from server");
+        }
+        
+        console.log("Token received successfully");
+      } catch (fetchError) {
+        console.error("Token fetch failed:", fetchError);
+        
+        // Show user-friendly error message and fallback to regular phone call
+        toast({
+          title: "Voice Service Unavailable",
+          description: "Cannot connect to voice service. Redirecting to phone call...",
+          variant: "destructive",
+        });
+        
+        // Fallback to regular phone call
+        setTimeout(() => {
+          window.open(`tel:${phoneNumber}`, '_self');
+        }, 2000);
+        
+        setIsConnecting(false);
+        return;
       }
       
       console.log("Token received successfully");
