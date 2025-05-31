@@ -88,20 +88,19 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
   // Check if token endpoint is available
   useEffect(() => {
     if (open) {
-      const baseEndpoint = import.meta.env.VITE_NGROK_VOICE_URL || 
-                         localStorage.getItem('twilioNgrokVoiceUrl') || 
-                         'https://api.orderlybite.com';
-
-      const tokenEndpoint = import.meta.env.VITE_TOKEN_URL;
+      const tokenEndpoint = 'https://api.orderlybite.com/token';
       
-      // Just check if the endpoint is available
+      // Test the token endpoint with a simple request
       fetch(tokenEndpoint, {
-        method: 'HEAD',
-        mode: 'no-cors', // This will always succeed in terms of network request
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'cors',
+        body: JSON.stringify({ identity: "test" }),
       })
-        .then(() => {
-          // This doesn't guarantee the endpoint works properly, just that it exists
-          setTokenAvailable(true);
+        .then(response => {
+          setTokenAvailable(response.ok || response.status === 401); // 401 means endpoint exists but needs auth
         })
         .catch(() => {
           setTokenAvailable(false);

@@ -82,33 +82,25 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
     try {
       setIsConnecting(true);
       
-      // Get the voice endpoint URL from environment variable or from localStorage
-      const baseEndpoint = import.meta.env.VITE_NGROK_VOICE_URL || 
-                          localStorage.getItem('twilioNgrokVoiceUrl') || 
-                          'https://api.orderlybite.com';
+      // Use the fixed token endpoint
+      const tokenUrl = 'https://api.orderlybite.com/token';
       
-      // Get token URL from environment variable or use default constructed from baseEndpoint
-      const tokenUrl = import.meta.env.VITE_TOKEN_URL || 
-                      `${baseEndpoint}/token`;
-      
-      const voiceEndpoint = `${baseEndpoint}`;
-      
-      console.log("Calling voice endpoint:", voiceEndpoint);
       console.log("Using token URL:", tokenUrl);
       console.log("Calling phone number:", phoneNumber);
       
-      // Check if the voice endpoint is a cross-origin URL (different domain)
-      const isCrossOrigin = voiceEndpoint.startsWith('http') && 
-                           !voiceEndpoint.includes(window.location.hostname);
-      
-      if (isCrossOrigin) {
-        console.log("Cross-origin request detected. Adding CORS mode.");
-      }
+      // Always use CORS mode for external API
+      console.log("Making CORS request to external API");
 
       // Check for browser audio permissions first
       try {
         // Request microphone permission which is needed for calls
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          } 
+        });
         console.log("Microphone permission granted");
         
         // Stop the stream immediately as we just needed the permission
@@ -119,24 +111,25 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         // Check if we're in an embedded iframe context
         const isEmbedded = window.self !== window.top;
         
-        let errorMessage = "Microphone access is required for calls. Please:";
-        let instructions = [
-          "• Click the microphone icon in your browser's address bar",
-          "• Select 'Allow' for microphone access", 
-          "• Refresh the page and try again"
-        ];
+        // Provide more specific error handling
+        let errorTitle = "Microphone Access Required";
+        let errorMessage = "";
         
-        if (isEmbedded) {
-          instructions = [
-            "• Open this page in a new tab/window (not embedded)",
-            "• Grant microphone permission when prompted",
-            "• Or use the regular phone call option instead"
-          ];
+        if (permissionError.name === 'NotAllowedError') {
+          errorMessage = isEmbedded 
+            ? "Microphone access denied. Try opening this page in a new tab/window."
+            : "Microphone access denied. Click the microphone icon in your browser's address bar and select 'Allow'.";
+        } else if (permissionError.name === 'NotFoundError') {
+          errorMessage = "No microphone found. Please connect a microphone and try again.";
+        } else if (permissionError.name === 'NotSupportedError') {
+          errorMessage = "Microphone access not supported in this browser.";
+        } else {
+          errorMessage = "Unable to access microphone. Please check your browser settings.";
         }
         
         toast({
-          title: "Microphone Access Required",
-          description: `${errorMessage}\n${instructions.join('\n')}`,
+          title: errorTitle,
+          description: errorMessage,
           variant: "destructive",
         });
         setIsConnecting(false);
@@ -149,8 +142,9 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-        ...(isCrossOrigin ? { mode: 'cors' } : {}),
+        mode: 'cors',
         body: JSON.stringify({ identity: "customer-service-agent" }),
       });
       
