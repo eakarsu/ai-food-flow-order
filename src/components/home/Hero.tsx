@@ -2,9 +2,12 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import TwilioContact from '../twilio/TwilioContact';
 import MessageForm from '../twilio/MessageForm';
+import TwilioSoftphone from '../twilio/TwilioSoftphone';
+import { useState } from 'react';
 
 const Hero = () => {
   const navigate = useNavigate();
+  const [softphoneOpen, setSoftphoneOpen] = useState(false);
 
   const handleOrderNow = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -22,6 +25,12 @@ const Hero = () => {
     e.preventDefault();
     e.stopPropagation();
     navigate('/menu');
+  };
+
+  const handleMakeCall = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSoftphoneOpen(true);
   };
 
   return (
@@ -46,7 +55,7 @@ const Hero = () => {
           </Button>
           <Button 
             size="lg" 
-            onClick={() => window.open('tel:+18043601129')}
+            onClick={handleMakeCall}
             className="bg-green-600 text-white hover:bg-green-700 border-2 border-green-600 font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105 cursor-pointer flex items-center gap-2"
             type="button"
           >
@@ -73,6 +82,13 @@ const Hero = () => {
           </div>
         </div>
       </div>
+
+      {/* Twilio Softphone for making calls */}
+      <TwilioSoftphone
+        phoneNumber="+18043601129"
+        open={softphoneOpen}
+        onOpenChange={setSoftphoneOpen}
+      />
     </div>
   );
 };
