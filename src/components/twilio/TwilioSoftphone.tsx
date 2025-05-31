@@ -68,15 +68,22 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
 
   // Automatically attempt to make the call when the dialog is opened
   useEffect(() => {
-    if (open && !isConnected && !isConnecting && audioPermissionGranted !== false) {
+    if (open && !isConnected && !isConnecting && audioPermissionGranted !== false && tokenAvailable !== false) {
       console.log("Dialog opened, auto-initiating call to:", twilioNumber);
-      // Small timeout to ensure UI is ready
+      console.log("Checking prerequisites: token available =", tokenAvailable, ", audio permission =", audioPermissionGranted);
+      
+      // Small timeout to ensure UI is ready and all checks are complete
       const timer = setTimeout(() => {
-        makeCall();
-      }, 500);
+        if (tokenAvailable !== false && audioPermissionGranted !== false) {
+          console.log("All prerequisites met, starting call process...");
+          makeCall();
+        } else {
+          console.log("Prerequisites not met, skipping auto-call");
+        }
+      }, 1000); // Increased timeout to allow for permission checks
       return () => clearTimeout(timer);
     }
-  }, [open, twilioNumber, isConnected, isConnecting, makeCall, audioPermissionGranted]);
+  }, [open, twilioNumber, isConnected, isConnecting, makeCall, audioPermissionGranted, tokenAvailable]);
 
   // Clean up when dialog closes
   useEffect(() => {

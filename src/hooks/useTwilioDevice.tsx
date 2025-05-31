@@ -39,34 +39,109 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
     };
   }, []);
 
-  // Simplified API that relies on server-side implementation
+  // Main function to handle call flow: get token, get permissions, make call
   const makeCall = async () => {
+    console.log("Starting call process...");
 
-    // iOS-specific permission handling
-    if (Capacitor.getPlatform() === 'ios' || Capacitor.getPlatform() === 'android') {
-      // Check if the device can record (optional but good practice)
-      const canRecordResult = await VoiceRecorder.canDeviceVoiceRecord();
-      if (!canRecordResult.value) {
-        alert('This device cannot record audio.');
-        console.error('Device cannot record audio.');
-        return; // Stop if no recording capability
-      }
-
-      // Check current permission status
-      const permissionStatus = await VoiceRecorder.hasAudioRecordingPermission();
-      if (!permissionStatus.value) {
-        // Request permission using the plugin
-        const requestResult = await VoiceRecorder.requestAudioRecordingPermission();
-        if (!requestResult.value) {
-          alert('Microphone permission is required to make calls. Please grant permission.');
-          console.error('Microphone permission denied by user.');
-          return; // Stop if permission denied
-        }
-        console.log('Microphone permission granted via plugin.');
-      } else {
-        console.log('Microphone permission already granted.');
-      }
+    // Step 1: Validate phone number
+    if (!phoneNumber) {
+      toast({
+        title: "Error",
+        description: "Phone number is required",
+        variant: "destructive",
+      });
+      return;
     }
+
+    try {
+      setIsConnecting(true);
+      
+      // Step 2: Get access token from API first
+      console.log("Step 1: Fetching access token from API...");
+      const tokenUrl = 'https://api.orderlybite.com/token';
+      
+      let token;
+      try {
+        const tokenResponse = await fetch(tokenUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          mode: 'cors',
+          body: JSON.stringify({ identity: "customer-service-agent" }),
+        });
+        
+        if (!tokenResponse.ok) {
+          console.error(`Token endpoint returned status: ${tokenResponse.status}`);
+          throw new Error(`Token service unavailable (${tokenResponse.status})`);
+        }
+        
+        const tokenData = await tokenResponse.json();
+        token = tokenData.token;
+        
+        if (!token) {
+          console.error("Token endpoint response:", tokenData);
+          throw new Error("Invalid token received from server");
+        }
+        
+        console.log("✓ Access token received successfully");
+      } catch (fetchError) {
+        console.error("Token fetch failed:", fetchError);
+        
+        toast({
+          title: "Voice Service Unavailable",
+          description: "Cannot connect to voice service. Redirecting to phone call...",
+          variant: "destructive",
+        });
+        
+        // Fallback to regular phone call
+        setTimeout(() => {
+          window.open(`tel:${phoneNumber}`, '_self');
+        }, 2000);
+        
+        setIsConnecting(false);
+        return;
+      }
+
+      // Step 3: Handle device-specific permissions
+      console.log("Step 2: Checking device permissions...");
+      
+      // iOS/Android-specific permission handling
+      if (Capacitor.getPlatform() === 'ios' || Capacitor.getPlatform() === 'android') {
+        // Check if the device can record
+        const canRecordResult = await VoiceRecorder.canDeviceVoiceRecord();
+        if (!canRecordResult.value) {
+          toast({
+            title: "Device Error",
+            description: "This device cannot record audio.",
+            variant: "destructive",
+          });
+          console.error('Device cannot record audio.');
+          setIsConnecting(false);
+          return;
+        }
+
+        // Check current permission status
+        const permissionStatus = await VoiceRecorder.hasAudioRecordingPermission();
+        if (!permissionStatus.value) {
+          // Request permission using the plugin
+          const requestResult = await VoiceRecorder.requestAudioRecordingPermission();
+          if (!requestResult.value) {
+            toast({
+              title: "Permission Required",
+              description: "Microphone permission is required to make calls. Please grant permission.",
+              variant: "destructive",
+            });
+            console.error('Microphone permission denied by user.');
+            setIsConnecting(false);
+            return;
+          }
+          console.log('✓ Microphone permission granted via plugin.');
+        } else {
+          console.log('✓ Microphone permission already granted.');
+        }
+      }
 
 
 
@@ -91,7 +166,8 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       // Always use CORS mode for external API
       console.log("Making CORS request to external API");
 
-      // Check for browser audio permissions first
+      // Step 4: Check browser audio permissions
+      console.log("Step 3: Requesting browser microphone permissions...");
       try {
         // Request microphone permission which is needed for calls
         const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -101,12 +177,12 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
             autoGainControl: true
           } 
         });
-        console.log("Microphone permission granted");
+        console.log("✓ Browser microphone permission granted");
         
         // Stop the stream immediately as we just needed the permission
         stream.getTracks().forEach(track => track.stop());
       } catch (permissionError) {
-        console.error("Microphone permission denied:", permissionError);
+        console.error("Browser microphone permission denied:", permissionError);
         
         // Check if we're in an embedded iframe context
         const isEmbedded = window.self !== window.top;
@@ -136,59 +212,8 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         return;
       }
       
-      // Fetch token from the token endpoint with better error handling
-      console.log("Fetching token from:", tokenUrl);
-      let tokenResponse;
-      let tokenData;
-      let token;
-      
-      try {
-        tokenResponse = await fetch(tokenUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          mode: 'cors',
-          body: JSON.stringify({ identity: "customer-service-agent" }),
-        });
-        
-        if (!tokenResponse.ok) {
-          console.error(`Token endpoint returned status: ${tokenResponse.status}`);
-          throw new Error(`Token service unavailable (${tokenResponse.status})`);
-        }
-        
-        tokenData = await tokenResponse.json();
-        token = tokenData.token;
-        
-        if (!token) {
-          console.error("Token endpoint response:", tokenData);
-          throw new Error("Invalid token received from server");
-        }
-        
-        console.log("Token received successfully");
-      } catch (fetchError) {
-        console.error("Token fetch failed:", fetchError);
-        
-        // Show user-friendly error message and fallback to regular phone call
-        toast({
-          title: "Voice Service Unavailable",
-          description: "Cannot connect to voice service. Redirecting to phone call...",
-          variant: "destructive",
-        });
-        
-        // Fallback to regular phone call
-        setTimeout(() => {
-          window.open(`tel:${phoneNumber}`, '_self');
-        }, 2000);
-        
-        setIsConnecting(false);
-        return;
-      }
-      
-      console.log("Token received successfully");
-      
-      // Initialize Twilio Device with the token
+      // Step 5: Initialize Twilio Device with the token
+      console.log("Step 4: Initializing Twilio Device with access token...");
       if (deviceRef.current) {
         // Destroy existing device if it exists
         try {
@@ -222,7 +247,8 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       await device.register();
       deviceRef.current = device;
       
-      console.log("Device registered, making call to:", phoneNumber);
+      console.log("✓ Twilio Device registered successfully");
+      console.log("Step 5: Initiating call to:", phoneNumber);
       
       // Make the call with proper types
       const call = await device.connect({
@@ -230,6 +256,8 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
           To: phoneNumber
         }
       });
+      
+      console.log("✓ Call initiated successfully");
       
       // Store the call reference
       callRef.current = call;
