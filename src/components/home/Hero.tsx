@@ -30,7 +30,7 @@ const Hero = () => {
   const handleMakeCall = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     // Check for microphone permission first
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -64,7 +64,15 @@ const Hero = () => {
           </Button>
           <Button 
             size="lg" 
-            onClick={handleMakeCall}
+            onClick={() => {
+              // Try web calling first, fallback to direct phone call
+              if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                setSoftphoneOpen(true);
+              } else {
+                // Direct phone call fallback
+                window.open('tel:+18043601129');
+              }
+            }}
             className="bg-green-600 text-white hover:bg-green-700 border-2 border-green-600 font-semibold px-8 py-4 text-lg transition-all duration-300 hover:scale-105 cursor-pointer flex items-center gap-2"
             type="button"
           >

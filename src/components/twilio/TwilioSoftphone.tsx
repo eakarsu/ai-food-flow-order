@@ -140,6 +140,9 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
               <br />• Select "Allow" for microphone access
               <br />• Refresh the page and try again
               <br />• On mobile, grant permission when prompted
+              <br />• If in embedded view, try opening in a new tab
+              <br />
+              <br />Alternative: Use your phone to call {twilioNumber} directly
             </AlertDescription>
           </Alert>
         )}

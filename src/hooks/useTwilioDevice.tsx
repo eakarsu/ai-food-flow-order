@@ -115,9 +115,28 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         stream.getTracks().forEach(track => track.stop());
       } catch (permissionError) {
         console.error("Microphone permission denied:", permissionError);
+        
+        // Check if we're in an embedded iframe context
+        const isEmbedded = window.self !== window.top;
+        
+        let errorMessage = "Microphone access is required for calls. Please:";
+        let instructions = [
+          "• Click the microphone icon in your browser's address bar",
+          "• Select 'Allow' for microphone access", 
+          "• Refresh the page and try again"
+        ];
+        
+        if (isEmbedded) {
+          instructions = [
+            "• Open this page in a new tab/window (not embedded)",
+            "• Grant microphone permission when prompted",
+            "• Or use the regular phone call option instead"
+          ];
+        }
+        
         toast({
           title: "Microphone Access Required",
-          description: "Click the microphone icon in your browser's address bar and select 'Allow'. Then try calling again.",
+          description: `${errorMessage}\n${instructions.join('\n')}`,
           variant: "destructive",
         });
         setIsConnecting(false);
