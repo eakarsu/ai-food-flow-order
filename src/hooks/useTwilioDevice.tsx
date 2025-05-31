@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { Device, Call } from '@twilio/voice-sdk';
@@ -142,29 +143,6 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
           console.log('✓ Microphone permission already granted.');
         }
       }
-
-
-
-    if (!phoneNumber) {
-      toast({
-        title: "Error",
-        description: "Phone number is required",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    try {
-      setIsConnecting(true);
-      
-      // Use the fixed token endpoint
-      const tokenUrl = 'https://api.orderlybite.com/token';
-      
-      console.log("Using token URL:", tokenUrl);
-      console.log("Calling phone number:", phoneNumber);
-      
-      // Always use CORS mode for external API
-      console.log("Making CORS request to external API");
 
       // Step 4: Check browser audio permissions
       console.log("Step 3: Requesting browser microphone permissions...");
