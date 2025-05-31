@@ -1,4 +1,3 @@
-
 import { Phone } from 'lucide-react';
 import {
   Dialog,
@@ -46,7 +45,7 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
     // Use environment variable or fallback to the provided phone number
     const twilioVoiceNumber = import.meta.env.VITE_TWILIO_VOICE_NUMBER;
     console.log("Twilio voice number from env:", twilioVoiceNumber);
-    
+
     if (twilioVoiceNumber) {
       setTwilioNumber(twilioVoiceNumber);
       setEnvVarMissing(false);
@@ -71,7 +70,7 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
     if (open && !isConnected && !isConnecting && audioPermissionGranted !== false && tokenAvailable !== false) {
       console.log("Dialog opened, auto-initiating call to:", twilioNumber);
       console.log("Checking prerequisites: token available =", tokenAvailable, ", audio permission =", audioPermissionGranted);
-      
+
       // Small timeout to ensure UI is ready and all checks are complete
       const timer = setTimeout(() => {
         if (tokenAvailable !== false && audioPermissionGranted !== false) {
@@ -96,7 +95,7 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
   useEffect(() => {
     if (open) {
       const tokenEndpoint = 'https://api.orderlybite.com/token';
-      
+
       // Test the token endpoint with a simple request
       fetch(tokenEndpoint, {
         method: 'POST',
@@ -183,23 +182,62 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
         )}
 
         <div className="flex flex-col items-center py-6 space-y-6">
-          {isConnected ? (
-            <ActiveCall 
+          {!isConnected && !isConnecting && (
+          <div className="space-y-4">
+            <Alert className="border-amber-200 bg-amber-50">
+              <AlertCircle className="h-4 w-4 text-amber-600" />
+              <AlertDescription className="text-amber-800">
+                <div className="space-y-2">
+                  <p className="font-medium">Microphone access is required for calls. Please:</p>
+                  <ul className="list-disc list-inside space-y-1 text-sm">
+                    <li>Click the microphone icon in your browser's address bar</li>
+                    <li>Select "Allow" for microphone access</li>
+                    <li>Refresh the page and try again</li>
+                    <li>On mobile, grant permission when prompted</li>
+                    <li>If in embedded view, try opening in a new tab</li>
+                  </ul>
+                  <p className="text-sm font-medium mt-2">
+                    Alternative: <a 
+                      href={`tel:${twilioNumber}`} 
+                      className="text-blue-600 underline hover:text-blue-800"
+                      onClick={() => onOpenChange(false)}
+                    >
+                      Use your phone to call {twilioNumber} directly
+                    </a>
+                  </p>
+                </div>
+              </AlertDescription>
+            </Alert>
+
+            <CallInitiator 
               phoneNumber={twilioNumber}
-              isMuted={isMuted}
-              handleToggleMute={toggleMute}
-              handleDisconnect={disconnectCall}
-            />
-          ) : (
-            <CallInitiator
-              phoneNumber={twilioNumber}
-              handleMakeCall={makeCall}
+              onCall={() => {
+                console.log("Manual call initiation triggered");
+                makeCall();
+              }}
               isConnecting={isConnecting}
-              hasToken={tokenAvailable !== false}
             />
-          )}
+          </div>
+        )}
+
+        {isConnecting && (
+          <div className="text-center py-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-food-primary mx-auto mb-2"></div>
+            <p className="text-sm text-gray-600">Connecting...</p>
+            <p className="text-xs text-gray-500 mt-1">Please allow microphone access if prompted</p>
+          </div>
+        )}
+
+        {isConnected && (
+          <ActiveCall
+            phoneNumber={twilioNumber}
+            onDisconnect={disconnectCall}
+            onToggleMute={toggleMute}
+            isMuted={isMuted}
+          />
+        )}
         </div>
-        
+
         {/* Debug notification about audio status */}
         {isConnected && (
           <div className="mt-4 text-xs text-center text-gray-500">
