@@ -1,11 +1,12 @@
 
-import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Plus, ChevronDown, ChevronUp, ImageOff } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import React, { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
+import { ShoppingCart, Info, ChevronDown, ChevronRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import RulesModal from "./RulesModal";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 
 export interface MenuItem {
   name: string;
@@ -13,143 +14,149 @@ export interface MenuItem {
   description?: string;
   imageUrl?: string;
   rules?: string[];
+  ruleSelections?: Record<string, any>;
 }
 
 interface MenuCategoryProps {
   title: string;
   items: MenuItem[];
   categoryImage?: string;
-  showTitle?: boolean;
   searchQuery?: string;
 }
 
-const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQuery = "" }: MenuCategoryProps) => {
-  const { toast } = useToast();
+const MenuCategory: React.FC<MenuCategoryProps> = ({ title, items, categoryImage, searchQuery = "" }) => {
   const { addToCart } = useCart();
-  
-  // Don't render category if no items are available
-  if (items.length === 0) {
-    return null;
-  }
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
+  const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleAddToCart = (item: MenuItem) => {
-    addToCart(item);
-    toast({
-      title: "Added to cart",
-      description: `${item.name} has been added to your cart`,
-    });
-  };
-
-  // Specific placeholder images for different item types
-  const getPlaceholderImage = (itemName: string) => {
-    const nameLower = itemName.toLowerCase();
-    
-    if (nameLower.includes("coffee") || nameLower.includes("cappuccino")) {
-      return "https://images.unsplash.com/photo-1497515114629-f71d768fd07c?q=80&w=1000";
-    } else if (nameLower.includes("tea")) {
-      return "https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=1000";
-    } else if (nameLower.includes("juice")) {
-      return "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=1000";
-    } else if (nameLower.includes("soda") || nameLower.includes("drink") || nameLower.includes("coke") || nameLower.includes("sprite") || nameLower.includes("pepsi")) {
-      return "https://images.unsplash.com/photo-1629203432180-71e9b11626e6?q=80&w=1000";
-    } else if (nameLower.includes("bagel") || nameLower.includes("bread") || nameLower.includes("toast")) {
-      return "https://images.unsplash.com/photo-1592321675774-3cbc1d00fb0c?q=80&w=1000";
-    } else if (nameLower.includes("salad")) {
-      return "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000";
-    } else if (nameLower.includes("sandwich") || nameLower.includes("hero")) {
-      return "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=1000";
+    if (item.rules && item.rules.length > 0) {
+      setSelectedItem(item);
+      setIsRulesModalOpen(true);
+    } else {
+      addToCart(item);
     }
-    
-    // Default placeholder
-    return "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000";
   };
-  
-  // Set a stable value for the accordion to prevent re-rendering issues
-  const accordionValue = searchQuery ? title : undefined;
-  
-  return (
-    <div className="mb-8">
-      <Accordion type="single" collapsible defaultValue={accordionValue}>
-        <AccordionItem value={title} className="border-none">
-          {showTitle && title && (
-            <AccordionTrigger className="flex justify-between bg-food-primary/10 p-4 rounded-lg shadow hover:bg-food-primary/20 transition-colors">
-              <div className="flex items-center space-x-4">
-                {categoryImage ? (
-                  <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100">
-                    <img 
-                      src={categoryImage} 
-                      alt={title} 
-                      className="w-full h-full object-cover" 
-                      loading="lazy"
-                      onError={(e) => {
-                        e.currentTarget.src = getPlaceholderImage(title);
-                      }}
-                    />
-                  </div>
-                ) : null}
-                <h2 className="text-2xl font-bold text-food-dark">{title}</h2>
-              </div>
-            </AccordionTrigger>
-          )}
-          
-          <AccordionContent className="pt-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {items.map((item, index) => {
-                const placeholderImage = getPlaceholderImage(item.name);
-                
-                return (
-                  <Card key={`${title}-${index}`} className="overflow-hidden hover:shadow-md transition-all duration-300 group">
-                    <div className="h-48 overflow-hidden relative bg-gray-100">
-                      <img
-                        src={item.imageUrl || placeholderImage}
-                        alt={item.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
-                        onError={(e) => {
-                          e.currentTarget.src = placeholderImage;
-                        }}
-                      />
-                      {!item.imageUrl && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100/50">
-                          <ImageOff className="text-gray-400" size={32} />
-                        </div>
-                      )}
-                    </div>
-                    
-                    <CardContent className={`p-4 flex flex-col`}>
-                      <div className="flex justify-between items-start mb-2">
-                        <h3 className="font-semibold text-food-dark">{item.name}</h3>
-                        <span className="font-bold text-food-primary">${item.price.toFixed(2)}</span>
-                      </div>
-                      
-                      {item.description && (
-                        <p className="text-gray-600 text-sm mb-4 line-clamp-3">{item.description}</p>
-                      )}
 
-                      {item.rules && item.rules.length > 0 && (
-                        <div className="text-blue-600 text-xs mb-2">
-                          <span className="font-semibold">Customizable:</span> {item.rules.join(", ")}
-                        </div>
-                      )}
-                      
-                      <div className="mt-auto pt-2">
-                        <Button 
-                          size="sm" 
-                          onClick={() => handleAddToCart(item)}
-                          className="bg-food-secondary hover:bg-food-secondary/90 text-white w-full sm:w-auto transition-all duration-300"
-                        >
-                          <Plus size={16} className="mr-1" /> Add to cart
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+  const handleRulesSubmit = (item: MenuItem, selections: Record<string, any>) => {
+    // Add the item with rule selections
+    addToCart({ ...item, ruleSelections: selections });
+    setIsRulesModalOpen(false);
+    setSelectedItem(null);
+  };
+
+  const handleRulesModalClose = () => {
+    setIsRulesModalOpen(false);
+    setSelectedItem(null);
+  };
+
+  if (items.length === 0) return null;
+
+  return (
+    <>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="mb-8">
+        <CollapsibleTrigger asChild>
+          <div className="flex items-center gap-4 mb-6 cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors">
+            {isOpen ? (
+              <ChevronDown className="w-6 h-6 text-gray-600" />
+            ) : (
+              <ChevronRight className="w-6 h-6 text-gray-600" />
+            )}
+            {categoryImage && (
+              <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+                <img 
+                  src={categoryImage} 
+                  alt={title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+            <div>
+              <h2 className="text-3xl font-bold text-gray-800">{title}</h2>
+              <p className="text-gray-600">{items.length} items</p>
             </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-    </div>
+          </div>
+        </CollapsibleTrigger>
+        
+        <CollapsibleContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {items.map((item, index) => (
+              <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-food-primary/20">
+                <div className="relative overflow-hidden rounded-t-lg">
+                  <img
+                    src={item.imageUrl || "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000"}
+                    alt={item.name}
+                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  {item.rules && item.rules.length > 0 && (
+                    <Badge 
+                      className="absolute top-2 right-2 bg-blue-500 hover:bg-blue-600 cursor-help"
+                      title="This item has customization options"
+                    >
+                      <Info className="w-3 h-3 mr-1" />
+                      Rules Apply
+                    </Badge>
+                  )}
+                </div>
+                
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg font-semibold line-clamp-2">
+                    {searchQuery ? (
+                      <span dangerouslySetInnerHTML={{
+                        __html: item.name.replace(
+                          new RegExp(`(${searchQuery})`, 'gi'),
+                          '<mark class="bg-yellow-200 px-1 rounded">$1</mark>'
+                        )
+                      }} />
+                    ) : (
+                      item.name
+                    )}
+                  </CardTitle>
+                  {item.description && (
+                    <CardDescription className="text-sm text-gray-600 line-clamp-2">
+                      {searchQuery ? (
+                        <span dangerouslySetInnerHTML={{
+                          __html: item.description.replace(
+                            new RegExp(`(${searchQuery})`, 'gi'),
+                            '<mark class="bg-yellow-200 px-1 rounded">$1</mark>'
+                          )
+                        }} />
+                      ) : (
+                        item.description
+                      )}
+                    </CardDescription>
+                  )}
+                </CardHeader>
+                
+                <CardContent className="pt-0">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-food-primary">
+                      ${item.price.toFixed(2)}
+                    </span>
+                    <Button 
+                      onClick={() => handleAddToCart(item)}
+                      className="bg-food-primary hover:bg-food-primary/90 text-white"
+                    >
+                      <ShoppingCart className="w-4 h-4 mr-2" />
+                      Add to Cart
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+
+      <RulesModal
+        isOpen={isRulesModalOpen}
+        onClose={handleRulesModalClose}
+        onSubmit={handleRulesSubmit}
+        item={selectedItem}
+        itemName={selectedItem?.name || ""}
+      />
+    </>
   );
 };
 

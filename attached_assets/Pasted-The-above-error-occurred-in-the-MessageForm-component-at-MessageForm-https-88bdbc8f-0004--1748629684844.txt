@@ -1,0 +1,31 @@
+The above error occurred in the <MessageForm> component:
+
+    at MessageForm (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/src/components/twilio/MessageForm.tsx:24:24)
+    at div
+    at _c9 (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/src/components/ui/card.tsx:134:12)
+    at div
+    at _c (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/src/components/ui/card.tsx:20:11)
+    at div
+    at TwilioContact (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/src/components/twilio/TwilioContact.tsx:27:37)
+    at div
+    at div
+    at div
+    at div
+    at Hero
+    at section
+    at div
+    at Index (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/src/pages/Index.tsx:30:37)
+    at RenderedRoute (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=30ead3f4:4088:5)
+    at Routes (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=30ead3f4:4558:5)
+    at Router (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=30ead3f4:4501:15)
+    at BrowserRouter (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/node_modules/.vite/deps/react-router-dom.js?v=30ead3f4:5247:5)
+    at CartProvider (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/src/context/CartContext.tsx:20:32)
+    at Provider (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/node_modules/.vite/deps/chunk-G3ZXS5S2.js?v=30ead3f4:51:15)
+    at TooltipProvider (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=30ead3f4:2227:5)
+    at QueryClientProvider (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/node_modules/.vite/deps/@tanstack_react-query.js?v=30ead3f4:2908:3)
+    at _a (https://88bdbc8f-0004-4226-b525-1a409d93ce85-00-1dey2yoqve3cu.worf.replit.dev/node_modules/.vite/deps/react-helmet-async.js?v=30ead3f4:624:5)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+Cannot destructure property 'phoneNumber' of 'undefined' as it is undefined.

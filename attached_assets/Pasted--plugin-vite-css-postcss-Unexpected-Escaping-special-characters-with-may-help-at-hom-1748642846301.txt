@@ -1,0 +1,35 @@
+[plugin:vite:css] [postcss] Unexpected '/'. Escaping special characters with \ may help.
+    at /home/runner/workspace/src/index.css:86:1
+    at /home/runner/workspace/src/index.css:86:1
+    at Root._error (/home/runner/workspace/node_modules/tailwindcss/node_modules/postcss-selector-parser/dist/parser.js:131:16)
+    at Root.error (/home/runner/workspace/node_modules/tailwindcss/node_modules/postcss-selector-parser/dist/selectors/root.js:30:19)
+    at Parser.error (/home/runner/workspace/node_modules/tailwindcss/node_modules/postcss-selector-parser/dist/parser.js:598:21)
+    at Parser.unexpected (/home/runner/workspace/node_modules/tailwindcss/node_modules/postcss-selector-parser/dist/parser.js:612:17)
+    at Parser.combinator (/home/runner/workspace/node_modules/tailwindcss/node_modules/postcss-selector-parser/dist/parser.js:526:12)
+    at Parser.parse (/home/runner/workspace/node_modules/tailwindcss/node_modules/postcss-selector-parser/dist/parser.js:900:14)
+    at Parser.loop (/home/runner/workspace/node_modules/tailwindcss/node_modules/postcss-selector-parser/dist/parser.js:856:12)
+    at new Parser (/home/runner/workspace/node_modules/tailwindcss/node_modules/postcss-selector-parser/dist/parser.js:124:10)
+    at Processor._root (/home/runner/workspace/node_modules/tailwindcss/node_modules/postcss-selector-parser/dist/processor.js:40:18)
+    at Processor._runSync (/home/runner/workspace/node_modules/tailwindcss/node_modules/postcss-selector-parser/dist/processor.js:78:21)
+    at Processor.processSync (/home/runner/workspace/node_modules/tailwindcss/node_modules/postcss-selector-parser/dist/processor.js:164:23)
+    at /home/runner/workspace/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js:39:12
+    at /home/runner/workspace/node_modules/postcss/lib/container.js:387:18
+    at /home/runner/workspace/node_modules/postcss/lib/container.js:315:18
+    at Root.each (/home/runner/workspace/node_modules/postcss/lib/container.js:63:16)
+    at Root.walk (/home/runner/workspace/node_modules/postcss/lib/container.js:312:17)
+    at Root.walkRules (/home/runner/workspace/node_modules/postcss/lib/container.js:385:19)
+    at extractClasses (/home/runner/workspace/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js:29:15)
+    at /home/runner/workspace/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js:154:31
+    at /home/runner/workspace/node_modules/postcss/lib/container.js:387:18
+    at /home/runner/workspace/node_modules/postcss/lib/container.js:315:18
+    at Root.each (/home/runner/workspace/node_modules/postcss/lib/container.js:63:16)
+    at Root.walk (/home/runner/workspace/node_modules/postcss/lib/container.js:312:17)
+    at Root.walkRules (/home/runner/workspace/node_modules/postcss/lib/container.js:385:19)
+    at buildLocalApplyCache (/home/runner/workspace/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js:143:10)
+    at /home/runner/workspace/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js:550:40
+    at Object.has (/home/runner/workspace/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js:205:30)
+    at /home/runner/workspace/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js:219:49
+    at Array.some (<anonymous>)
+    at Object.has (/home/runner/workspace/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js:219:29)
+    at processApply (/home/runner/workspace/node_modules/tailwindcss/lib/lib/expandApplyAtRules.js:379:34)
+    at /home/runner/workspace/node_modules/tailwindcss/l

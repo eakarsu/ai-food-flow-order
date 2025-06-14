@@ -1,0 +1,29 @@
+modules = ["nodejs-20", "web", "swift-5.8", "java-graalvm22.3"]
+run = "npm run dev"
+
+[nix]
+channel = "stable-24_05"
+packages = ["vim"]
+
+[deployment]
+run = ["sh", "-c", "npm run dev"]
+
+[workflows]
+runButton = "Dev Server"
+
+[[workflows.workflow]]
+name = "Dev Server"
+author = 43266967
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
+[[ports]]
+localPort = 8080
+externalPort = 80
+
+[[ports]]
+localPort = 8081
+externalPort = 8081

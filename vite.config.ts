@@ -18,7 +18,14 @@ export default defineConfig(({ mode }) => { // Add ({ mode })
     ].filter(Boolean),
     server: {
       host: "::",
-      port: 8080
+      port: 8080,
+      allowedHosts: [
+        '.replit.dev',
+        '.repl.co',
+        /.*\.replit\.dev$/,
+        /.*\.worf\.replit\.dev$/,
+        /.*\.riker\.replit\.dev$/
+      ]
     },
     resolve: {
       alias: {

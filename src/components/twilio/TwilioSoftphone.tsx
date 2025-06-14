@@ -1,4 +1,3 @@
-
 import { Phone } from 'lucide-react';
 import {
   Dialog,
@@ -46,7 +45,7 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
     // Use environment variable or fallback to the provided phone number
     const twilioVoiceNumber = import.meta.env.VITE_TWILIO_VOICE_NUMBER;
     console.log("Twilio voice number from env:", twilioVoiceNumber);
-    
+
     if (twilioVoiceNumber) {
       setTwilioNumber(twilioVoiceNumber);
       setEnvVarMissing(false);
@@ -68,15 +67,22 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
 
   // Automatically attempt to make the call when the dialog is opened
   useEffect(() => {
-    if (open && !isConnected && !isConnecting && audioPermissionGranted !== false) {
+    if (open && !isConnected && !isConnecting && audioPermissionGranted !== false && tokenAvailable !== false) {
       console.log("Dialog opened, auto-initiating call to:", twilioNumber);
-      // Small timeout to ensure UI is ready
+      console.log("Checking prerequisites: token available =", tokenAvailable, ", audio permission =", audioPermissionGranted);
+
+      // Small timeout to ensure UI is ready and all checks are complete
       const timer = setTimeout(() => {
-        makeCall();
-      }, 500);
+        if (tokenAvailable !== false && audioPermissionGranted !== false) {
+          console.log("All prerequisites met, starting call process...");
+          makeCall();
+        } else {
+          console.log("Prerequisites not met, skipping auto-call");
+        }
+      }, 1000); // Increased timeout to allow for permission checks
       return () => clearTimeout(timer);
     }
-  }, [open, twilioNumber, isConnected, isConnecting, makeCall, audioPermissionGranted]);
+  }, [open, twilioNumber, isConnected, isConnecting, makeCall, audioPermissionGranted, tokenAvailable]);
 
   // Clean up when dialog closes
   useEffect(() => {
@@ -88,22 +94,25 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
   // Check if token endpoint is available
   useEffect(() => {
     if (open) {
-      const baseEndpoint = import.meta.env.VITE_NGROK_VOICE_URL || 
-                         localStorage.getItem('twilioNgrokVoiceUrl') || 
-                         'https://api.orderlybite.com';
+      const tokenEndpoint = 'https://api.orderlybite.com/token';
 
-      const tokenEndpoint = import.meta.env.VITE_TOKEN_URL;
-      
-      // Just check if the endpoint is available
+      // Test the token endpoint with a simple request
       fetch(tokenEndpoint, {
-        method: 'HEAD',
-        mode: 'no-cors', // This will always succeed in terms of network request
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'cors',
+        body: JSON.stringify({ identity: "test" }),
       })
-        .then(() => {
-          // This doesn't guarantee the endpoint works properly, just that it exists
-          setTokenAvailable(true);
+        .then(response => {
+          setTokenAvailable(response.ok || response.status === 401); // 401 means endpoint exists but needs auth
+          if (!response.ok && response.status !== 401) {
+            console.warn(`Token endpoint returned status: ${response.status}`);
+          }
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error("Token endpoint test failed:", error);
           setTokenAvailable(false);
         });
     }
@@ -135,7 +144,14 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
           <Alert variant="destructive" className="mb-4">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Microphone access is required for calls. Please allow microphone access in your browser settings.
+              Microphone access is required for calls. Please:
+              <br />• Click the microphone icon in your browser's address bar
+              <br />• Select "Allow" for microphone access
+              <br />• Refresh the page and try again
+              <br />• On mobile, grant permission when prompted
+              <br />• If in embedded view, try opening in a new tab
+              <br />
+              <br />Alternative: Use your phone to call {twilioNumber} directly
             </AlertDescription>
           </Alert>
         )}
@@ -144,7 +160,14 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
           <Alert variant="destructive" className="mb-4">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Unable to connect to token service. Please check your server configuration.
+              Unable to connect to voice service. 
+              <br />
+              <button 
+                onClick={() => window.open(`tel:${twilioNumber}`, '_self')}
+                className="mt-2 text-sm underline text-red-600 hover:text-red-800"
+              >
+                Click here to call {twilioNumber} directly
+              </button>
             </AlertDescription>
           </Alert>
         )}
@@ -159,23 +182,62 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
         )}
 
         <div className="flex flex-col items-center py-6 space-y-6">
-          {isConnected ? (
-            <ActiveCall 
+          {!isConnected && !isConnecting && (
+          <div className="space-y-4">
+            <Alert className="border-amber-200 bg-amber-50">
+              <AlertCircle className="h-4 w-4 text-amber-600" />
+              <AlertDescription className="text-amber-800">
+                <div className="space-y-2">
+                  <p className="font-medium">Microphone access is required for calls. Please:</p>
+                  <ul className="list-disc list-inside space-y-1 text-sm">
+                    <li>Click the microphone icon in your browser's address bar</li>
+                    <li>Select "Allow" for microphone access</li>
+                    <li>Refresh the page and try again</li>
+                    <li>On mobile, grant permission when prompted</li>
+                    <li>If in embedded view, try opening in a new tab</li>
+                  </ul>
+                  <p className="text-sm font-medium mt-2">
+                    Alternative: <a 
+                      href={`tel:${twilioNumber}`} 
+                      className="text-blue-600 underline hover:text-blue-800"
+                      onClick={() => onOpenChange(false)}
+                    >
+                      Use your phone to call {twilioNumber} directly
+                    </a>
+                  </p>
+                </div>
+              </AlertDescription>
+            </Alert>
+
+            <CallInitiator 
               phoneNumber={twilioNumber}
-              isMuted={isMuted}
-              handleToggleMute={toggleMute}
-              handleDisconnect={disconnectCall}
-            />
-          ) : (
-            <CallInitiator
-              phoneNumber={twilioNumber}
-              handleMakeCall={makeCall}
+              onCall={() => {
+                console.log("Manual call initiation triggered");
+                makeCall();
+              }}
               isConnecting={isConnecting}
-              hasToken={tokenAvailable !== false}
             />
-          )}
+          </div>
+        )}
+
+        {isConnecting && (
+          <div className="text-center py-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-food-primary mx-auto mb-2"></div>
+            <p className="text-sm text-gray-600">Connecting...</p>
+            <p className="text-xs text-gray-500 mt-1">Please allow microphone access if prompted</p>
+          </div>
+        )}
+
+        {isConnected && (
+          <ActiveCall
+            phoneNumber={twilioNumber}
+            onDisconnect={disconnectCall}
+            onToggleMute={toggleMute}
+            isMuted={isMuted}
+          />
+        )}
         </div>
-        
+
         {/* Debug notification about audio status */}
         {isConnected && (
           <div className="mt-4 text-xs text-center text-gray-500">

@@ -1,114 +1,70 @@
-
-import { useState } from 'react';
-import { Send, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import PhoneNumberInput from "./PhoneNumberInput";
-import MessageTextarea from "./MessageTextarea";
-import { useSendSMS } from "@/hooks/useSendSMS";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { format } from "date-fns";
-import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Send } from 'lucide-react';
+import { useSendSMS } from '@/hooks/useSendSMS';
 
 interface MessageFormProps {
-  phoneNumber: string;
-  setPhoneNumber: (value: string) => void;
+  phoneNumber?: string;
+  onMessageSent?: (message: string) => void;
 }
 
-const MessageForm = ({ phoneNumber, setPhoneNumber }: MessageFormProps) => {
-  const [message, setMessage] = useState("");
-  const { loading, messageHistory, sendSMS, clearHistory } = useSendSMS({ phoneNumber });
+export const MessageForm: React.FC<MessageFormProps> = ({ phoneNumber, onMessageSent }) => {
+  const [message, setMessage] = useState('');
+  const { sendSMS, isLoading } = useSendSMS(phoneNumber || '+18001234567');
 
-  const handleSendSMS = async () => {
-    if (!message.trim()) return;
-    
-    const success = await sendSMS(message);
-    if (success) {
-      setMessage("");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!message.trim() || isLoading) return;
+
+    try {
+      await sendSMS(message.trim());
+      setMessage('');
+      if (onMessageSent) {
+        onMessageSent(message.trim());
+      }
+    } catch (error) {
+      console.error('Failed to send SMS:', error);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
     }
   };
 
   return (
-    <div className="space-y-4">
-      <PhoneNumberInput 
-        phoneNumber={phoneNumber} 
-        setPhoneNumber={setPhoneNumber} 
-      />
-      
-      {/* Message History Area */}
+    <form onSubmit={handleSubmit} className="space-y-3">
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="message-history" className="text-sm font-medium text-gray-700">Message History</Label>
-          {messageHistory.length > 0 && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={clearHistory}
-              className="h-6 p-0 text-gray-500 hover:text-destructive"
-            >
-              <Trash2 className="h-4 w-4" />
-              <span className="ml-1 text-xs">Clear</span>
-            </Button>
-          )}
-        </div>
-        
-        <ScrollArea id="message-history" className="h-[180px] rounded-md border">
-          {messageHistory.length > 0 ? (
-            <div className="space-y-2 p-3">
-              {messageHistory.map((msg, idx) => (
-                <div 
-                  key={idx} 
-                  className={`p-2 rounded-lg text-sm ${
-                    msg.status === 'sent' 
-                      ? 'bg-food-primary/10 text-food-dark' 
-                      : msg.status === 'received'
-                        ? 'bg-blue-50 text-blue-800'
-                        : 'bg-red-50 text-red-800'
-                  }`}
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="text-xs font-medium mb-1">
-                        {msg.status === 'sent' ? 'You' : 
-                         msg.status === 'received' ? 'Response' : 'Error'}:
-                      </div>
-                      <span className="whitespace-pre-wrap break-words">{msg.text}</span>
-                    </div>
-                    <span className="text-xs text-muted-foreground ml-2 whitespace-nowrap">
-                      {format(msg.timestamp, 'HH:mm')}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex items-center justify-center h-full text-sm text-muted-foreground">
-              No messages yet
-            </div>
-          )}
-        </ScrollArea>
+        <label className="text-sm font-medium text-gray-700">
+          Your Message
+        </label>
+        <Textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyPress}
+          placeholder="Enter your message here..."
+          className="min-h-[100px] resize-none text-gray-900 bg-white border border-gray-300 focus:border-red-500 focus:ring-red-500"
+          disabled={isLoading}
+        />
       </div>
-      
-      {/* New Message Area */}
-      <MessageTextarea 
-        message={message} 
-        onChange={setMessage} 
-      />
-
-      <div className="flex justify-end border-t pt-4">
-        <Button 
-          onClick={handleSendSMS} 
-          disabled={loading || !message.trim()}
-          className="bg-food-primary hover:bg-food-primary/90"
-        >
-          {loading ? "Sending..." : (
-            <>
-              <Send className="mr-2" size={16} />
-              Send Message
-            </>
-          )}
-        </Button>
-      </div>
-    </div>
+      <Button
+        type="submit"
+        disabled={!message.trim() || isLoading}
+        className="w-full bg-red-600 hover:bg-red-700 text-white"
+      >
+        {isLoading ? (
+          <>Sending...</>
+        ) : (
+          <>
+            <Send className="h-4 w-4 mr-2" />
+            Send Message
+          </>
+        )}
+      </Button>
+    </form>
   );
 };
 

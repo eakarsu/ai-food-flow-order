@@ -1,60 +1,83 @@
-
-import { useState } from 'react';
-import { Phone } from 'lucide-react';
-import { useToast } from "@/hooks/use-toast";
-import { Input } from "@/components/ui/input";
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Phone, PhoneCall } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import TwilioSoftphone from './TwilioSoftphone';
 
 interface CallFormProps {
-  phoneNumber: string;
-  setPhoneNumber: (value: string) => void;
-  handleMakeCall: () => void;
+  phoneNumber?: string;
+  onCallInitiated?: () => void;
 }
 
-const CallForm = ({ phoneNumber, setPhoneNumber, handleMakeCall }: CallFormProps) => {
+const CallForm: React.FC<CallFormProps> = ({ phoneNumber = '', onCallInitiated }) => {
+  const [isConnecting, setIsConnecting] = useState(false);
   const { toast } = useToast();
+  const [softphoneOpen, setSoftphoneOpen] = useState(false);
 
-  const validateAndCall = () => {
-    if (!phoneNumber) {
+
+  const handleMakeCall = async () => {
+    if (!phoneNumber || phoneNumber.trim() === '') {
       toast({
         title: "Phone number required",
-        description: "Please enter a valid phone number",
+        description: "Please enter a phone number to call",
         variant: "destructive",
       });
       return;
     }
 
-    handleMakeCall();
+    setIsConnecting(true);
+
+    try {
+      // Simulate call initiation - replace with actual Twilio implementation
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      onCallInitiated?.();
+
+      toast({
+        title: "Call Initiated",
+        description: `Calling ${phoneNumber}`,
+      });
+    } catch (error) {
+      console.error('Failed to initiate call:', error);
+
+      toast({
+        title: "Failed to Make Call",
+        description: "An error occurred while initiating the call",
+        variant: "destructive"
+      });
+    } finally {
+      setIsConnecting(false);
+    }
   };
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="phone-call">Customer Phone Number</Label>
-        <Input 
-          id="phone-call"
-          type="tel" 
-          placeholder="+1 (555) 123-4567" 
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-        />
-      </div>
-      
-      <p className="text-sm text-gray-500 mt-4">
-        Click the "Call Customer" button to initiate a browser-based call using Twilio's Voice SDK.
-      </p>
+    <>
+      <Card className="w-full">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center space-x-2">
+            <Phone className="h-5 w-5 text-food-primary" />
+            <span>Make Call</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Button
+            onClick={() => setSoftphoneOpen(true)}
+            disabled={!phoneNumber || phoneNumber.trim() === ''}
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 flex items-center justify-center space-x-2"
+          >
+            <PhoneCall className="h-5 w-5" />
+            <span>{isConnecting ? 'Connecting...' : 'Make Call'}</span>
+          </Button>
+        </CardContent>
+      </Card>
 
-      <div className="flex justify-end border-t pt-4">
-        <Button 
-          onClick={validateAndCall}
-          className="bg-food-primary hover:bg-food-primary/90"
-        >
-          <Phone className="mr-2" size={16} />
-          Call Customer
-        </Button>
-      </div>
-    </div>
+      <TwilioSoftphone
+        phoneNumber={phoneNumber}
+        open={softphoneOpen}
+        onOpenChange={setSoftphoneOpen}
+      />
+    </>
   );
 };
 
