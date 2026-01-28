@@ -11,6 +11,7 @@ import HowItWorks from '../components/home/HowItWorks';
 import CallToAction from '../components/home/CallToAction';
 import SEO from '../components/SEO';
 import { useNavigate } from 'react-router-dom';
+import { Search, Sparkles } from 'lucide-react';
 
 // Single restaurant data
 const restaurantData = {
@@ -63,20 +64,20 @@ const featuredFoodItems = [
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  
+
   // Simulate page loading
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1000);
-    
+
     return () => clearTimeout(timer);
   }, []);
-  
+
   const handleSearch = (query: string) => {
     navigate(`/menu?search=${encodeURIComponent(query)}`);
   };
-  
+
   // Structured data for SEO
   const restaurantStructuredData = {
     "@context": "https://schema.org",
@@ -102,7 +103,7 @@ const Index = () => {
     },
     "openingHours": "Mo-Fr 06:00-20:00, Sa-Su 07:00-18:00"
   };
-  
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -115,43 +116,70 @@ const Index = () => {
         keywords="AI food ordering, SMS ordering, phone ordering, restaurant delivery, Henrico VA, fresh meals, deli, breakfast"
         structuredData={restaurantStructuredData}
       />
-      
-      <div className="min-h-screen flex flex-col bg-gray-50">
+
+      <div className="min-h-screen flex flex-col bg-food-light">
         <Navbar />
-        
-        {/* Hero Section with Twilio Contact */}
+
+        {/* Hero Section */}
         <Hero />
-        
+
         {/* Restaurant Info Section */}
         <RestaurantInfo restaurant={restaurantData} />
-        
-        {/* AI Recommendation Section */}
-        <section className="container mx-auto px-4 py-8">
-          <h2 className="text-3xl font-bold text-center mb-6">AI-Powered Recommendations</h2>
-          <AiRecommendation />
-        </section>
-        
+
         {/* Search Section */}
-        <section className="container mx-auto px-4 py-12 bg-food-light rounded-lg my-4">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-food-dark mb-3">Find Your Favorite Food</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Search our extensive menu for delicious options</p>
-          </div>
-          
-          <div className="max-w-xl mx-auto">
-            <SearchBar onSearch={handleSearch} />
+        <section className="py-20 bg-white">
+          <div className="section-container">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-10">
+                <span className="inline-block px-4 py-2 bg-food-primary/10 text-food-primary rounded-full text-sm font-semibold mb-4">
+                  <Search size={14} className="inline mr-2" />
+                  Find Your Favorites
+                </span>
+                <h2 className="text-4xl md:text-5xl font-display font-bold text-food-secondary mb-4">
+                  What are you craving?
+                </h2>
+                <p className="text-food-gray-500 text-lg max-w-2xl mx-auto">
+                  Search our extensive menu for delicious options tailored to your taste
+                </p>
+              </div>
+
+              <div className="max-w-2xl mx-auto">
+                <SearchBar onSearch={handleSearch} />
+              </div>
+            </div>
           </div>
         </section>
-        
+
+        {/* AI Recommendation Section */}
+        <section className="py-20 bg-gradient-to-br from-food-gray-50 to-white">
+          <div className="section-container">
+            <div className="text-center mb-12">
+              <span className="inline-flex items-center gap-2 px-4 py-2 bg-food-accent/20 text-food-secondary rounded-full text-sm font-semibold mb-4">
+                <Sparkles size={14} />
+                AI-Powered
+              </span>
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-food-secondary mb-4">
+                Smart Recommendations
+              </h2>
+              <p className="text-food-gray-500 text-lg max-w-2xl mx-auto">
+                Let our AI help you discover new favorites based on your preferences
+              </p>
+            </div>
+            <div className="max-w-4xl mx-auto">
+              <AiRecommendation />
+            </div>
+          </div>
+        </section>
+
         {/* Featured Items */}
         <FeaturedItems items={featuredFoodItems} />
-        
+
         {/* How It Works */}
         <HowItWorks />
-        
+
         {/* CTA Section */}
         <CallToAction />
-        
+
         <Footer />
       </div>
     </>

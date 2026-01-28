@@ -937,41 +937,75 @@ const Menu = () => {
   }, [location.search]);
   
   // Convert searchQuery to lowercase for case-insensitive comparison
-  const searchLower = searchQuery.toLowerCase();
-  
+  const searchLower = searchQuery.toLowerCase().trim();
+
   // Filter menu items based on search query
   const filteredCategories = menuData.map(category => {
     // If search query is empty, return all items
-    if (!searchQuery) {
+    if (!searchQuery.trim()) {
       return category;
     }
 
-    // Special handling for drink-related searches
-    const isDrinkSearch = searchLower.includes("drink") || searchLower.includes("beverage");
-    
-    // Skip Sliced Cold Cuts entirely for drink searches
-    if (isDrinkSearch && category.category === "Sliced Cold Cuts") {
-      return { ...category, items: [] };
-    }
-    
-    // Special handling for drink-related searches at the category level
-    const isDrinkCategory = 
-      category.category.toLowerCase().includes("drink") ||
-      category.category.toLowerCase().includes("coffee") ||
-      category.category.toLowerCase().includes("tea") ||
-      category.category.toLowerCase().includes("iced") ||
-      category.category.toLowerCase().includes("bottle");
-    
-    // Match drink categories for drink-related searches
-    if (isDrinkSearch && isDrinkCategory) {
+    const categoryLower = category.category.toLowerCase();
+
+    // If search matches category name, return all items in that category
+    if (categoryLower.includes(searchLower) || searchLower.includes(categoryLower.split(' ')[0])) {
       return category;
     }
-    
+
+    // Special keyword mappings for related searches
+    const searchMappings: Record<string, string[]> = {
+      'drink': ['bottled drinks', 'coffee', 'tea', 'iced tea', 'lemonade'],
+      'drinks': ['bottled drinks', 'coffee', 'tea', 'iced tea', 'lemonade'],
+      'beverage': ['bottled drinks', 'coffee', 'tea', 'iced tea', 'lemonade'],
+      'beverages': ['bottled drinks', 'coffee', 'tea', 'iced tea', 'lemonade'],
+      'soda': ['bottled drinks'],
+      'juice': ['bottled drinks'],
+      'water': ['bottled drinks'],
+      'breakfast': ['breakfast combos', 'byo breakfast', 'omelets', 'muffins'],
+      'sandwich': ['cold sandwiches', 'hot sandwiches', 'byo sandwiches', 'paninis'],
+      'sandwiches': ['cold sandwiches', 'hot sandwiches', 'byo sandwiches', 'paninis'],
+      'hero': ['cold sandwiches', 'hot sandwiches'],
+      'salad': ['salads', 'chopped salad'],
+      'salads': ['salads', 'chopped salad'],
+      'coffee': ['coffee'],
+      'tea': ['tea', 'iced tea and lemonade'],
+      'panini': ['paninis'],
+      'omelet': ['omelets'],
+      'omelette': ['omelets'],
+      'grill': ['grill menu'],
+      'gyro': ['grill menu'],
+      'acai': ['acai bowls'],
+      'bowl': ['acai bowls'],
+      'dessert': ['desserts'],
+      'sweet': ['desserts', 'muffins'],
+      'muffin': ['muffins & pastries'],
+      'pastry': ['muffins & pastries'],
+      'snack': ['snacks & light meals'],
+    };
+
+    // Check if search term maps to this category
+    const mappedCategories = searchMappings[searchLower] || [];
+    if (mappedCategories.some(mapped => categoryLower.includes(mapped))) {
+      return category;
+    }
+
     // Filter individual items
     const filteredItems = category.items.filter(item => {
-      const nameMatch = item.name.toLowerCase().includes(searchLower);
-      const descMatch = item.description && item.description.toLowerCase().includes(searchLower);
-      
+      const nameLower = item.name.toLowerCase();
+      const descLower = item.description?.toLowerCase() || '';
+
+      // Check if item name or description contains search term
+      const nameMatch = nameLower.includes(searchLower);
+      const descMatch = descLower.includes(searchLower);
+
+      // Check if any word in the search matches item name words
+      const searchWords = searchLower.split(' ').filter(w => w.length > 2);
+      const nameWords = nameLower.split(' ');
+      const wordMatch = searchWords.some(sw =>
+        nameWords.some(nw => nw.includes(sw) || sw.includes(nw))
+      );
+
       // Check for matches in rules if they exist
       let rulesMatch = false;
       if (item.rules) {
@@ -986,10 +1020,10 @@ const Menu = () => {
           return rule.toLowerCase().includes(searchLower);
         });
       }
-      
-      return nameMatch || descMatch || rulesMatch;
+
+      return nameMatch || descMatch || wordMatch || rulesMatch;
     });
-    
+
     return { ...category, items: filteredItems };
   }).filter(category => category.items.length > 0);
 
@@ -998,54 +1032,85 @@ const Menu = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-food-light">
       <Navbar />
-      
-      <div className="bg-gradient-to-r from-food-primary/20 to-food-secondary/20 py-10 shadow-sm">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-food-dark mb-2 animate-fade-in">
-            OrderlyBite Menu
-          </h1>
-          <p className="text-gray-600 mb-6 text-lg">Explore our delicious offerings crafted with care</p>
-          
-          <div className="max-w-4xl mx-auto mb-8">
-            <SearchBar onSearch={handleSearch} />
+
+      {/* Hero Header */}
+      <section className="relative pt-40 pb-24 bg-food-secondary overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-food-primary rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-food-accent rounded-full blur-3xl" />
+        </div>
+
+        <div className="section-container relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <span className="inline-block px-4 py-2 bg-food-primary/20 text-food-primary rounded-full text-sm font-semibold mb-6">
+              Fresh & Delicious
+            </span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-4 animate-slide-up">
+              Our Menu
+            </h1>
+            <p className="text-white/70 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
+              Explore our delicious offerings crafted with fresh ingredients and passionate attention to detail
+            </p>
+
+            <div className="max-w-2xl mx-auto">
+              <SearchBar onSearch={handleSearch} initialQuery={searchQuery} />
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div className="container mx-auto px-4 py-8">
-        {filteredCategories.length > 0 ? (
-          <div className="space-y-6">
-            {filteredCategories.map((category) => (
-              <div 
-                key={category.category} 
-                className={`border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm transition-all duration-300 ${isInitialLoad ? 'opacity-0' : 'opacity-100'}`}
-              >
-                <MenuCategory 
-                  title={category.category} 
-                  items={category.items}
-                  categoryImage={category.categoryImage}
-                  searchQuery={searchQuery}
-                />
+
+        {/* Wave Divider */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+            <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#FAFAFA"/>
+          </svg>
+        </div>
+      </section>
+
+      {/* Menu Content */}
+      <section className="py-12">
+        <div className="section-container">
+          {filteredCategories.length > 0 ? (
+            <div className="space-y-8">
+              {filteredCategories.map((category, index) => (
+                <div
+                  key={category.category}
+                  className={`bg-white rounded-2xl overflow-hidden shadow-soft transition-all duration-500 animate-slide-up ${isInitialLoad ? 'opacity-0' : 'opacity-100'}`}
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <MenuCategory
+                    title={category.category}
+                    items={category.items}
+                    categoryImage={category.categoryImage}
+                    searchQuery={searchQuery}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <div className="w-24 h-24 bg-food-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-4xl">🔍</span>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-16">
-            <div className="text-food-primary mb-4 text-5xl">😕</div>
-            <p className="text-xl text-gray-600 mb-2">No menu items found matching "{searchQuery}"</p>
-            <p className="text-md text-gray-500 mb-4">Try a different search term or browse our categories</p>
-            <button 
-              onClick={() => setSearchQuery("")}
-              className="mt-2 bg-food-primary text-white py-2 px-4 rounded-md hover:bg-food-primary/90 transition-colors"
-            >
-              Clear search
-            </button>
-          </div>
-        )}
-      </div>
-      
+              <h3 className="text-2xl font-display font-bold text-food-secondary mb-2">
+                No items found
+              </h3>
+              <p className="text-food-gray-500 mb-6 max-w-md mx-auto">
+                We couldn't find any menu items matching "{searchQuery}". Try a different search term.
+              </p>
+              <button
+                onClick={() => setSearchQuery("")}
+                className="bg-food-primary hover:bg-food-primary-dark text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300"
+              >
+                Clear Search
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
       <Footer />
     </div>
   );

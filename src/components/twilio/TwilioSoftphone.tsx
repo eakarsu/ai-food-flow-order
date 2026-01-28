@@ -43,18 +43,11 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
   }, [open]);
 
   useEffect(() => {
-    // Use environment variable or fallback to the provided phone number
-    const twilioVoiceNumber = import.meta.env.VITE_TWILIO_VOICE_NUMBER;
-    console.log("Twilio voice number from env:", twilioVoiceNumber);
-    
-    if (twilioVoiceNumber) {
-      setTwilioNumber(twilioVoiceNumber);
-      setEnvVarMissing(false);
-    } else {
-      setTwilioNumber(phoneNumber);
-      setEnvVarMissing(true);
-      console.log("VITE_TWILIO_VOICE_NUMBER environment variable not set, using provided number instead");
-    }
+    // Use the provided phone number (the number we want to call)
+    // VITE_TWILIO_VOICE_NUMBER is the caller ID, not the destination
+    console.log("Phone number to call:", phoneNumber);
+    setTwilioNumber(phoneNumber);
+    setEnvVarMissing(false);
   }, [phoneNumber]);
 
   const {
@@ -88,20 +81,23 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
   // Check if token endpoint is available
   useEffect(() => {
     if (open) {
-      const baseEndpoint = import.meta.env.VITE_NGROK_VOICE_URL || 
-                         localStorage.getItem('twilioNgrokVoiceUrl') || 
-                         'https://api.orderlybite.com';
+      const tokenEndpoint = import.meta.env.VITE_TOKEN_URL || 'http://localhost:3001/api/twilio-token';
 
-      const tokenEndpoint = import.meta.env.VITE_TOKEN_URL;
-      
-      // Just check if the endpoint is available
+      // Check endpoint with actual POST request
       fetch(tokenEndpoint, {
-        method: 'HEAD',
-        mode: 'no-cors', // This will always succeed in terms of network request
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+        body: JSON.stringify({ identity: 'connection-test' }),
       })
-        .then(() => {
-          // This doesn't guarantee the endpoint works properly, just that it exists
-          setTokenAvailable(true);
+        .then(response => {
+          if (response.ok) {
+            setTokenAvailable(true);
+          } else {
+            setTokenAvailable(false);
+          }
         })
         .catch(() => {
           setTokenAvailable(false);

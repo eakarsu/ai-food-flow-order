@@ -8,8 +8,11 @@ import { useToast } from "@/hooks/use-toast";
  */
 export const fetchTwilioToken = async (ngrokVoiceUrl?: string): Promise<string | null> => {
   try {
+    // Get token URL from env or use default
+    const tokenUrl = import.meta.env.VITE_TOKEN_URL || 'http://localhost:3001/api/twilio-token';
+
     // Call your secure backend endpoint that generates Twilio tokens
-    const response = await fetch("/api/twilio-token", {
+    const response = await fetch(tokenUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

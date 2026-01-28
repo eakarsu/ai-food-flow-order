@@ -68,77 +68,77 @@ const MenuCategory = ({ title, items, categoryImage, showTitle = true, searchQue
   const accordionValue = searchQuery ? title : undefined;
   
   return (
-    <div className="mb-8">
+    <div>
       <Accordion type="single" collapsible defaultValue={accordionValue}>
         <AccordionItem value={title} className="border-none">
           {showTitle && title && (
-            <AccordionTrigger className="flex justify-between bg-food-primary/10 p-4 rounded-lg shadow hover:bg-food-primary/20 transition-colors">
+            <AccordionTrigger className="flex justify-between bg-food-gray-50 hover:bg-food-gray-100 p-5 rounded-xl transition-colors">
               <div className="flex items-center space-x-4">
                 {categoryImage ? (
-                  <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100">
-                    <img 
-                      src={categoryImage} 
-                      alt={title} 
-                      className="w-full h-full object-cover" 
+                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-food-gray-100 shadow-sm">
+                    <img
+                      src={categoryImage}
+                      alt={title}
+                      className="w-full h-full object-cover"
                       loading="lazy"
                       onError={(e) => {
                         e.currentTarget.src = getPlaceholderImage(title);
                       }}
                     />
                   </div>
-                ) : null}
-                <h2 className="text-2xl font-bold text-food-dark">{title}</h2>
+                ) : (
+                  <div className="w-14 h-14 rounded-xl bg-food-primary/10 flex items-center justify-center">
+                    <span className="text-2xl">🍽️</span>
+                  </div>
+                )}
+                <h2 className="text-xl font-display font-bold text-food-secondary">{title}</h2>
               </div>
             </AccordionTrigger>
           )}
           
-          <AccordionContent className="pt-4">
+          <AccordionContent className="pt-6 px-2">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {items.map((item, index) => {
                 const placeholderImage = getPlaceholderImage(item.name);
-                
+
                 return (
-                  <Card key={`${title}-${index}`} className="overflow-hidden hover:shadow-md transition-all duration-300 group">
-                    <div className="h-48 overflow-hidden relative bg-gray-100">
+                  <Card key={`${title}-${index}`} className="overflow-hidden bg-white border-0 shadow-soft hover:shadow-soft-lg transition-all duration-300 group rounded-2xl">
+                    <div className="h-44 overflow-hidden relative bg-food-gray-100">
                       <img
                         src={item.imageUrl || placeholderImage}
                         alt={item.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         loading="lazy"
                         onError={(e) => {
                           e.currentTarget.src = placeholderImage;
                         }}
                       />
-                      {!item.imageUrl && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100/50">
-                          <ImageOff className="text-gray-400" size={32} />
-                        </div>
-                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
-                    
-                    <CardContent className={`p-4 flex flex-col`}>
+
+                    <CardContent className="p-5 flex flex-col">
                       <div className="flex justify-between items-start mb-2">
-                        <h3 className="font-semibold text-food-dark">{item.name}</h3>
-                        <span className="font-bold text-food-primary">${item.price.toFixed(2)}</span>
+                        <h3 className="font-display font-semibold text-food-secondary group-hover:text-food-primary transition-colors">{item.name}</h3>
+                        <span className="font-bold text-food-primary text-lg">${item.price.toFixed(2)}</span>
                       </div>
-                      
+
                       {item.description && (
-                        <p className="text-gray-600 text-sm mb-4 line-clamp-3">{item.description}</p>
+                        <p className="text-food-gray-500 text-sm mb-4 line-clamp-2">{item.description}</p>
                       )}
 
                       {item.rules && item.rules.length > 0 && (
-                        <div className="text-blue-600 text-xs mb-2">
-                          <span className="font-semibold">Customizable:</span> {item.rules.join(", ")}
+                        <div className="text-food-primary/80 text-xs mb-3 bg-food-primary/5 px-3 py-1.5 rounded-lg inline-block">
+                          <span className="font-semibold">Customizable</span>
                         </div>
                       )}
-                      
+
                       <div className="mt-auto pt-2">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           onClick={() => handleAddToCart(item)}
-                          className="bg-food-secondary hover:bg-food-secondary/90 text-white w-full sm:w-auto transition-all duration-300"
+                          className="bg-food-primary hover:bg-food-primary-dark text-white w-full rounded-xl font-semibold transition-all duration-300 hover:shadow-glow"
                         >
-                          <Plus size={16} className="mr-1" /> Add to cart
+                          <Plus size={16} className="mr-2" /> Add to Cart
                         </Button>
                       </div>
                     </CardContent>

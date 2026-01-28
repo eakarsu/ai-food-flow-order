@@ -2,12 +2,68 @@ import { useState, useEffect, useRef } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { Device, Call } from '@twilio/voice-sdk';
 import { Capacitor } from '@capacitor/core';
-import { VoiceRecorder } from 'capacitor-voice-recorder'; 
+import { VoiceRecorder } from 'capacitor-voice-recorder';
 
 interface UseTwilioDeviceProps {
   open: boolean;
   phoneNumber: string;
 }
+
+// Helper function to get available audio devices
+const getAudioDevices = async (): Promise<{ inputDevice: string | null; outputDevice: string | null }> => {
+  try {
+    // First request permission to enumerate devices properly
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream.getTracks().forEach(track => track.stop());
+
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    console.log("Available audio devices:", devices);
+
+    const audioInputs = devices.filter(d => d.kind === 'audioinput');
+    const audioOutputs = devices.filter(d => d.kind === 'audiooutput');
+
+    console.log("Audio inputs:", audioInputs.map(d => ({ id: d.deviceId, label: d.label })));
+    console.log("Audio outputs:", audioOutputs.map(d => ({ id: d.deviceId, label: d.label })));
+
+    // Get the first available device that's not "default" (to avoid the "default" device issue)
+    let inputDevice: string | null = null;
+    let outputDevice: string | null = null;
+
+    // Try to find a real device (not "default" or "communications")
+    for (const input of audioInputs) {
+      if (input.deviceId && input.deviceId !== 'default' && input.deviceId !== 'communications') {
+        inputDevice = input.deviceId;
+        console.log("Selected input device:", input.label || input.deviceId);
+        break;
+      }
+    }
+
+    // If no non-default device found, use the first available
+    if (!inputDevice && audioInputs.length > 0) {
+      inputDevice = audioInputs[0].deviceId;
+      console.log("Using first available input device:", audioInputs[0].label || audioInputs[0].deviceId);
+    }
+
+    for (const output of audioOutputs) {
+      if (output.deviceId && output.deviceId !== 'default' && output.deviceId !== 'communications') {
+        outputDevice = output.deviceId;
+        console.log("Selected output device:", output.label || output.deviceId);
+        break;
+      }
+    }
+
+    // If no non-default device found, use the first available
+    if (!outputDevice && audioOutputs.length > 0) {
+      outputDevice = audioOutputs[0].deviceId;
+      console.log("Using first available output device:", audioOutputs[0].label || audioOutputs[0].deviceId);
+    }
+
+    return { inputDevice, outputDevice };
+  } catch (error) {
+    console.error("Error enumerating audio devices:", error);
+    return { inputDevice: null, outputDevice: null };
+  }
+};
 
 export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => {
   const { toast } = useToast();
@@ -83,13 +139,13 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
       setIsConnecting(true);
       
       // Get the voice endpoint URL from environment variable or from localStorage
-      const baseEndpoint = import.meta.env.VITE_NGROK_VOICE_URL || 
-                          localStorage.getItem('twilioNgrokVoiceUrl') || 
-                          'https://api.orderlybite.com';
-      
+      const baseEndpoint = import.meta.env.VITE_NGROK_VOICE_URL ||
+                          localStorage.getItem('twilioNgrokVoiceUrl') ||
+                          'http://localhost:3001/api/voice';
+
       // Get token URL from environment variable or use default constructed from baseEndpoint
-      const tokenUrl = import.meta.env.VITE_TOKEN_URL || 
-                      `${baseEndpoint}/token`;
+      const tokenUrl = import.meta.env.VITE_TOKEN_URL ||
+                      'http://localhost:3001/api/twilio-token';
       
       const voiceEndpoint = `${baseEndpoint}`;
       
@@ -130,6 +186,7 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true', // Skip ngrok interstitial page
         },
         ...(isCrossOrigin ? { mode: 'cors' } : {}),
         body: JSON.stringify({ identity: "customer-service-agent" }),
@@ -159,16 +216,32 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         deviceRef.current = null;
       }
       
-      // Create device with appropriate type settings
-      const device = new Device(token, {
-        // Limit type to what's in the Device interface
-      });
-      
+      // Get available audio devices
+      const { inputDevice, outputDevice } = await getAudioDevices();
+      console.log("Using audio devices - Input:", inputDevice, "Output:", outputDevice);
+
+      // Create device with audio device settings
+      const deviceOptions: any = {
+        logLevel: 1, // Enable logging for debugging
+        codecPreferences: ['opus', 'pcmu'] as any,
+      };
+
+      // If we have a specific input device, set it
+      if (inputDevice) {
+        deviceOptions.edge = 'ashburn'; // Use closest edge location
+      }
+
+      const device = new Device(token, deviceOptions);
+
       // Listen for device events
-      device.on('ready', () => {
-        console.log("Twilio Device ready");
+      device.on('registered', () => {
+        console.log("Twilio Device registered and ready");
       });
-      
+
+      device.on('unregistered', () => {
+        console.log("Twilio Device unregistered");
+      });
+
       device.on('error', (twilioError) => {
         console.error("Twilio Device error:", twilioError);
         toast({
@@ -177,7 +250,31 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
           variant: "destructive",
         });
       });
-      
+
+      // Set audio devices before registering
+      if (inputDevice || outputDevice) {
+        try {
+          const audioHelper = device.audio;
+          if (audioHelper) {
+            console.log("Setting up audio devices...");
+
+            // Set speaker device if available
+            if (outputDevice && typeof audioHelper.speakerDevices?.set === 'function') {
+              await audioHelper.speakerDevices.set(outputDevice);
+              console.log("Speaker device set:", outputDevice);
+            }
+
+            // Set ringtone device if available
+            if (outputDevice && typeof audioHelper.ringtoneDevices?.set === 'function') {
+              await audioHelper.ringtoneDevices.set(outputDevice);
+              console.log("Ringtone device set:", outputDevice);
+            }
+          }
+        } catch (audioSetupError) {
+          console.warn("Could not set audio devices, using defaults:", audioSetupError);
+        }
+      }
+
       // Register the device
       await device.register();
       deviceRef.current = device;
@@ -199,6 +296,38 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         console.log("Call accepted");
         setIsConnected(true);
         setIsConnecting(false);
+
+        // Ensure audio is playing - the Twilio SDK handles this, but we can help
+        try {
+          // Access the audio helper to ensure audio is properly routed
+          const audioHelper = deviceRef.current?.audio;
+          if (audioHelper) {
+            console.log("Audio helper available, checking audio output...");
+
+            // Get available output devices
+            const speakerDevices = audioHelper.speakerDevices?.get?.();
+            console.log("Current speaker devices:", speakerDevices);
+
+            // Ensure audio is not muted
+            if (audioHelper.outgoing) {
+              console.log("Outgoing audio available");
+            }
+            if (audioHelper.incoming) {
+              console.log("Incoming audio available");
+            }
+          }
+
+          // Also try to get the remote audio stream from the call
+          const remoteStream = (call as any).getRemoteStream?.();
+          if (remoteStream && audioRef.current) {
+            console.log("Setting remote stream to audio element");
+            audioRef.current.srcObject = remoteStream;
+            audioRef.current.play().catch(e => console.error("Error playing audio:", e));
+          }
+        } catch (audioError) {
+          console.warn("Audio setup after accept:", audioError);
+        }
+
         toast({
           title: "Call Connected",
           description: `Connected to ${phoneNumber}`,
@@ -226,37 +355,42 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
           variant: "destructive",
         });
       });
-      
-      // Create audio context for playing a dial tone as feedback
-      try {
-        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-        if (AudioContext) {
-          const audioContext = new AudioContext();
-          
-          const oscillator = audioContext.createOscillator();
-          oscillator.type = 'sine';
-          oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
-          
-          const gainNode = audioContext.createGain();
-          gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); // Low volume
-          
-          oscillator.connect(gainNode);
-          gainNode.connect(audioContext.destination);
-          
-          oscillator.start();
-          
-          // Stop the tone after 1 second
-          setTimeout(() => {
-            oscillator.stop();
-            oscillator.disconnect();
-            gainNode.disconnect();
-          }, 1000);
-          
-          console.log("Playing dial tone as audio feedback");
+
+      // Monitor volume to help debug audio issues
+      call.on('volume', (inputVolume: number, outputVolume: number) => {
+        // Log occasionally to avoid flooding console
+        if (Math.random() < 0.1) { // Log 10% of volume events
+          console.log(`Audio levels - Input: ${(inputVolume * 100).toFixed(0)}%, Output: ${(outputVolume * 100).toFixed(0)}%`);
         }
-      } catch (audioError) {
-        console.error("AudioContext initialization failed:", audioError);
-      }
+      });
+
+      // Listen for reconnecting/reconnected events
+      call.on('reconnecting', (twilioError: any) => {
+        console.warn("Call reconnecting:", twilioError);
+        toast({
+          title: "Reconnecting",
+          description: "Call connection interrupted, attempting to reconnect...",
+        });
+      });
+
+      call.on('reconnected', () => {
+        console.log("Call reconnected successfully");
+        toast({
+          title: "Reconnected",
+          description: "Call connection restored",
+        });
+      });
+
+      // Log when call is ringing
+      call.on('ringing', (hasEarlyMedia: boolean) => {
+        console.log("Call is ringing, hasEarlyMedia:", hasEarlyMedia);
+        if (hasEarlyMedia) {
+          console.log("Early media available - you should hear ringing");
+        }
+      });
+      
+      // Note: Removed simulated dial tone - using actual Twilio early media/ringing instead
+      console.log("Call initiated, waiting for connection...");
       
     } catch (error) {
       console.error("Error making call:", error);

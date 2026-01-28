@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
+import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -18,6 +19,9 @@ import TermsOfService from "./pages/TermsOfService";
 import Menu from "./pages/Menu";
 import Blog from "./pages/Blog";
 import BlogArticle from "./pages/BlogArticle";
+import Orders from "./pages/Orders";
+import OrderTracking from "./pages/OrderTracking";
+import AutomatedCallsPage from "./pages/AutomatedCallsPage";
 
 const queryClient = new QueryClient();
 
@@ -25,26 +29,31 @@ const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <CartProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter basename="/">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/restaurants" element={<Restaurants />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/how-it-works" element={<HowItWorks />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<TermsOfService />} />
-              <Route path="/menu" element={<Menu />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:id" element={<BlogArticle />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter basename="/">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/restaurants" element={<Restaurants />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/how-it-works" element={<HowItWorks />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/menu" element={<Menu />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:id" element={<BlogArticle />} />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/orders/:id" element={<OrderTracking />} />
+                <Route path="/automated-calls" element={<AutomatedCallsPage />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </CartProvider>
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   </HelmetProvider>
