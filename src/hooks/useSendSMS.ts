@@ -45,11 +45,8 @@ export const useSendSMS = ({ phoneNumber }: UseSendSMSProps) => {
       // Format phone number before sending
       const formattedPhone = formatPhoneNumber(phoneNumber);
       
-      // Get the SMS endpoint URL - env variable takes priority over localStorage
-      const envSmsUrl = import.meta.env.VITE_NGROK_SMS_URL;
-      const smsEndpoint = envSmsUrl && envSmsUrl.length > 0
-                          ? envSmsUrl
-                          : (localStorage.getItem('twilioNgrokSmsUrl') || '/api/send-sms');
+      // Always use local backend via Vite proxy
+      const smsEndpoint = '/api/send-sms';
       
       console.log("Using SMS endpoint:", smsEndpoint);
       

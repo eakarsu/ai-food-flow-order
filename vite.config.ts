@@ -14,11 +14,16 @@ export default defineConfig(({ mode }) => { // Add ({ mode })
   return {
     plugins: [
       react(),
-      mode === 'development' && componentTagger(),
-    ].filter(Boolean),
+    ],
     server: {
       host: "::",
-      port: 8080
+      port: 3000,
+      proxy: {
+        '/api': {
+          target: 'http://localhost:3001',
+          changeOrigin: true,
+        },
+      },
     },
     resolve: {
       alias: {
@@ -41,7 +46,7 @@ export default defineConfig(({ mode }) => { // Add ({ mode })
         ] : []
       }
     },
-    base: './'
+    base: '/'
     // Removed custom define block - Vite automatically exposes VITE_* env variables
   };
 });

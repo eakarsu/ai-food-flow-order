@@ -6,6 +6,7 @@ export interface AuthRequest extends Request {
   user?: {
     id: string;
     email: string;
+    role: string;
   };
 }
 
@@ -29,7 +30,7 @@ export const authenticateToken = async (
 
     // Verify user still exists and is active
     const result = await query(
-      'SELECT id, email, is_active FROM users WHERE id = $1',
+      'SELECT id, email, is_active, role FROM users WHERE id = $1',
       [decoded.userId]
     );
 
@@ -40,6 +41,7 @@ export const authenticateToken = async (
     req.user = {
       id: decoded.userId,
       email: decoded.email,
+      role: result.rows[0].role || 'viewer',
     };
 
     next();
@@ -72,6 +74,7 @@ export const optionalAuth = async (
     req.user = {
       id: decoded.userId,
       email: decoded.email,
+      role: 'viewer',
     };
   } catch (error) {
     // Token invalid but continue without auth

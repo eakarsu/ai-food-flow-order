@@ -23,6 +23,21 @@ import Orders from "./pages/Orders";
 import OrderTracking from "./pages/OrderTracking";
 import AutomatedCallsPage from "./pages/AutomatedCallsPage";
 
+// Admin Pages
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminLogin from "./pages/admin/Login";
+import InventoryList from "./pages/inventory/InventoryList";
+import InventoryDetail from "./pages/inventory/InventoryDetail";
+import StaffList from "./pages/staff/StaffList";
+import StaffDetail from "./pages/staff/StaffDetail";
+import ScheduleList from "./pages/staff/ScheduleList";
+import ScheduleDetail from "./pages/staff/ScheduleDetail";
+import ReviewsList from "./pages/reviews/ReviewsList";
+import ReviewDetail from "./pages/reviews/ReviewDetail";
+import WaitTimePage from "./pages/wait-time/WaitTimePage";
+import UpsellPage from "./pages/upsell/UpsellPage";
+import { ErrorBoundary } from "./components/shared/ErrorBoundary";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -49,6 +64,21 @@ const App = () => (
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/orders/:id" element={<OrderTracking />} />
                 <Route path="/automated-calls" element={<AutomatedCallsPage />} />
+
+                {/* Admin Routes */}
+                <Route path="/login" element={<AdminLogin />} />
+                <Route path="/admin/dashboard" element={<ErrorBoundary><AdminDashboard /></ErrorBoundary>} />
+                <Route path="/admin/inventory" element={<ErrorBoundary><InventoryList /></ErrorBoundary>} />
+                <Route path="/admin/inventory/:id" element={<ErrorBoundary><InventoryDetail /></ErrorBoundary>} />
+                <Route path="/admin/staff" element={<ErrorBoundary><StaffList /></ErrorBoundary>} />
+                <Route path="/admin/staff/:id" element={<ErrorBoundary><StaffDetail /></ErrorBoundary>} />
+                <Route path="/admin/schedules" element={<ErrorBoundary><ScheduleList /></ErrorBoundary>} />
+                <Route path="/admin/schedules/:id" element={<ErrorBoundary><ScheduleDetail /></ErrorBoundary>} />
+                <Route path="/admin/reviews" element={<ErrorBoundary><ReviewsList /></ErrorBoundary>} />
+                <Route path="/admin/reviews/:id" element={<ErrorBoundary><ReviewDetail /></ErrorBoundary>} />
+                <Route path="/admin/wait-time" element={<ErrorBoundary><WaitTimePage /></ErrorBoundary>} />
+                <Route path="/admin/upsell" element={<ErrorBoundary><UpsellPage /></ErrorBoundary>} />
+
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

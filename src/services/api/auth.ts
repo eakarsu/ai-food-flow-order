@@ -9,6 +9,7 @@ export interface User {
   avatarUrl?: string;
   isVerified?: boolean;
   createdAt?: string;
+  role?: 'admin' | 'manager' | 'viewer';
 }
 
 export interface Address {

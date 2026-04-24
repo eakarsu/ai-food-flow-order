@@ -21,3 +21,9 @@ export * from './delivery';
 
 // Notifications API
 export * from './notifications';
+
+// AI Features API
+export * from './inventory';
+export * from './staff';
+export * from './reviews';
+export * from './ai';

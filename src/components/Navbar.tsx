@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingCart, Menu, X, User, LogIn, Package, Phone } from 'lucide-react';
+import { ShoppingCart, Menu, X, User, LogIn, Package, Phone, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
@@ -99,6 +99,20 @@ const Navbar = () => {
           <div className="flex items-center gap-2">
             {isAuthenticated ? (
               <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/admin/dashboard')}
+                  className={`rounded-xl font-medium transition-all duration-200 ${
+                    isScrolled
+                      ? 'text-purple-600 hover:text-purple-700 hover:bg-purple-50'
+                      : 'text-white/90 hover:text-white hover:bg-white/10'
+                  }`}
+                  title="AI Dashboard"
+                >
+                  <Sparkles size={18} className="mr-1" />
+                  <span className="hidden sm:inline">AI Dashboard</span>
+                </Button>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -209,6 +223,13 @@ const Navbar = () => {
               {isAuthenticated && (
                 <>
                   <hr className="my-2 border-food-gray-200" />
+                  <button
+                    onClick={() => handleNavigation('/admin/dashboard')}
+                    className="w-full text-left px-4 py-3 rounded-xl font-medium text-purple-600 hover:bg-purple-50 flex items-center gap-2"
+                  >
+                    <Sparkles size={18} />
+                    AI Dashboard
+                  </button>
                   <button
                     onClick={() => handleNavigation('/orders')}
                     className="w-full text-left px-4 py-3 rounded-xl font-medium text-food-gray-700 hover:bg-food-gray-100 flex items-center gap-2"

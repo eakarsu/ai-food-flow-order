@@ -178,8 +178,8 @@ export function AuthModal({ isOpen, onClose, defaultTab = 'login' }: AuthModalPr
                 variant="outline"
                 className="w-full mt-2 text-sm"
                 onClick={() => {
-                  loginForm.setValue('email', 'admin@orderlybite.com');
-                  loginForm.setValue('password', 'Admin1234');
+                  loginForm.setValue('email', 'demo@orderlybite.com');
+                  loginForm.setValue('password', 'Demo123!');
                 }}
               >
                 <Zap className="mr-2 h-4 w-4" />

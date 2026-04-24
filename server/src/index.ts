@@ -1,12 +1,11 @@
+// Load environment variables FIRST - before any other imports
+import './env.js';
+
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import dotenv from 'dotenv';
-
-// Load environment variables
-dotenv.config();
 
 // Import routes
 import authRoutes from './routes/auth.js';
@@ -20,9 +19,17 @@ import deliveryRoutes from './routes/delivery.js';
 import notificationRoutes from './routes/notifications.js';
 import twilioRoutes from './routes/twilio.js';
 import automatedCallsRoutes from './routes/automatedCalls.js';
+import inventoryRoutes from './routes/inventory.js';
+import staffRoutes from './routes/staff.js';
+import reviewRoutes from './routes/reviews.js';
+import aiRoutes from './routes/ai.js';
+import seedRoutes from './routes/seed.js';
 
 // Import socket handler
 import { setupSocketHandlers } from './services/socketService.js';
+
+// Import rate limiters
+import { apiLimiter, seedLimiter, aiLimiter } from './middleware/rateLimit.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -30,7 +37,7 @@ const httpServer = createServer(app);
 // Socket.io setup for real-time delivery tracking
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:8080',
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -42,7 +49,7 @@ app.set('io', io);
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:8080',
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true,
 }));
 app.use(express.json());
@@ -69,6 +76,13 @@ app.use('/api', twilioRoutes);
 
 // Automated calls routes
 app.use('/api/automated-calls', automatedCallsRoutes);
+
+// AI Feature routes (with rate limiting)
+app.use('/api/inventory', apiLimiter, inventoryRoutes);
+app.use('/api/staff', apiLimiter, staffRoutes);
+app.use('/api/reviews', apiLimiter, reviewRoutes);
+app.use('/api/ai', aiLimiter, aiRoutes);
+app.use('/api/seed', seedLimiter, seedRoutes);
 
 // Twilio routes (without /api prefix - for TwiML App callbacks)
 app.use('/', twilioRoutes);

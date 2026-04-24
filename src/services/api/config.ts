@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 interface RequestOptions extends RequestInit {
   skipAuth?: boolean;
@@ -66,10 +66,14 @@ export const apiRequest = async <T>(
     (headers as Record<string, string>)['Authorization'] = `Bearer ${accessToken}`;
   }
 
+  console.log(`[API] ${fetchOptions.method || 'GET'} ${API_BASE_URL}${endpoint} | auth: ${!!accessToken}`);
+
   let response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...fetchOptions,
     headers,
   });
+
+  console.log(`[API] Response: ${response.status} ${response.statusText}`);
 
   // Handle token expiration
   if (response.status === 401 && !skipAuth && refreshToken) {

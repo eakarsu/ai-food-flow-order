@@ -138,14 +138,9 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
     try {
       setIsConnecting(true);
       
-      // Get the voice endpoint URL from environment variable or from localStorage
-      const baseEndpoint = import.meta.env.VITE_NGROK_VOICE_URL ||
-                          localStorage.getItem('twilioNgrokVoiceUrl') ||
-                          'http://localhost:3001/api/voice';
-
-      // Get token URL from environment variable or use default constructed from baseEndpoint
-      const tokenUrl = import.meta.env.VITE_TOKEN_URL ||
-                      'http://localhost:3001/api/twilio-token';
+      // Always use local backend via Vite proxy
+      const baseEndpoint = '/api/voice';
+      const tokenUrl = '/api/twilio-token';
       
       const voiceEndpoint = `${baseEndpoint}`;
       
@@ -216,22 +211,12 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
         deviceRef.current = null;
       }
       
-      // Get available audio devices
-      const { inputDevice, outputDevice } = await getAudioDevices();
-      console.log("Using audio devices - Input:", inputDevice, "Output:", outputDevice);
-
-      // Create device with audio device settings
-      const deviceOptions: any = {
-        logLevel: 1, // Enable logging for debugging
+      // Create device - let Twilio use default audio devices
+      const device = new Device(token, {
+        logLevel: 1,
         codecPreferences: ['opus', 'pcmu'] as any,
-      };
-
-      // If we have a specific input device, set it
-      if (inputDevice) {
-        deviceOptions.edge = 'ashburn'; // Use closest edge location
-      }
-
-      const device = new Device(token, deviceOptions);
+        edge: 'ashburn',
+      });
 
       // Listen for device events
       device.on('registered', () => {
@@ -250,30 +235,6 @@ export const useTwilioDevice = ({ open, phoneNumber }: UseTwilioDeviceProps) => 
           variant: "destructive",
         });
       });
-
-      // Set audio devices before registering
-      if (inputDevice || outputDevice) {
-        try {
-          const audioHelper = device.audio;
-          if (audioHelper) {
-            console.log("Setting up audio devices...");
-
-            // Set speaker device if available
-            if (outputDevice && typeof audioHelper.speakerDevices?.set === 'function') {
-              await audioHelper.speakerDevices.set(outputDevice);
-              console.log("Speaker device set:", outputDevice);
-            }
-
-            // Set ringtone device if available
-            if (outputDevice && typeof audioHelper.ringtoneDevices?.set === 'function') {
-              await audioHelper.ringtoneDevices.set(outputDevice);
-              console.log("Ringtone device set:", outputDevice);
-            }
-          }
-        } catch (audioSetupError) {
-          console.warn("Could not set audio devices, using defaults:", audioSetupError);
-        }
-      }
 
       // Register the device
       await device.register();

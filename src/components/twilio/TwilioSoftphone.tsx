@@ -10,7 +10,7 @@ import {
 import { useTwilioDevice } from '@/hooks/useTwilioDevice';
 import CallInitiator from './CallInitiator';
 import ActiveCall from './ActiveCall';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -60,16 +60,20 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
   } = useTwilioDevice({ open, phoneNumber: twilioNumber });
 
   // Automatically attempt to make the call when the dialog is opened
+  const hasInitiated = useRef(false);
   useEffect(() => {
-    if (open && !isConnected && !isConnecting && audioPermissionGranted !== false) {
+    if (open && !isConnected && !isConnecting && audioPermissionGranted !== false && !hasInitiated.current) {
+      hasInitiated.current = true;
       console.log("Dialog opened, auto-initiating call to:", twilioNumber);
-      // Small timeout to ensure UI is ready
       const timer = setTimeout(() => {
         makeCall();
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [open, twilioNumber, isConnected, isConnecting, makeCall, audioPermissionGranted]);
+    if (!open) {
+      hasInitiated.current = false;
+    }
+  }, [open, audioPermissionGranted]);
 
   // Clean up when dialog closes
   useEffect(() => {
@@ -81,7 +85,7 @@ const TwilioSoftphone = ({ phoneNumber, open, onOpenChange }: TwilioSoftphonePro
   // Check if token endpoint is available
   useEffect(() => {
     if (open) {
-      const tokenEndpoint = import.meta.env.VITE_TOKEN_URL || 'http://localhost:3001/api/twilio-token';
+      const tokenEndpoint = '/api/twilio-token';
 
       // Check endpoint with actual POST request
       fetch(tokenEndpoint, {

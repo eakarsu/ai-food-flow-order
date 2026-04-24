@@ -37,16 +37,13 @@ router.post('/twilio-token', async (req, res) => {
       console.warn('TWILIO_TWIML_APP_SID not set - outbound calls will not work');
     }
 
-    // API Keys are REQUIRED for Twilio Voice SDK Access Tokens
+    // Use dedicated API Key/Secret for Voice SDK tokens
     const apiKey = process.env.TWILIO_API_KEY;
     const apiSecret = process.env.TWILIO_API_SECRET;
 
     if (!apiKey || !apiSecret) {
-      console.error('TWILIO_API_KEY and TWILIO_API_SECRET are required for Voice SDK');
-      console.error('Create API Keys at: https://console.twilio.com/us1/account/keys-credentials/api-keys');
       return res.status(500).json({
-        error: 'Voice SDK requires API Keys. Please set TWILIO_API_KEY and TWILIO_API_SECRET in .env',
-        help: 'Create API Keys at: https://console.twilio.com/us1/account/keys-credentials/api-keys'
+        error: 'TWILIO_API_KEY and TWILIO_API_SECRET are required for Voice SDK',
       });
     }
 
