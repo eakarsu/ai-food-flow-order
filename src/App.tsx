@@ -36,6 +36,17 @@ import ReviewsList from "./pages/reviews/ReviewsList";
 import ReviewDetail from "./pages/reviews/ReviewDetail";
 import WaitTimePage from "./pages/wait-time/WaitTimePage";
 import UpsellPage from "./pages/upsell/UpsellPage";
+
+// New AI Feature Pages (proposed in audit)
+import DynamicPricingPage from "./pages/dynamic-pricing/DynamicPricingPage";
+import PredictiveInventoryPage from "./pages/predictive-inventory/PredictiveInventoryPage";
+import PersonalizedRecsPage from "./pages/personalized-recs/PersonalizedRecsPage";
+import StaffOptimizerPage from "./pages/staff-optimizer/StaffOptimizerPage";
+import SustainabilityPage from "./pages/sustainability/SustainabilityPage";
+import VoiceOrderPage from "./pages/voice-order/VoiceOrderPage";
+import AffiliateNetworkPage from "./pages/affiliate-network/AffiliateNetworkPage";
+import GroupOrderPage from "./pages/group-order/GroupOrderPage";
+
 import { ErrorBoundary } from "./components/shared/ErrorBoundary";
 
 const queryClient = new QueryClient();
@@ -78,6 +89,16 @@ const App = () => (
                 <Route path="/admin/reviews/:id" element={<ErrorBoundary><ReviewDetail /></ErrorBoundary>} />
                 <Route path="/admin/wait-time" element={<ErrorBoundary><WaitTimePage /></ErrorBoundary>} />
                 <Route path="/admin/upsell" element={<ErrorBoundary><UpsellPage /></ErrorBoundary>} />
+
+                {/* New AI Feature Routes */}
+                <Route path="/admin/dynamic-pricing" element={<ErrorBoundary><DynamicPricingPage /></ErrorBoundary>} />
+                <Route path="/admin/predictive-inventory" element={<ErrorBoundary><PredictiveInventoryPage /></ErrorBoundary>} />
+                <Route path="/admin/staff-optimizer" element={<ErrorBoundary><StaffOptimizerPage /></ErrorBoundary>} />
+                <Route path="/admin/affiliate-network" element={<ErrorBoundary><AffiliateNetworkPage /></ErrorBoundary>} />
+                <Route path="/recommendations" element={<ErrorBoundary><PersonalizedRecsPage /></ErrorBoundary>} />
+                <Route path="/sustainability" element={<ErrorBoundary><SustainabilityPage /></ErrorBoundary>} />
+                <Route path="/voice-order" element={<ErrorBoundary><VoiceOrderPage /></ErrorBoundary>} />
+                <Route path="/group-order" element={<ErrorBoundary><GroupOrderPage /></ErrorBoundary>} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>

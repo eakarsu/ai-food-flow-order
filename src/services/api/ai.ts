@@ -169,3 +169,35 @@ export const bulkDeleteUpsellRecommendations = async (
     body: JSON.stringify({ ids }),
   });
 };
+
+// Apply pass 5 — additive backlog client helpers.
+// All hit OPENROUTER_API_KEY-gated server endpoints (return 503 if unset).
+export const aiDemandForecast = (data: { restaurantId?: string; hours?: number }) =>
+  apiRequest('/ai/demand-forecast', { method: 'POST', body: JSON.stringify(data) });
+
+export const aiRouteOptimization = (data: {
+  driverId?: string;
+  stops: Array<{ id: string; lat: number; lng: number; address?: string; dueBy?: string }>;
+}) =>
+  apiRequest('/ai/route-optimization', { method: 'POST', body: JSON.stringify(data) });
+
+export const aiMenuRecommendationCold = (data: { context?: Record<string, unknown> }) =>
+  apiRequest('/ai/menu-recommendation-cold', { method: 'POST', body: JSON.stringify(data) });
+
+export const aiFraudDetection = (data: { userId?: string; paymentRef?: string }) =>
+  apiRequest('/ai/fraud-detection', { method: 'POST', body: JSON.stringify(data) });
+
+export const aiChurnPrediction = (data: { userId?: string }) =>
+  apiRequest('/ai/churn-prediction', { method: 'POST', body: JSON.stringify(data) });
+
+export const aiRestaurantHealthScore = (data: { restaurantId: string }) =>
+  apiRequest('/ai/restaurant-health-score', { method: 'POST', body: JSON.stringify(data) });
+
+export const aiLoyaltyStatus = () => apiRequest('/ai/loyalty/status');
+
+export const aiDynamicSurgePolicy = (data: {
+  restaurantId?: string;
+  currentQueueSize?: number;
+  timeOfDay?: string;
+}) =>
+  apiRequest('/ai/dynamic-surge-policy', { method: 'POST', body: JSON.stringify(data) });

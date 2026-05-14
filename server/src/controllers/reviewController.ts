@@ -64,7 +64,7 @@ export const getReviews = async (req: AuthRequest, res: Response) => {
       updatedAt: row.updated_at,
     }));
 
-    // Get total count
+    // Get total count with all active filters
     let countSql = `SELECT COUNT(*) FROM reviews r WHERE 1=1`;
     const countParams: any[] = [];
     let countIndex = 1;
@@ -73,11 +73,33 @@ export const getReviews = async (req: AuthRequest, res: Response) => {
       countSql += ` AND r.restaurant_id = $${countIndex++}`;
       countParams.push(restaurantId);
     }
+    if (rating) {
+      countSql += ` AND r.rating = $${countIndex++}`;
+      countParams.push(parseInt(rating as string));
+    }
+    if (sentiment) {
+      countSql += ` AND r.sentiment = $${countIndex++}`;
+      countParams.push(sentiment);
+    }
+    if (hasResponse === 'true') {
+      countSql += ` AND r.ai_response IS NOT NULL`;
+    } else if (hasResponse === 'false') {
+      countSql += ` AND r.ai_response IS NULL`;
+    }
 
     const countResult = await query(countSql, countParams);
     const total = parseInt(countResult.rows[0].count);
 
-    res.json({ reviews, total });
+    res.json({
+      reviews,
+      total,
+      pagination: {
+        page: Math.floor(parseInt(offset as string) / parseInt(limit as string)) + 1,
+        limit: parseInt(limit as string),
+        total,
+        totalPages: Math.ceil(total / parseInt(limit as string)),
+      },
+    });
   } catch (error) {
     console.error('Get reviews error:', error);
     res.status(500).json({ error: 'Failed to fetch reviews' });
@@ -577,6 +599,17 @@ export const analyzeAllReviews = async (req: AuthRequest, res: Response) => {
     };
 
     const analysis = await analyzeReviews({ reviews, stats });
+
+    // Persist to ai_results
+    try {
+      const { query: dbQuery } = await import('../config/database.js');
+      await dbQuery(
+        `INSERT INTO ai_results (endpoint, input_data, output_data, model_used, created_by)
+         VALUES ($1, $2, $3, $4, $5)`,
+        ['reviews-analyze', JSON.stringify({ reviewCount: reviews.length }),
+         JSON.stringify(analysis), process.env.OPENROUTER_MODEL || 'anthropic/claude-3-5-sonnet-20241022', req.user?.id || null]
+      );
+    } catch { /* ignore */ }
 
     res.json({ analysis });
   } catch (error) {

@@ -100,6 +100,23 @@ export const getMenuItems = async (req: Request, res: Response) => {
       params
     );
 
+    // Get total count for pagination
+    let countSql = 'SELECT COUNT(*) FROM menu_items mi WHERE mi.is_available = TRUE';
+    const countParams: any[] = [];
+    let countIndex = 0;
+
+    if (categoryId) {
+      countParams.push(categoryId);
+      countSql += ` AND mi.category_id = $${++countIndex}`;
+    }
+    if (restaurantId) {
+      countParams.push(restaurantId);
+      countSql += ` AND mi.restaurant_id = $${++countIndex}`;
+    }
+
+    const countResult = await query(countSql, countParams);
+    const total = parseInt(countResult.rows[0].count);
+
     res.json({
       items: result.rows.map(item => ({
         id: item.id,
@@ -121,6 +138,12 @@ export const getMenuItems = async (req: Request, res: Response) => {
         prepTime: item.prep_time,
         customizationRules: item.customization_rules,
       })),
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+        total,
+        totalPages: Math.ceil(total / Number(limit)),
+      },
     });
   } catch (error) {
     console.error('Get menu items error:', error);
@@ -234,6 +257,15 @@ export const searchMenuItems = async (req: Request, res: Response) => {
       [searchTerm, Number(limit), offset]
     );
 
+    const countResult = await query(
+      `SELECT COUNT(*) FROM menu_items mi
+       LEFT JOIN menu_categories mc ON mi.category_id = mc.id
+       WHERE mi.is_available = TRUE
+         AND (mi.name ILIKE $1 OR mi.description ILIKE $1 OR mc.name ILIKE $1)`,
+      [searchTerm]
+    );
+    const total = parseInt(countResult.rows[0].count);
+
     res.json({
       items: result.rows.map(item => ({
         id: item.id,
@@ -255,6 +287,12 @@ export const searchMenuItems = async (req: Request, res: Response) => {
         prepTime: item.prep_time,
         customizationRules: item.customization_rules,
       })),
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+        total,
+        totalPages: Math.ceil(total / Number(limit)),
+      },
     });
   } catch (error) {
     console.error('Search menu items error:', error);

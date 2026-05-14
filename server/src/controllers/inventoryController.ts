@@ -7,7 +7,8 @@ import { analyzeInventory } from '../services/openRouterService.js';
 // Get all inventory items
 export const getInventoryItems = async (req: AuthRequest, res: Response) => {
   try {
-    const { restaurantId, category, lowStock } = req.query;
+    const { restaurantId, category, lowStock, page = 1, limit = 50 } = req.query;
+    const offset = (Number(page) - 1) * Number(limit);
 
     let sql = `
       SELECT i.*,
@@ -36,7 +37,22 @@ export const getInventoryItems = async (req: AuthRequest, res: Response) => {
 
     sql += ` ORDER BY i.name`;
 
-    const result = await query(sql, params);
+    // Add pagination to query
+    const paginatedSql = sql + ` LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
+    const paginatedParams = [...params, Number(limit), offset];
+    const result = await query(paginatedSql, paginatedParams);
+
+    // Count total
+    const countSql = `SELECT COUNT(*) FROM inventory_items i WHERE 1=1${
+      params.slice(0, params.length).map((_, i) => {
+        if (restaurantId && i === 0) return ` AND i.restaurant_id = $1`;
+        if (category && restaurantId && i === 1) return ` AND i.category = $2`;
+        if (category && !restaurantId && i === 0) return ` AND i.category = $1`;
+        return '';
+      }).join('')
+    }${lowStock === 'true' ? ' AND i.current_quantity <= i.reorder_point' : ''}`;
+    const countResult = await query(countSql, params);
+    const total = parseInt(countResult.rows[0].count);
 
     const items = result.rows.map(row => ({
       id: row.id,
@@ -62,7 +78,15 @@ export const getInventoryItems = async (req: AuthRequest, res: Response) => {
       updatedAt: row.updated_at,
     }));
 
-    res.json({ items });
+    res.json({
+      items,
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+        total,
+        totalPages: Math.ceil(total / Number(limit)),
+      },
+    });
   } catch (error) {
     console.error('Get inventory items error:', error);
     res.status(500).json({ error: 'Failed to fetch inventory items' });
@@ -393,10 +417,74 @@ export const bulkUpdateInventoryItems = async (req: AuthRequest, res: Response) 
   }
 };
 
+// Record inventory restock (add stock back)
+export const recordRestock = async (req: AuthRequest, res: Response) => {
+  const client = await getClient();
+
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { inventoryItemId, quantityAdded, unitCost, supplier, invoiceNumber, notes } = req.body;
+
+    await client.query('BEGIN');
+
+    // Record the restock event
+    const restockResult = await client.query(
+      `INSERT INTO inventory_restocks
+       (inventory_item_id, quantity_added, unit_cost, supplier, invoice_number, notes, restocked_by)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       RETURNING *`,
+      [inventoryItemId, quantityAdded, unitCost || null, supplier || null, invoiceNumber || null, notes || null, req.user?.id || null]
+    );
+
+    // Update current quantity and last_restocked_at
+    await client.query(
+      `UPDATE inventory_items
+       SET current_quantity = current_quantity + $1, last_restocked_at = NOW(), updated_at = NOW()
+       WHERE id = $2`,
+      [quantityAdded, inventoryItemId]
+    );
+
+    await client.query('COMMIT');
+
+    res.status(201).json({
+      restock: {
+        id: restockResult.rows[0].id,
+        inventoryItemId,
+        quantityAdded: parseFloat(quantityAdded),
+        unitCost: unitCost ? parseFloat(unitCost) : null,
+        supplier: supplier || null,
+        invoiceNumber: invoiceNumber || null,
+        notes: notes || null,
+        restockedAt: restockResult.rows[0].restocked_at,
+      },
+    });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Record restock error:', error);
+    res.status(500).json({ error: 'Failed to record restock' });
+  } finally {
+    client.release();
+  }
+};
+
 // AI analyze inventory
+const UUID_REGEX_INV = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function resolveInventoryRestaurantId(rawId: string): Promise<string> {
+  if (UUID_REGEX_INV.test(rawId)) return rawId;
+  const result = await query('SELECT id FROM restaurants LIMIT 1');
+  if (result.rows.length === 0) throw new Error('No restaurant found');
+  return result.rows[0].id;
+}
+
 export const analyzeInventoryAI = async (req: AuthRequest, res: Response) => {
   try {
-    const { restaurantId } = req.body;
+    const { restaurantId: rawRestaurantId } = req.body;
+    const restaurantId = await resolveInventoryRestaurantId(rawRestaurantId);
 
     // Get inventory items with usage data
     const result = await query(
@@ -407,7 +495,7 @@ export const analyzeInventoryAI = async (req: AuthRequest, res: Response) => {
        FROM inventory_items i
        WHERE i.restaurant_id = $1 AND i.is_active = true
        ORDER BY i.current_quantity / NULLIF(i.reorder_point, 0)`,
-      [restaurantId]
+      [restaurantId as string]
     );
 
     const items = result.rows.map(row => ({
@@ -420,6 +508,16 @@ export const analyzeInventoryAI = async (req: AuthRequest, res: Response) => {
     }));
 
     const analysis = await analyzeInventory({ items });
+
+    // Persist to ai_results
+    try {
+      await query(
+        `INSERT INTO ai_results (endpoint, input_data, output_data, model_used, created_by)
+         VALUES ($1, $2, $3, $4, $5)`,
+        ['inventory-analyze', JSON.stringify({ restaurantId, itemCount: items.length }),
+         JSON.stringify(analysis), process.env.OPENROUTER_MODEL || 'anthropic/claude-3-5-sonnet-20241022', req.user?.id || null]
+      );
+    } catch { /* ignore */ }
 
     res.json({ analysis });
   } catch (error) {

@@ -2,7 +2,20 @@ import fetch from 'node-fetch';
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const getApiKey = () => process.env.OPENROUTER_API_KEY || 'sk-or-placeholder';
-const getModel = () => process.env.OPENROUTER_MODEL || 'anthropic/claude-haiku-4.5';
+const getModel = () => process.env.OPENROUTER_MODEL || 'anthropic/claude-3-5-sonnet-20241022';
+
+// Robust JSON parser that handles markdown code fences and surrounding text
+export function parseAIJson(text: string): any {
+  if (!text) return null;
+  try { return JSON.parse(text); } catch (e) {}
+  const stripped = text.replace(/```(?:json)?\n?/g, '').replace(/```/g, '').trim();
+  try { return JSON.parse(stripped); } catch (e) {}
+  const start = text.indexOf('{'); const end = text.lastIndexOf('}');
+  if (start !== -1 && end !== -1) { try { return JSON.parse(text.slice(start, end + 1)); } catch (e) {} }
+  const arrStart = text.indexOf('['); const arrEnd = text.lastIndexOf(']');
+  if (arrStart !== -1 && arrEnd !== -1) { try { return JSON.parse(text.slice(arrStart, arrEnd + 1)); } catch (e) {} }
+  return null;
+}
 
 interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
@@ -124,9 +137,9 @@ Respond with ONLY a JSON object (no markdown, no code fences):
   ], { temperature: 0.3 });
 
   try {
-    const cleaned = response.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const parsed = JSON.parse(cleaned);
-    return parsed as WaitTimePredictionResult;
+    const parsed = parseAIJson(response);
+    if (parsed) return parsed as WaitTimePredictionResult;
+    throw new Error('null result');
   } catch {
     console.error('Failed to parse wait time AI response:', response.substring(0, 300));
     const baseTime = totalItems * 4;
@@ -205,9 +218,9 @@ UPSELL STRATEGY:
   ], { temperature: 0.5 });
 
   try {
-    const cleaned = response.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const parsed = JSON.parse(cleaned);
-    return parsed as UpsellResult;
+    const parsed = parseAIJson(response);
+    if (parsed) return parsed as UpsellResult;
+    throw new Error('null result');
   } catch {
     console.error('Failed to parse upsell AI response:', response.substring(0, 300));
     const availableItems = input.menuItems.filter(
@@ -281,10 +294,9 @@ IMPORTANT RULES:
   ], { temperature: 0.4 });
 
   try {
-    // Strip markdown code fences if present
-    const cleaned = response.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const parsed = JSON.parse(cleaned);
-    return parsed as InventoryAnalysisResult;
+    const parsed = parseAIJson(response);
+    if (parsed) return parsed as InventoryAnalysisResult;
+    throw new Error('null result');
   } catch (parseError) {
     console.error('Failed to parse AI response:', response.substring(0, 300));
     // Fallback with detailed data-driven analysis
@@ -396,9 +408,9 @@ RULES:
   ], { temperature: 0.4 });
 
   try {
-    const cleaned = response.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const parsed = JSON.parse(cleaned);
-    return parsed as StaffAnalysisResult;
+    const parsed = parseAIJson(response);
+    if (parsed) return parsed as StaffAnalysisResult;
+    throw new Error('null result');
   } catch {
     console.error('Failed to parse staff analysis AI response:', response.substring(0, 300));
     return {
@@ -511,9 +523,9 @@ RULES:
   ], { temperature: 0.4 });
 
   try {
-    const cleaned = response.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const parsed = JSON.parse(cleaned);
-    return parsed as StaffScheduleResult;
+    const parsed = parseAIJson(response);
+    if (parsed) return parsed as StaffScheduleResult;
+    throw new Error('null result');
   } catch {
     console.error('Failed to parse staff schedule AI response:', response.substring(0, 300));
     const availableStaff = input.staff.filter(s => s.currentWeekHours < s.maxHoursPerWeek);
@@ -610,9 +622,9 @@ RULES:
   ], { temperature: 0.4 });
 
   try {
-    const cleaned = response.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const parsed = JSON.parse(cleaned);
-    return parsed as ReviewAnalysisResult;
+    const parsed = parseAIJson(response);
+    if (parsed) return parsed as ReviewAnalysisResult;
+    throw new Error('null result');
   } catch {
     console.error('Failed to parse review analysis AI response:', response.substring(0, 300));
     const positive = input.stats.sentimentDistribution.positive || 0;
@@ -689,9 +701,9 @@ GUIDELINES:
   ], { temperature: 0.7 });
 
   try {
-    const cleaned = response.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-    const parsed = JSON.parse(cleaned);
-    return parsed as ReviewResponseResult;
+    const parsed = parseAIJson(response);
+    if (parsed) return parsed as ReviewResponseResult;
+    throw new Error('null result');
   } catch {
     console.error('Failed to parse review response AI:', response.substring(0, 300));
     const isPositive = input.rating >= 4;

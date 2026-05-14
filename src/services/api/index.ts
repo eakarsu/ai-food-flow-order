@@ -27,3 +27,13 @@ export * from './inventory';
 export * from './staff';
 export * from './reviews';
 export * from './ai';
+
+// New AI Feature APIs (proposed in audit)
+export * from './dynamicPricing';
+export * from './predictiveInventory';
+export * from './personalizedRecs';
+export * from './staffOptimizer';
+export * from './sustainability';
+export * from './voiceOrder';
+export * from './socialDining';
+export * from './affiliateNetwork';

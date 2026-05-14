@@ -16,6 +16,12 @@ import {
   LogOut,
   Loader2,
   Database,
+  Zap,
+  Truck,
+  Network,
+  Leaf,
+  PhoneCall,
+  Heart,
 } from 'lucide-react';
 import { getInventoryItems } from '@/services/api/inventory';
 import { getStaffMembers } from '@/services/api/staff';
@@ -167,6 +173,78 @@ export default function AdminDashboard() {
       countLabel: 'recommendations',
       color: 'text-pink-600',
     },
+    {
+      title: 'Dynamic Pricing',
+      description: 'AI adjusts prices based on demand, queue, time-of-day, and inventory pressure',
+      icon: Zap,
+      route: '/admin/dynamic-pricing',
+      countLabel: 'live pricing',
+      color: 'text-purple-600',
+      badge: 'NEW',
+    },
+    {
+      title: 'Predictive Inventory',
+      description: 'ML forecasts ingredient demand and auto-recommends supplier reorders before stockouts',
+      icon: Truck,
+      route: '/admin/predictive-inventory',
+      countLabel: 'forecasts',
+      color: 'text-blue-700',
+      badge: 'NEW',
+    },
+    {
+      title: 'Staff Schedule Optimizer',
+      description: 'AI predicts demand patterns; suggests optimal staffing to balance service and labor cost',
+      icon: Calendar,
+      route: '/admin/staff-optimizer',
+      countLabel: 'optimized shifts',
+      color: 'text-emerald-600',
+      badge: 'NEW',
+    },
+    {
+      title: 'Affiliate Restaurant Network',
+      description: 'When overloaded, AI routes orders to partner restaurants with available capacity',
+      icon: Network,
+      route: '/admin/affiliate-network',
+      countLabel: 'partner locations',
+      color: 'text-amber-700',
+      badge: 'NEW',
+    },
+    {
+      title: 'Personalized Recommendations',
+      description: 'Customer-facing AI that suggests items based on history and dietary preferences',
+      icon: Heart,
+      route: '/recommendations',
+      countLabel: 'recs/user',
+      color: 'text-rose-600',
+      badge: 'NEW',
+    },
+    {
+      title: 'Sustainability Scoring',
+      description: 'Calculates carbon footprint per order; awards loyalty points for eco-friendly choices',
+      icon: Leaf,
+      route: '/sustainability',
+      countLabel: 'rated orders',
+      color: 'text-green-700',
+      badge: 'NEW',
+    },
+    {
+      title: 'Voice Ordering Assistant',
+      description: 'AI agent processes voice orders, confirms details, and places them hands-free',
+      icon: PhoneCall,
+      route: '/voice-order',
+      countLabel: 'voice orders',
+      color: 'text-indigo-700',
+      badge: 'NEW',
+    },
+    {
+      title: 'Group Order',
+      description: 'Order together with friends; split payments; AI suggests group-friendly items',
+      icon: Users,
+      route: '/group-order',
+      countLabel: 'group orders',
+      color: 'text-rose-700',
+      badge: 'NEW',
+    },
   ];
 
 
@@ -235,10 +313,15 @@ export default function AdminDashboard() {
                       <div className={`p-2 rounded-lg bg-gray-100 ${feature.color}`}>
                         <Icon className="h-5 w-5" />
                       </div>
-                      <Badge variant="secondary" className="text-xs">
-                        <Sparkles className="h-3 w-3 mr-1" />
-                        AI Powered
-                      </Badge>
+                      <div className="flex gap-1">
+                        {feature.badge && (
+                          <Badge className="text-xs bg-purple-600">{feature.badge}</Badge>
+                        )}
+                        <Badge variant="secondary" className="text-xs">
+                          <Sparkles className="h-3 w-3 mr-1" />
+                          AI Powered
+                        </Badge>
+                      </div>
                     </div>
                     <CardTitle className="text-lg mt-3">{feature.title}</CardTitle>
                     <CardDescription>{feature.description}</CardDescription>

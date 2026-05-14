@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingCart, Menu, X, User, LogIn, Package, Phone, Sparkles } from 'lucide-react';
+import { ShoppingCart, Menu, X, User, LogIn, Package, Phone, Sparkles, Heart, Leaf, Users, Mic } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
@@ -142,6 +142,58 @@ const Navbar = () => {
                 <Button
                   variant="ghost"
                   size="icon"
+                  onClick={() => navigate('/voice-order')}
+                  className={`rounded-xl transition-all duration-200 ${
+                    isScrolled
+                      ? 'text-food-gray-600 hover:text-food-primary hover:bg-food-gray-100'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+                  title="Voice Order"
+                >
+                  <Mic size={20} />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate('/recommendations')}
+                  className={`rounded-xl transition-all duration-200 ${
+                    isScrolled
+                      ? 'text-food-gray-600 hover:text-food-primary hover:bg-food-gray-100'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+                  title="For You"
+                >
+                  <Heart size={20} />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate('/group-order')}
+                  className={`rounded-xl transition-all duration-200 ${
+                    isScrolled
+                      ? 'text-food-gray-600 hover:text-food-primary hover:bg-food-gray-100'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+                  title="Group Order"
+                >
+                  <Users size={20} />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate('/sustainability')}
+                  className={`rounded-xl transition-all duration-200 ${
+                    isScrolled
+                      ? 'text-food-gray-600 hover:text-food-primary hover:bg-food-gray-100'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
+                  title="Sustainability"
+                >
+                  <Leaf size={20} />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => setIsProfileOpen(true)}
                   className={`rounded-xl transition-all duration-200 ${
                     isScrolled
@@ -243,6 +295,34 @@ const Navbar = () => {
                   >
                     <Phone size={18} />
                     Automated Calls
+                  </button>
+                  <button
+                    onClick={() => handleNavigation('/voice-order')}
+                    className="w-full text-left px-4 py-3 rounded-xl font-medium text-food-gray-700 hover:bg-food-gray-100 flex items-center gap-2"
+                  >
+                    <Mic size={18} />
+                    Voice Order
+                  </button>
+                  <button
+                    onClick={() => handleNavigation('/recommendations')}
+                    className="w-full text-left px-4 py-3 rounded-xl font-medium text-food-gray-700 hover:bg-food-gray-100 flex items-center gap-2"
+                  >
+                    <Heart size={18} />
+                    For You
+                  </button>
+                  <button
+                    onClick={() => handleNavigation('/group-order')}
+                    className="w-full text-left px-4 py-3 rounded-xl font-medium text-food-gray-700 hover:bg-food-gray-100 flex items-center gap-2"
+                  >
+                    <Users size={18} />
+                    Group Order
+                  </button>
+                  <button
+                    onClick={() => handleNavigation('/sustainability')}
+                    className="w-full text-left px-4 py-3 rounded-xl font-medium text-food-gray-700 hover:bg-food-gray-100 flex items-center gap-2"
+                  >
+                    <Leaf size={18} />
+                    Sustainability
                   </button>
                 </>
               )}

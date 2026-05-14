@@ -3,6 +3,7 @@ import { validationResult } from 'express-validator';
 import { query, getClient } from '../config/database.js';
 import { AuthRequest } from '../middleware/auth.js';
 import { sendOrderNotification } from '../services/notificationService.js';
+import { sendOrderConfirmation } from '../services/smsService.js';
 
 // Generate order number
 const generateOrderNumber = () => {
@@ -169,6 +170,19 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
     // Send notification (async, don't wait)
     sendOrderNotification(req.user!.id, order.id, 'order_created').catch(console.error);
 
+    // Send SMS order confirmation (async, don't wait)
+    const userResult = await query('SELECT phone FROM users WHERE id = $1', [req.user!.id]);
+    const userPhone = userResult.rows[0]?.phone;
+    if (userPhone) {
+      sendOrderConfirmation(userPhone, {
+        orderNumber: order.order_number,
+        restaurantName: restaurant.name,
+        totalAmount,
+        estimatedDeliveryTime: estimatedDelivery,
+        items: itemsResult.rows.map(i => ({ name: i.name, quantity: i.quantity })),
+      }).catch(console.error);
+    }
+
     res.status(201).json({
       message: 'Order created successfully',
       order: {
@@ -238,6 +252,19 @@ export const getOrders = async (req: AuthRequest, res: Response) => {
       }, {} as Record<string, number>);
     }
 
+    // Get total count for pagination
+    const countParams: any[] = [req.user!.id];
+    let countWhere = 'WHERE o.user_id = $1';
+    if (status) {
+      countWhere += ' AND o.status = $2';
+      countParams.push(status);
+    }
+    const countResult = await query(
+      `SELECT COUNT(*) FROM orders o ${countWhere}`,
+      countParams
+    );
+    const total = parseInt(countResult.rows[0].count);
+
     res.json({
       orders: result.rows.map(o => ({
         id: o.id,
@@ -257,6 +284,12 @@ export const getOrders = async (req: AuthRequest, res: Response) => {
         restaurantImage: o.restaurant_image,
         itemCount: itemCounts[o.id] || 0,
       })),
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+        total,
+        totalPages: Math.ceil(total / Number(limit)),
+      },
     });
   } catch (error) {
     console.error('Get orders error:', error);

@@ -10,6 +10,7 @@ import {
   bulkUpdateInventoryItems,
   analyzeInventoryAI,
   recordUsage,
+  recordRestock,
 } from '../controllers/inventoryController.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { requireRole } from '../middleware/rbac.js';
@@ -78,11 +79,25 @@ router.post('/bulk-update', requireRole('admin', 'manager'), bulkUpdateInventory
 // Delete inventory item
 router.delete('/:id', deleteInventoryItem);
 
-// AI analyze inventory
+// Record inventory restock (add stock)
+router.post(
+  '/restock',
+  [
+    body('inventoryItemId').isUUID(),
+    body('quantityAdded').isFloat({ min: 0.01 }),
+    body('unitCost').optional().isFloat({ min: 0 }),
+    body('supplier').optional().trim(),
+    body('invoiceNumber').optional().trim(),
+    body('notes').optional().trim(),
+  ],
+  recordRestock
+);
+
+// AI analyze inventory (resolve restaurantId if not UUID)
 router.post(
   '/analyze',
   [
-    body('restaurantId').isUUID(),
+    body('restaurantId').notEmpty(),
   ],
   analyzeInventoryAI
 );
