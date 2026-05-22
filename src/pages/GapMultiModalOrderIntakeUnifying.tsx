@@ -15,7 +15,7 @@ export default function MultiModalOrderIntakeUnifyingPage() {
     setResult(null);
     try {
       const token = (typeof localStorage !== 'undefined') ? localStorage.getItem('token') : null;
-      const res = await fetch('/api/cf-multi-modal-order-intake-unifying/run', {
+      const res = await fetch('/api/multimodal-intake/run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

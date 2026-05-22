@@ -49,6 +49,28 @@ import GroupOrderPage from "./pages/group-order/GroupOrderPage";
 
 import { ErrorBoundary } from "./components/shared/ErrorBoundary";
 
+import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
+import CodexOperationsFeature from './pages/CodexOperationsFeature';
+
+// Batch_00 audit Gap pages (backend gap_*/multimodal/kds/etc. routes)
+import GapAiDemandForecastingRestaurantTime from './pages/GapAiDemandForecastingRestaurantTime';
+import GapAiDriverRouteOptimizationTsp from './pages/GapAiDriverRouteOptimizationTsp';
+import GapAiMenuRecommendationEngineCold from './pages/GapAiMenuRecommendationEngineCold';
+import GapAiFraudDetectionPaymentAnomalies from './pages/GapAiFraudDetectionPaymentAnomalies';
+import GapAiChurnPrediction from './pages/GapAiChurnPrediction';
+import GapAiDynamicPricingEngine from './pages/GapAiDynamicPricingEngine';
+import GapDynamicSurgePricingDuringPeak from './pages/GapDynamicSurgePricingDuringPeak';
+import GapLoyaltyPointsTieredRewardsProgram from './pages/GapLoyaltyPointsTieredRewardsProgram';
+import GapLimitedAffiliateCommissionPayoutAutomation from './pages/GapLimitedAffiliateCommissionPayoutAutomation';
+import GapRestaurantHealthScoreFoodSafety from './pages/GapRestaurantHealthScoreFoodSafety';
+import GapKdsKitchenDisplayIntegration from './pages/GapKdsKitchenDisplayIntegration';
+import GapOutboundWebhooksPartners from './pages/GapOutboundWebhooksPartners';
+import GapMultiModalOrderIntakeUnifying from './pages/GapMultiModalOrderIntakeUnifying';
+import GapDriverIncentiveOptimizationThatAi from './pages/GapDriverIncentiveOptimizationThatAi';
+import GapPostDeliveryFeedbackNlpThat from './pages/GapPostDeliveryFeedbackNlpThat';
+import GapSupplyChainRiskWarningsWhen from './pages/GapSupplyChainRiskWarningsWhen';
+import GapRealTimeKdsIntegrationStreaming from './pages/GapRealTimeKdsIntegrationStreaming';
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -61,6 +83,9 @@ const App = () => (
             <Sonner />
             <BrowserRouter basename="/">
               <Routes>
+        <Route path="/codex/custom-viz" element={<CodexCustomVizFeature />} />
+        <Route path="/codex/operations" element={<CodexOperationsFeature />} />
+
                 <Route path="/" element={<Index />} />
                 <Route path="/restaurants" element={<Restaurants />} />
                 <Route path="/about" element={<About />} />
@@ -99,6 +124,25 @@ const App = () => (
                 <Route path="/sustainability" element={<ErrorBoundary><SustainabilityPage /></ErrorBoundary>} />
                 <Route path="/voice-order" element={<ErrorBoundary><VoiceOrderPage /></ErrorBoundary>} />
                 <Route path="/group-order" element={<ErrorBoundary><GroupOrderPage /></ErrorBoundary>} />
+
+                {/* Batch_00 Gap feature routes (admin-facing scaffolds) */}
+                <Route path="/admin/gap/ai-demand-forecasting" element={<ErrorBoundary><GapAiDemandForecastingRestaurantTime /></ErrorBoundary>} />
+                <Route path="/admin/gap/ai-driver-route-optimization" element={<ErrorBoundary><GapAiDriverRouteOptimizationTsp /></ErrorBoundary>} />
+                <Route path="/admin/gap/ai-menu-recommendation-cold" element={<ErrorBoundary><GapAiMenuRecommendationEngineCold /></ErrorBoundary>} />
+                <Route path="/admin/gap/ai-fraud-detection" element={<ErrorBoundary><GapAiFraudDetectionPaymentAnomalies /></ErrorBoundary>} />
+                <Route path="/admin/gap/ai-churn-prediction" element={<ErrorBoundary><GapAiChurnPrediction /></ErrorBoundary>} />
+                <Route path="/admin/gap/ai-dynamic-pricing" element={<ErrorBoundary><GapAiDynamicPricingEngine /></ErrorBoundary>} />
+                <Route path="/admin/gap/dynamic-surge-pricing" element={<ErrorBoundary><GapDynamicSurgePricingDuringPeak /></ErrorBoundary>} />
+                <Route path="/admin/gap/loyalty-rewards" element={<ErrorBoundary><GapLoyaltyPointsTieredRewardsProgram /></ErrorBoundary>} />
+                <Route path="/admin/gap/affiliate-payouts" element={<ErrorBoundary><GapLimitedAffiliateCommissionPayoutAutomation /></ErrorBoundary>} />
+                <Route path="/admin/gap/restaurant-health-score" element={<ErrorBoundary><GapRestaurantHealthScoreFoodSafety /></ErrorBoundary>} />
+                <Route path="/admin/gap/kds-integration" element={<ErrorBoundary><GapKdsKitchenDisplayIntegration /></ErrorBoundary>} />
+                <Route path="/admin/gap/outbound-webhooks" element={<ErrorBoundary><GapOutboundWebhooksPartners /></ErrorBoundary>} />
+                <Route path="/admin/gap/multimodal-intake" element={<ErrorBoundary><GapMultiModalOrderIntakeUnifying /></ErrorBoundary>} />
+                <Route path="/admin/gap/driver-incentive" element={<ErrorBoundary><GapDriverIncentiveOptimizationThatAi /></ErrorBoundary>} />
+                <Route path="/admin/gap/post-delivery-feedback" element={<ErrorBoundary><GapPostDeliveryFeedbackNlpThat /></ErrorBoundary>} />
+                <Route path="/admin/gap/supply-warnings" element={<ErrorBoundary><GapSupplyChainRiskWarningsWhen /></ErrorBoundary>} />
+                <Route path="/admin/gap/kds-streaming" element={<ErrorBoundary><GapRealTimeKdsIntegrationStreaming /></ErrorBoundary>} />
 
                 <Route path="*" element={<NotFound />} />
               </Routes>

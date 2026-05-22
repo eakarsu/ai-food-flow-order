@@ -30,7 +30,7 @@ export const authenticateToken = async (
 
     // Verify user still exists and is active
     const result = await query(
-      'SELECT id, email, is_active, role FROM users WHERE id = $1',
+      'SELECT id, email, is_active FROM users WHERE id = $1',
       [decoded.userId]
     );
 
@@ -41,7 +41,7 @@ export const authenticateToken = async (
     req.user = {
       id: decoded.userId,
       email: decoded.email,
-      role: result.rows[0].role || 'viewer',
+      role: 'viewer',
     };
 
     next();

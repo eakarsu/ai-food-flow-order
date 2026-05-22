@@ -85,3 +85,52 @@ Route registration verified via runtime introspection: all 8 new paths show up u
 - `server/src/controllers/aiBacklogController.ts` (created, ~360 lines)
 - `server/src/routes/ai.ts` (extended: 1 import block + 8 router lines)
 - `src/services/api/ai.ts` (extended: 8 helper functions)
+
+## Apply pass 7 (full backlog implementation)
+
+**Scope:** finalize previously-orphan Gap*.tsx pages by routing them in `src/App.tsx` and aligning misnamed API paths with their actual backend mounts. All 16 audit/feature-suggestion items from the original `_AUDIT_NOTE.md` already have corresponding backend routes mounted in `server/src/index.ts` (lines 141-175) — pages exist on disk (`src/pages/Gap*.tsx`, 16 files, 52 lines each) but were not reachable from the React Router.
+
+### Items addressed (16)
+1. AI demand forecasting → `/admin/gap/ai-demand-forecasting` → `gap_ai_demand_forecasting_restaurant_time` router
+2. AI driver route optimization (TSP) → `/admin/gap/ai-driver-route-optimization` → `gap_ai_driver_route_optimization_tsp`
+3. AI menu recommendation cold-start → `/admin/gap/ai-menu-recommendation-cold` → `gap_ai_menu_recommendation_engine_cold`
+4. AI fraud detection → `/admin/gap/ai-fraud-detection` → `gap_ai_fraud_detection_payment_anomalies`
+5. AI churn prediction → `/admin/gap/ai-churn-prediction` → `gap_ai_churn_prediction`
+6. AI dynamic pricing engine → `/admin/gap/ai-dynamic-pricing` → `gap_ai_dynamic_pricing_engine`
+7. Dynamic surge pricing (peak) → `/admin/gap/dynamic-surge-pricing` → `gap_dynamic_surge_pricing_during_peak`
+8. Loyalty tiered rewards → `/admin/gap/loyalty-rewards` → `gap_loyalty_points_tiered_rewards_program`
+9. Affiliate commission payouts → `/admin/gap/affiliate-payouts` → `gap_limited_affiliate_commission_payout_automation`
+10. Restaurant health score → `/admin/gap/restaurant-health-score` → `gap_restaurant_health_score_food_safety`
+11. KDS kitchen-display integration → `/admin/gap/kds-integration` → `gap_kds_kitchen_display_integration`
+12. Outbound partner webhooks → `/admin/gap/outbound-webhooks` → `gap_outbound_webhooks_partners`
+13. Multi-modal order intake unification → `/admin/gap/multimodal-intake` → `multimodalIntake` router (page API path corrected from non-existent `cf-*`)
+14. Driver-incentive optimization → `/admin/gap/driver-incentive` → `driverIncentive` router (page API path corrected)
+15. Post-delivery feedback NLP → `/admin/gap/post-delivery-feedback` → `feedbackNlp` router (page API path corrected)
+16. Supply-chain risk warnings → `/admin/gap/supply-warnings` → `supplyWarnings` router (page API path corrected)
+
+Bonus: Real-time KDS streaming page → `/admin/gap/kds-streaming` → `kdsStream` router (page API path corrected from non-existent `cf-*`).
+
+### Files modified
+- `src/App.tsx` — 17 new imports + 17 new `<Route>` entries (all under `/admin/gap/*`, mounted BEFORE the `*` catch-all NotFound). Wrapped in `ErrorBoundary` to mirror existing admin route pattern.
+- `src/pages/GapMultiModalOrderIntakeUnifying.tsx` — fixed `fetch('/api/cf-multi-modal-order-intake-unifying/run')` → `fetch('/api/multimodal-intake/run')` (matches mount in `index.ts:146`).
+- `src/pages/GapDriverIncentiveOptimizationThatAi.tsx` — `/api/cf-driver-incentive-optimization-that-ai/run` → `/api/driver-incentive/run` (matches `index.ts:148`).
+- `src/pages/GapPostDeliveryFeedbackNlpThat.tsx` — `/api/cf-post-delivery-feedback-nlp-that/run` → `/api/feedback-nlp/run` (matches `index.ts:150`).
+- `src/pages/GapSupplyChainRiskWarningsWhen.tsx` — `/api/cf-supply-chain-risk-warnings-when/run` → `/api/supply-warnings/run` (matches `index.ts:149`).
+- `src/pages/GapRealTimeKdsIntegrationStreaming.tsx` — `/api/cf-real-time-kds-integration-streaming/run` → `/api/kds-stream/run` (matches `index.ts:147`).
+
+### Items skipped
+None remain from the original audit. The five Apply-pass-5 "Deferred" items (real TSP solver / map SDK; real embedding pipeline; live KDS provider integration; real health-inspection feed; cross-channel NLU state design) remain NEEDS-CREDS or TOO-RISKY (no `requires_human_review`-tagged advisory items in this project; no 503-stub NEEDS-CREDS to mount additionally — existing scaffolds already return clear stubs when `OPENROUTER_API_KEY` is unset).
+
+### New endpoints / pages / tables
+- Endpoints added: 0 (all 12 `gap_*` + 5 named-router endpoints already mounted in `index.ts:141-175`).
+- Frontend pages routed: 17 (16 audit items + 1 bonus real-time KDS streaming).
+- Tables added: 0 (existing `gap_features` lazy CREATE TABLE IF NOT EXISTS lives in each `gap_*.ts` controller already; no schema additions required).
+
+### Syntax check
+`esbuild --bundle=false --target=es2020 <file>` on modified files: PASS (17/17).
+
+### Constraints
+- No new npm deps.
+- No breaking changes (only additive imports/routes; no removed/renamed exports).
+- All new routes mounted before `*` NotFound catch-all per pattern.
+- Page-to-backend API alignment now matches actual `app.use(...)` mounts in `server/src/index.ts`.

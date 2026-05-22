@@ -15,7 +15,7 @@ export default function RealTimeKdsIntegrationStreamingPage() {
     setResult(null);
     try {
       const token = (typeof localStorage !== 'undefined') ? localStorage.getItem('token') : null;
-      const res = await fetch('/api/cf-real-time-kds-integration-streaming/run', {
+      const res = await fetch('/api/kds-stream/run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

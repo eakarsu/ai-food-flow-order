@@ -15,7 +15,7 @@ export default function SupplyChainRiskWarningsWhenPage() {
     setResult(null);
     try {
       const token = (typeof localStorage !== 'undefined') ? localStorage.getItem('token') : null;
-      const res = await fetch('/api/cf-supply-chain-risk-warnings-when/run', {
+      const res = await fetch('/api/supply-warnings/run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

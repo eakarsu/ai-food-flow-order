@@ -15,7 +15,7 @@ export default function PostDeliveryFeedbackNlpThatPage() {
     setResult(null);
     try {
       const token = (typeof localStorage !== 'undefined') ? localStorage.getItem('token') : null;
-      const res = await fetch('/api/cf-post-delivery-feedback-nlp-that/run', {
+      const res = await fetch('/api/feedback-nlp/run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

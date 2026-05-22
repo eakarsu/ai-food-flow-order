@@ -15,7 +15,7 @@ export default function DriverIncentiveOptimizationThatAiPage() {
     setResult(null);
     try {
       const token = (typeof localStorage !== 'undefined') ? localStorage.getItem('token') : null;
-      const res = await fetch('/api/cf-driver-incentive-optimization-that-ai/run', {
+      const res = await fetch('/api/driver-incentive/run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

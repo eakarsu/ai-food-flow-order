@@ -224,6 +224,56 @@ CONTEXT: ${JSON.stringify(context || {})}
   }
 };
 
+// POST /api/ai/kitchen-batch-plan
+// Deterministic kitchen display batching helper. It groups active order items
+// by prep station and urgency so the KDS can fire work in waves without a
+// third-party KDS provider.
+export const kitchenBatchPlan = async (req: AuthRequest, res: Response) => {
+  try {
+    const { orders = [], targetWindowMinutes = 12 } = req.body || {};
+    if (!Array.isArray(orders)) return res.status(400).json({ error: 'orders[] required' });
+
+    const stationFor = (itemName: string) => {
+      const s = itemName.toLowerCase();
+      if (/drink|soda|coffee|tea|juice|smoothie/.test(s)) return 'beverage';
+      if (/salad|sushi|cold|wrap/.test(s)) return 'cold-line';
+      if (/fries|fried|wings|nuggets/.test(s)) return 'fryer';
+      if (/pizza|burger|steak|grill|chicken/.test(s)) return 'hot-line';
+      return 'expo';
+    };
+
+    const batches = new Map<string, any>();
+    for (const order of orders) {
+      const dueIn = Number(order.dueInMinutes ?? order.promisedInMinutes ?? targetWindowMinutes);
+      const priority = dueIn <= 6 ? 'rush' : dueIn <= targetWindowMinutes ? 'next' : 'hold';
+      for (const item of order.items || []) {
+        const station = item.station || stationFor(item.name || '');
+        const key = `${station}:${priority}`;
+        if (!batches.has(key)) {
+          batches.set(key, { station, priority, orders: [], itemCount: 0, fireInMinutes: priority === 'rush' ? 0 : priority === 'next' ? 3 : 8 });
+        }
+        const batch = batches.get(key);
+        batch.orders.push({ orderId: order.id, item: item.name, quantity: Number(item.quantity || 1), dueInMinutes: dueIn });
+        batch.itemCount += Number(item.quantity || 1);
+      }
+    }
+
+    const plan = [...batches.values()].sort((a, b) => a.fireInMinutes - b.fireInMinutes || b.itemCount - a.itemCount);
+    res.json({
+      generatedAt: new Date().toISOString(),
+      targetWindowMinutes,
+      batches: plan,
+      recommendations: [
+        'Fire rush hot-line and fryer items first; hold beverages until expo is within 3 minutes.',
+        'Keep cold-line batches separate to avoid quality loss from early plating.',
+        'Escalate any order appearing in more than two station batches to an expo lead.',
+      ],
+    });
+  } catch (e: any) {
+    res.status(500).json({ error: e?.message || 'kitchen-batch-plan failed' });
+  }
+};
+
 // POST /api/ai/fraud-detection
 // Body: { userId?: string, paymentRef?: string }
 export const fraudDetection = async (req: AuthRequest, res: Response) => {

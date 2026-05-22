@@ -201,3 +201,14 @@ export const aiDynamicSurgePolicy = (data: {
   timeOfDay?: string;
 }) =>
   apiRequest('/ai/dynamic-surge-policy', { method: 'POST', body: JSON.stringify(data) });
+
+export const aiKitchenBatchPlan = (data: {
+  targetWindowMinutes?: number;
+  orders: Array<{
+    id: string;
+    dueInMinutes?: number;
+    promisedInMinutes?: number;
+    items: Array<{ name: string; quantity?: number; station?: string }>;
+  }>;
+}) =>
+  apiRequest('/ai/kitchen-batch-plan', { method: 'POST', body: JSON.stringify(data) });

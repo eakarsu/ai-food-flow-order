@@ -105,6 +105,43 @@ app.use('/', twilioRoutes);
 // Automated calls TwiML (without /api prefix for Twilio callbacks)
 app.use('/api/automated-calls', automatedCallsRoutes);
 
+// === Pass 7 mounts (moved here from end-of-file to sit BEFORE the 404 handler) ===
+import multimodalIntakeRoutes from './routes/multimodalIntake';
+import kdsStreamRoutes from './routes/kdsStream';
+import driverIncentiveRoutes from './routes/driverIncentive';
+import supplyWarningsRoutes from './routes/supplyWarnings';
+import feedbackNlpRoutes from './routes/feedbackNlp';
+app.use('/api/multimodal-intake', multimodalIntakeRoutes);
+app.use('/api/kds-stream', kdsStreamRoutes);
+app.use('/api/driver-incentive', driverIncentiveRoutes);
+app.use('/api/supply-warnings', supplyWarningsRoutes);
+app.use('/api/feedback-nlp', feedbackNlpRoutes);
+import gapAiDemandForecastingRestaurantTimeRouter from './routes/gap_ai_demand_forecasting_restaurant_time';
+import gapAiDriverRouteOptimizationTspRouter from './routes/gap_ai_driver_route_optimization_tsp';
+import gapAiMenuRecommendationEngineColdRouter from './routes/gap_ai_menu_recommendation_engine_cold';
+import gapAiFraudDetectionPaymentAnomaliesRouter from './routes/gap_ai_fraud_detection_payment_anomalies';
+import gapAiChurnPredictionRouter from './routes/gap_ai_churn_prediction';
+import gapAiDynamicPricingEngineRouter from './routes/gap_ai_dynamic_pricing_engine';
+import gapLoyaltyPointsTieredRewardsProgramRouter from './routes/gap_loyalty_points_tiered_rewards_program';
+import gapLimitedAffiliateCommissionPayoutAutomationRouter from './routes/gap_limited_affiliate_commission_payout_automation';
+import gapRestaurantHealthScoreFoodSafetyRouter from './routes/gap_restaurant_health_score_food_safety';
+import gapDynamicSurgePricingDuringPeakRouter from './routes/gap_dynamic_surge_pricing_during_peak';
+import gapKdsKitchenDisplayIntegrationRouter from './routes/gap_kds_kitchen_display_integration';
+import gapOutboundWebhooksPartnersRouter from './routes/gap_outbound_webhooks_partners';
+app.use('/api/gap-ai-demand-forecasting-restaurant-time', gapAiDemandForecastingRestaurantTimeRouter);
+app.use('/api/gap-ai-driver-route-optimization-tsp', gapAiDriverRouteOptimizationTspRouter);
+app.use('/api/gap-ai-menu-recommendation-engine-cold', gapAiMenuRecommendationEngineColdRouter);
+app.use('/api/gap-ai-fraud-detection-payment-anomalies', gapAiFraudDetectionPaymentAnomaliesRouter);
+app.use('/api/gap-ai-churn-prediction', gapAiChurnPredictionRouter);
+app.use('/api/gap-ai-dynamic-pricing-engine', gapAiDynamicPricingEngineRouter);
+app.use('/api/gap-loyalty-points-tiered-rewards-program', gapLoyaltyPointsTieredRewardsProgramRouter);
+app.use('/api/gap-limited-affiliate-commission-payout-automation', gapLimitedAffiliateCommissionPayoutAutomationRouter);
+app.use('/api/gap-restaurant-health-score-food-safety', gapRestaurantHealthScoreFoodSafetyRouter);
+app.use('/api/gap-dynamic-surge-pricing-during-peak', gapDynamicSurgePricingDuringPeakRouter);
+app.use('/api/gap-kds-kitchen-display-integration', gapKdsKitchenDisplayIntegrationRouter);
+app.use('/api/gap-outbound-webhooks-partners', gapOutboundWebhooksPartnersRouter);
+// === End pass 7 mounts ===
+
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Error:', err);
@@ -137,39 +174,4 @@ httpServer.listen(PORT, () => {
 
 export { app, io };
 
-// BATCH_00_AUDIT_MOUNTS
-import multimodalIntakeRoutes from './routes/multimodalIntake';
-import kdsStreamRoutes from './routes/kdsStream';
-import driverIncentiveRoutes from './routes/driverIncentive';
-import supplyWarningsRoutes from './routes/supplyWarnings';
-import feedbackNlpRoutes from './routes/feedbackNlp';
-app.use('/api/multimodal-intake', multimodalIntakeRoutes);
-app.use('/api/kds-stream', kdsStreamRoutes);
-app.use('/api/driver-incentive', driverIncentiveRoutes);
-app.use('/api/supply-warnings', supplyWarningsRoutes);
-app.use('/api/feedback-nlp', feedbackNlpRoutes);
-// === Batch 00 Gaps & Frontend Mounts ===
-import gapAiDemandForecastingRestaurantTimeRouter from './routes/gap_ai_demand_forecasting_restaurant_time';
-import gapAiDriverRouteOptimizationTspRouter from './routes/gap_ai_driver_route_optimization_tsp';
-import gapAiMenuRecommendationEngineColdRouter from './routes/gap_ai_menu_recommendation_engine_cold';
-import gapAiFraudDetectionPaymentAnomaliesRouter from './routes/gap_ai_fraud_detection_payment_anomalies';
-import gapAiChurnPredictionRouter from './routes/gap_ai_churn_prediction';
-import gapAiDynamicPricingEngineRouter from './routes/gap_ai_dynamic_pricing_engine';
-import gapLoyaltyPointsTieredRewardsProgramRouter from './routes/gap_loyalty_points_tiered_rewards_program';
-import gapLimitedAffiliateCommissionPayoutAutomationRouter from './routes/gap_limited_affiliate_commission_payout_automation';
-import gapRestaurantHealthScoreFoodSafetyRouter from './routes/gap_restaurant_health_score_food_safety';
-import gapDynamicSurgePricingDuringPeakRouter from './routes/gap_dynamic_surge_pricing_during_peak';
-import gapKdsKitchenDisplayIntegrationRouter from './routes/gap_kds_kitchen_display_integration';
-import gapOutboundWebhooksPartnersRouter from './routes/gap_outbound_webhooks_partners';
-app.use('/api/gap-ai-demand-forecasting-restaurant-time', gapAiDemandForecastingRestaurantTimeRouter);
-app.use('/api/gap-ai-driver-route-optimization-tsp', gapAiDriverRouteOptimizationTspRouter);
-app.use('/api/gap-ai-menu-recommendation-engine-cold', gapAiMenuRecommendationEngineColdRouter);
-app.use('/api/gap-ai-fraud-detection-payment-anomalies', gapAiFraudDetectionPaymentAnomaliesRouter);
-app.use('/api/gap-ai-churn-prediction', gapAiChurnPredictionRouter);
-app.use('/api/gap-ai-dynamic-pricing-engine', gapAiDynamicPricingEngineRouter);
-app.use('/api/gap-loyalty-points-tiered-rewards-program', gapLoyaltyPointsTieredRewardsProgramRouter);
-app.use('/api/gap-limited-affiliate-commission-payout-automation', gapLimitedAffiliateCommissionPayoutAutomationRouter);
-app.use('/api/gap-restaurant-health-score-food-safety', gapRestaurantHealthScoreFoodSafetyRouter);
-app.use('/api/gap-dynamic-surge-pricing-during-peak', gapDynamicSurgePricingDuringPeakRouter);
-app.use('/api/gap-kds-kitchen-display-integration', gapKdsKitchenDisplayIntegrationRouter);
-app.use('/api/gap-outbound-webhooks-partners', gapOutboundWebhooksPartnersRouter);
+// (moved above 404 handler)

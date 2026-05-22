@@ -25,6 +25,7 @@ import {
   restaurantHealthScore,
   loyaltyStatus,
   dynamicSurgePolicy,
+  kitchenBatchPlan,
 } from '../controllers/aiBacklogController.js';
 
 const router = Router();
@@ -169,5 +170,6 @@ router.post('/churn-prediction', aiPredictionLimiter, churnPrediction);
 router.post('/restaurant-health-score', aiPredictionLimiter, restaurantHealthScore);
 router.get('/loyalty/status', loyaltyStatus);
 router.post('/dynamic-surge-policy', aiPredictionLimiter, dynamicSurgePolicy);
+router.post('/kitchen-batch-plan', aiPredictionLimiter, kitchenBatchPlan);
 
 export default router;
