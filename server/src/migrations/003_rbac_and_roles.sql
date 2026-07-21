@@ -1,5 +1,6 @@
 -- Add role column to users table for RBAC
-ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(50) DEFAULT 'viewer';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(50) DEFAULT 'customer';
 
--- Set all existing users to admin role
-UPDATE users SET role = 'admin' WHERE role IS NULL OR role = 'viewer';
+-- Existing accounts must not gain administrative access during a migration.
+UPDATE users SET role = 'customer' WHERE role IS NULL OR role = 'viewer';
+ALTER TABLE users ALTER COLUMN role SET DEFAULT 'customer';

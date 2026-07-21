@@ -4,9 +4,14 @@ import { query, getClient } from '../config/database.js';
 import { AuthRequest } from '../middleware/auth.js';
 import { sendOrderNotification } from '../services/notificationService.js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder', {
-  apiVersion: '2024-06-20',
-});
+const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' })
+  : null;
+
+function stripeClient() {
+  if (!stripe) throw Object.assign(new Error('Stripe is not configured'), { status: 503 });
+  return stripe;
+}
 
 // Create payment intent
 export const createPaymentIntent = async (req: AuthRequest, res: Response) => {
@@ -33,7 +38,7 @@ export const createPaymentIntent = async (req: AuthRequest, res: Response) => {
 
     // If payment intent already exists, return it
     if (order.stripe_payment_intent_id) {
-      const existingIntent = await stripe.paymentIntents.retrieve(
+      const existingIntent = await stripeClient().paymentIntents.retrieve(
         order.stripe_payment_intent_id
       );
 
@@ -46,7 +51,7 @@ export const createPaymentIntent = async (req: AuthRequest, res: Response) => {
     }
 
     // Create new payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
+    const paymentIntent = await stripeClient().paymentIntents.create({
       amount: Math.round(parseFloat(order.total_amount) * 100), // Convert to cents
       currency: 'usd',
       automatic_payment_methods: {
@@ -79,7 +84,7 @@ export const confirmPayment = async (req: AuthRequest, res: Response) => {
   try {
     const { paymentIntentId, orderId } = req.body;
 
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    const paymentIntent = await stripeClient().paymentIntents.retrieve(paymentIntentId);
 
     if (paymentIntent.status === 'succeeded') {
       // Update order status
@@ -118,11 +123,8 @@ export const handleWebhook = async (req: Request, res: Response) => {
   let event: Stripe.Event;
 
   try {
-    if (webhookSecret) {
-      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
-    } else {
-      event = JSON.parse(req.body.toString());
-    }
+    if (!webhookSecret) return res.status(503).json({ error: 'Stripe webhook verification is not configured' });
+    event = stripeClient().webhooks.constructEvent(req.body, sig, webhookSecret);
   } catch (err: any) {
     console.error('Webhook signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -234,11 +236,7 @@ export const handleWebhook = async (req: Request, res: Response) => {
 // Get saved payment methods (placeholder for Stripe Customer)
 export const getPaymentMethods = async (req: AuthRequest, res: Response) => {
   try {
-    // In a real implementation, you would fetch from Stripe Customer
-    res.json({
-      paymentMethods: [],
-      message: 'Payment methods retrieved',
-    });
+    res.status(501).json({ error: 'Saved payment methods are not configured' });
   } catch (error) {
     console.error('Get payment methods error:', error);
     res.status(500).json({ error: 'Failed to get payment methods' });
@@ -248,7 +246,7 @@ export const getPaymentMethods = async (req: AuthRequest, res: Response) => {
 // Add payment method (placeholder)
 export const addPaymentMethod = async (req: AuthRequest, res: Response) => {
   try {
-    res.json({ message: 'Payment method added' });
+    res.status(501).json({ error: 'Saved payment methods are not configured' });
   } catch (error) {
     console.error('Add payment method error:', error);
     res.status(500).json({ error: 'Failed to add payment method' });
@@ -258,7 +256,7 @@ export const addPaymentMethod = async (req: AuthRequest, res: Response) => {
 // Remove payment method (placeholder)
 export const removePaymentMethod = async (req: AuthRequest, res: Response) => {
   try {
-    res.json({ message: 'Payment method removed' });
+    res.status(501).json({ error: 'Saved payment methods are not configured' });
   } catch (error) {
     console.error('Remove payment method error:', error);
     res.status(500).json({ error: 'Failed to remove payment method' });

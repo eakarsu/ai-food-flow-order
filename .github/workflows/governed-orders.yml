@@ -1,0 +1,60 @@
+name: Governed order checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: food_flow_order
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U app -d food_flow_order"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://app:app@127.0.0.1:5432/food_flow_order
+      DEFAULT_TENANT_ID: tenant-ci
+      JWT_SECRET: ci-access-secret-that-is-at-least-thirty-two-characters
+      JWT_REFRESH_SECRET: ci-refresh-secret-that-is-at-least-thirty-two-characters
+      PROVIDER_WEBHOOK_SECRETS_JSON: '{}'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+      - name: Install locked frontend dependencies
+        run: npm ci
+      - name: Build frontend
+        run: npm run build
+      - name: Install locked backend dependencies
+        run: npm ci
+        working-directory: server
+      - name: Apply versioned migrations
+        run: npm run migrate
+        working-directory: server
+      - name: Compile and run governed order controls
+        run: npm run check
+        working-directory: server
+      - name: Verify repeat migration deployment
+        run: npm run migrate
+        working-directory: server
+      - name: Validate nondestructive launcher
+        run: bash -n start.sh

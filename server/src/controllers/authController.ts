@@ -1,28 +1,39 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import type { SignOptions } from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { validationResult } from 'express-validator';
 import { query } from '../config/database.js';
 import { AuthRequest } from '../middleware/auth.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'your-refresh-secret';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '15m';
 const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
 
+function requiredAuthConfig() {
+  const jwtSecret = process.env.JWT_SECRET || '';
+  const refreshSecret = process.env.JWT_REFRESH_SECRET || '';
+  const tenantId = process.env.DEFAULT_TENANT_ID || '';
+  if (jwtSecret.length < 32 || refreshSecret.length < 32 || tenantId.length < 8) {
+    throw new Error('secure JWT secrets and DEFAULT_TENANT_ID are required');
+  }
+  return { jwtSecret, refreshSecret, tenantId };
+}
+
 // Generate tokens
-const generateTokens = (userId: string, email: string) => {
+const generateTokens = (userId: string, email: string, role: string) => {
+  const config = requiredAuthConfig();
+  const subjects = ['admin', 'operator'].includes(role) ? ['*'] : [userId];
   const accessToken = jwt.sign(
-    { userId, email },
-    JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN }
+    { userId, email, role, tenantId: config.tenantId, subjects },
+    config.jwtSecret,
+    { expiresIn: JWT_EXPIRES_IN as SignOptions['expiresIn'], algorithm: 'HS256' }
   );
 
   const refreshToken = jwt.sign(
-    { userId, email, type: 'refresh' },
-    JWT_REFRESH_SECRET,
-    { expiresIn: JWT_REFRESH_EXPIRES_IN }
+    { userId, email, role, tenantId: config.tenantId, subjects, type: 'refresh' },
+    config.refreshSecret,
+    { expiresIn: JWT_REFRESH_EXPIRES_IN as SignOptions['expiresIn'], algorithm: 'HS256' }
   );
 
   return { accessToken, refreshToken };
@@ -56,14 +67,14 @@ export const register = async (req: Request, res: Response) => {
     const result = await query(
       `INSERT INTO users (email, password_hash, first_name, last_name, phone)
        VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, email, first_name, last_name, phone, created_at`,
+       RETURNING id, email, first_name, last_name, phone, role, created_at`,
       [email.toLowerCase(), passwordHash, firstName, lastName, phone]
     );
 
     const user = result.rows[0];
 
     // Generate tokens
-    const { accessToken, refreshToken } = generateTokens(user.id, user.email);
+    const { accessToken, refreshToken } = generateTokens(user.id, user.email, user.role);
 
     // Store refresh token
     const expiresAt = new Date();
@@ -111,7 +122,7 @@ export const login = async (req: Request, res: Response) => {
 
     // Find user
     const result = await query(
-      `SELECT id, email, password_hash, first_name, last_name, phone, avatar_url, is_active
+      `SELECT id, email, password_hash, first_name, last_name, phone, avatar_url, role, is_active
        FROM users WHERE email = $1`,
       [email.toLowerCase()]
     );
@@ -134,7 +145,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Generate tokens
-    const { accessToken, refreshToken } = generateTokens(user.id, user.email);
+    const { accessToken, refreshToken } = generateTokens(user.id, user.email, user.role);
 
     // Store refresh token
     const expiresAt = new Date();
@@ -205,9 +216,12 @@ export const refreshToken = async (req: Request, res: Response) => {
     // Verify token
     let decoded;
     try {
-      decoded = jwt.verify(token, JWT_REFRESH_SECRET) as {
+      decoded = jwt.verify(token, requiredAuthConfig().refreshSecret, { algorithms: ['HS256'] }) as {
         userId: string;
         email: string;
+        role: string;
+        tenantId: string;
+        subjects: string[];
         type: string;
       };
     } catch (error) {
@@ -238,7 +252,8 @@ export const refreshToken = async (req: Request, res: Response) => {
     // Generate new tokens
     const { accessToken, refreshToken: newRefreshToken } = generateTokens(
       decoded.userId,
-      decoded.email
+      decoded.email,
+      decoded.role
     );
 
     // Store new refresh token
@@ -271,14 +286,9 @@ export const forgotPassword = async (req: Request, res: Response) => {
       [email.toLowerCase()]
     );
 
-    // Always return success to prevent email enumeration
-    if (result.rows.length === 0) {
-      return res.json({ message: 'If the email exists, a reset link will be sent' });
-    }
-
-    // In production, send email with reset link
-    // For now, just return success
-    res.json({ message: 'If the email exists, a reset link will be sent' });
+    // Return the same fail-closed response regardless of account existence.
+    void result;
+    res.status(503).json({ error: 'Password reset delivery is not configured' });
   } catch (error) {
     console.error('Forgot password error:', error);
     res.status(500).json({ error: 'Request failed' });
@@ -288,10 +298,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 // Reset password
 export const resetPassword = async (req: Request, res: Response) => {
   try {
-    const { token, password } = req.body;
-
-    // In production, verify reset token and update password
-    res.json({ message: 'Password reset functionality - implement with email service' });
+    res.status(501).json({ error: 'Password reset token verification is not configured' });
   } catch (error) {
     console.error('Reset password error:', error);
     res.status(500).json({ error: 'Password reset failed' });
@@ -301,10 +308,7 @@ export const resetPassword = async (req: Request, res: Response) => {
 // Verify email
 export const verifyEmail = async (req: Request, res: Response) => {
   try {
-    const { token } = req.params;
-
-    // In production, verify email token and update user
-    res.json({ message: 'Email verification functionality - implement with email service' });
+    res.status(501).json({ error: 'Email verification delivery is not configured' });
   } catch (error) {
     console.error('Email verification error:', error);
     res.status(500).json({ error: 'Email verification failed' });

@@ -1,8 +1,7 @@
-import { Router, raw } from 'express';
+import { Router } from 'express';
 import {
   createPaymentIntent,
   confirmPayment,
-  handleWebhook,
   getPaymentMethods,
   addPaymentMethod,
   removePaymentMethod,
@@ -10,9 +9,6 @@ import {
 import { authenticateToken } from '../middleware/auth.js';
 
 const router = Router();
-
-// Webhook needs raw body - must be before json middleware
-router.post('/webhook', raw({ type: 'application/json' }), handleWebhook);
 
 // Protected routes
 router.use(authenticateToken);

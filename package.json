@@ -10,10 +10,12 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "build:server": "cd server && npm run build",
+    "test:server": "cd server && npm test",
+    "check:server": "cd server && npm run check",
     "lint": "eslint .",
     "preview": "vite preview",
     "db:migrate": "cd server && npm run migrate",
-    "db:seed": "cd server && npm run seed"
+    "demo:seed": "cd server && npm run demo:seed"
   },
   "dependencies": {
     "@capacitor/android": "^7.2.0",

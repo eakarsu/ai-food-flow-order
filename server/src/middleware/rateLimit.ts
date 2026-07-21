@@ -1,4 +1,7 @@
-import rateLimit from 'express-rate-limit';
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
+
+const authenticatedOrNetworkKey = (req: any) =>
+  req.user?.id ? `user:${req.user.id}` : `network:${ipKeyGenerator(req.ip || '')}`;
 
 // General API rate limiter: 100 requests per 15 minutes
 export const apiLimiter = rateLimit({
@@ -33,7 +36,7 @@ export const aiLimiter = rateLimit({
   max: 20,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req: any) => req.user?.id || req.ip,
+  keyGenerator: authenticatedOrNetworkKey,
   message: { error: 'Too many AI requests, please try again in an hour.' },
 });
 
@@ -43,7 +46,7 @@ export const aiPredictionLimiter = rateLimit({
   max: 20,
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req: any) => req.user?.id || req.ip,
+  keyGenerator: authenticatedOrNetworkKey,
   message: { error: 'AI prediction limit reached. You can make 20 predictions per hour.' },
 });
 

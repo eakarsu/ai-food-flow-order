@@ -1,7 +1,13 @@
 import fetch from 'node-fetch';
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const getApiKey = () => process.env.OPENROUTER_API_KEY || 'sk-or-placeholder';
+const getApiKey = () => {
+  const key = process.env.OPENROUTER_API_KEY?.trim() || '';
+  if (!key || /placeholder|change.?me|example/i.test(key)) {
+    throw new Error('OPENROUTER_API_KEY is required for AI provider requests');
+  }
+  return key;
+};
 const getModel = () => process.env.OPENROUTER_MODEL || 'anthropic/claude-3-5-sonnet-20241022';
 
 // Robust JSON parser that handles markdown code fences and surrounding text

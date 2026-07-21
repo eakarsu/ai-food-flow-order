@@ -7,7 +7,30 @@ export interface AuthRequest extends Request {
     id: string;
     email: string;
     role: string;
+    tenantId: string;
+    subjects: string[];
   };
+}
+
+type SignedClaims = {
+  userId: string;
+  email: string;
+  tenantId: string;
+  role: string;
+  subjects: string[];
+};
+
+function jwtSecret() {
+  const secret = process.env.JWT_SECRET || '';
+  if (secret.length < 32) throw new Error('JWT_SECRET must contain at least 32 characters');
+  return secret;
+}
+
+function validClaims(value: Partial<SignedClaims>): value is SignedClaims {
+  return typeof value.userId === 'string' && typeof value.email === 'string'
+    && typeof value.tenantId === 'string' && value.tenantId.length >= 8
+    && typeof value.role === 'string' && Array.isArray(value.subjects)
+    && value.subjects.every((subject) => typeof subject === 'string');
 }
 
 export const authenticateToken = async (
@@ -23,14 +46,12 @@ export const authenticateToken = async (
   }
 
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || 'your-secret-key'
-    ) as { userId: string; email: string };
+    const decoded = jwt.verify(token, jwtSecret(), { algorithms: ['HS256'] }) as Partial<SignedClaims>;
+    if (!validClaims(decoded)) return res.status(403).json({ error: 'signed tenant, role, and subject claims required' });
 
     // Verify user still exists and is active
     const result = await query(
-      'SELECT id, email, is_active FROM users WHERE id = $1',
+      'SELECT id, email, role, is_active FROM users WHERE id = $1',
       [decoded.userId]
     );
 
@@ -38,10 +59,13 @@ export const authenticateToken = async (
       return res.status(401).json({ error: 'User not found or inactive' });
     }
 
+    if (result.rows[0].role !== decoded.role) return res.status(403).json({ error: 'signed role is stale' });
     req.user = {
       id: decoded.userId,
       email: decoded.email,
-      role: 'viewer',
+      role: decoded.role,
+      tenantId: decoded.tenantId,
+      subjects: decoded.subjects,
     };
 
     next();
@@ -66,15 +90,15 @@ export const optionalAuth = async (
   }
 
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || 'your-secret-key'
-    ) as { userId: string; email: string };
+    const decoded = jwt.verify(token, jwtSecret(), { algorithms: ['HS256'] }) as Partial<SignedClaims>;
+    if (!validClaims(decoded)) return next();
 
     req.user = {
       id: decoded.userId,
       email: decoded.email,
-      role: 'viewer',
+      role: decoded.role,
+      tenantId: decoded.tenantId,
+      subjects: decoded.subjects,
     };
   } catch (error) {
     // Token invalid but continue without auth

@@ -1,131 +1,63 @@
-#!/bin/bash
+#!/bin/sh
+set -eu
 
-# AI Food Flow Order - Startup Script
-# This script handles port cleanup, migrations, seeding, and server startup
-
-# Project directory
-cd /Users/erolakarsu/projects/ai-food-flow-order
-
-echo "=========================================="
-echo "   AI Food Flow Order - Starting...      "
-echo "=========================================="
-
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
-print_status() {
-    echo -e "${GREEN}[OK]${NC} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}[!]${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}[X]${NC} $1"
-}
-
-print_info() {
-    echo -e "${BLUE}[i]${NC} $1"
-}
-
-# Step 1: Kill processes on ports (NOT 5000)
-echo ""
-print_info "Cleaning ports..."
-
-lsof -ti:3000 | xargs kill -9 2>/dev/null && print_status "Port 3000 cleared" || print_status "Port 3000 available"
-lsof -ti:3001 | xargs kill -9 2>/dev/null && print_status "Port 3001 cleared" || print_status "Port 3001 available"
-lsof -ti:5173 | xargs kill -9 2>/dev/null && print_status "Port 5173 cleared" || print_status "Port 5173 available"
-sleep 1
-
-# Step 2: Check PostgreSQL
-echo ""
-print_info "Checking PostgreSQL..."
-pg_isready > /dev/null 2>&1 || { print_error "PostgreSQL not running!"; exit 1; }
-print_status "PostgreSQL is running"
-
-# Step 3: Load environment variables
-echo ""
-print_info "Loading environment..."
-if [ -f server/.env ]; then
-    export $(cat server/.env | grep -v '^#' | xargs 2>/dev/null) || true
-    print_status "Environment loaded"
+project_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+if [ "${NODE_ENV:-development}" = test ] && [ -n "${RUNTIME_PROJECT_SOURCE:-}" ] && [ -d "$RUNTIME_PROJECT_SOURCE" ]; then
+  project_dir=$RUNTIME_PROJECT_SOURCE
 fi
+command_name=${1:-check}
 
-# Step 4: Install dependencies if needed
-echo ""
-print_info "Checking dependencies..."
-if [ ! -d "node_modules" ]; then
-    print_warning "Installing frontend dependencies..."
-    npm install
-fi
-if [ ! -d "server/node_modules" ]; then
-    print_warning "Installing server dependencies..."
-    cd server && npm install && cd ..
-fi
-print_status "Dependencies ready"
-
-# Step 5: Run migrations
-echo ""
-print_info "Running migrations..."
-cd server
-npm run migrate 2>&1 | grep -E "(CREATE|NOTICE|already exists|completed)" | head -5 || true
-print_status "Migrations complete"
-cd ..
-
-# Step 6: Seed database
-echo ""
-print_info "Seeding database..."
-cd server
-npm run seed 2>&1 | grep -E "(Seed|Created|exists)" | head -3 || true
-npm run seed:ai 2>&1 | grep -E "(Seed|Created|exists)" | head -3 || true
-print_status "Database seeded"
-cd ..
-
-echo ""
-echo "=========================================="
-echo "   Starting servers...                   "
-echo "=========================================="
-echo ""
-echo -e "${GREEN}Frontend:${NC}  http://localhost:3000"
-echo -e "${GREEN}Backend:${NC}   http://localhost:3001"
-echo ""
-echo -e "${BLUE}Admin Dashboard:${NC} http://localhost:3000/login"
-echo -e "${BLUE}Demo Login:${NC}      demo@orderlybite.com / Demo123!"
-echo ""
-echo "=========================================="
-echo ""
-
-# Cleanup function
-cleanup() {
-    echo ""
-    print_info "Shutting down..."
-    kill $BACKEND_PID 2>/dev/null
-    kill $FRONTEND_PID 2>/dev/null
-    exit 0
+fail() {
+  echo "error: $1" >&2
+  exit 1
 }
 
-# Set trap before starting processes
-trap cleanup SIGINT SIGTERM
+check_config() {
+  if [ "${NODE_ENV:-development}" = test ]; then
+    DEFAULT_TENANT_ID=${TENANT_ID:-}
+    CORS_ORIGIN="http://127.0.0.1:${FRONTEND_PORT:-}"
+    CLIENT_URL=$CORS_ORIGIN
+    export DEFAULT_TENANT_ID CORS_ORIGIN CLIENT_URL
+  fi
+  jwt_secret=${JWT_SECRET:-}
+  refresh_secret=${JWT_REFRESH_SECRET:-}
+  command -v node >/dev/null 2>&1 || fail "node is required"
+  command -v npm >/dev/null 2>&1 || fail "npm is required"
+  [ -n "${DATABASE_URL:-}" ] || fail "DATABASE_URL is required"
+  [ -n "${DEFAULT_TENANT_ID:-}" ] || fail "DEFAULT_TENANT_ID is required"
+  case "${BACKEND_PORT:-}" in ''|*[!0-9]*) fail "BACKEND_PORT must be an explicit integer" ;; esac
+  [ "$BACKEND_PORT" -ge 1024 ] && [ "$BACKEND_PORT" -le 65535 ] || fail "BACKEND_PORT must be between 1024 and 65535"
+  [ "${#jwt_secret}" -ge 32 ] || fail "JWT_SECRET must contain at least 32 characters"
+  [ "${#refresh_secret}" -ge 32 ] || fail "JWT_REFRESH_SECRET must contain at least 32 characters"
+  case "$DATABASE_URL" in
+    *example*|*changeme*|*password@*) fail "DATABASE_URL contains a placeholder" ;;
+  esac
+  if [ "${NODE_ENV:-development}" = "production" ]; then
+    [ -n "${CORS_ORIGIN:-}" ] || fail "CORS_ORIGIN is required in production"
+    [ "${ENABLE_GENERATED_FEATURES:-false}" != "true" ] || fail "generated features are forbidden in production"
+  fi
+  echo "configuration valid"
+}
 
-# Start backend in background
-cd server
-npm run dev &
-BACKEND_PID=$!
-cd ..
-
-# Wait for backend to start
-sleep 3
-
-# Start frontend in background
-npm run dev &
-FRONTEND_PID=$!
-
-print_status "Servers started. Press Ctrl+C to stop."
-
-# Wait for processes
-wait
+case "$command_name" in
+  check)
+    check_config
+    (cd "$project_dir/server" && npm run build && npm test)
+    ;;
+  migrate)
+    check_config
+    (cd "$project_dir/server" && npm run migrate)
+    ;;
+  start)
+    check_config
+    if lsof -nP -iTCP:"$BACKEND_PORT" -sTCP:LISTEN >/dev/null 2>&1; then fail "assigned port $BACKEND_PORT is occupied"; fi
+    PORT=$BACKEND_PORT
+    BACKEND_HOST=127.0.0.1
+    RUNTIME_LAUNCH_SERVER=true
+    export PORT BACKEND_HOST RUNTIME_LAUNCH_SERVER
+    (cd "$project_dir/server" && exec npm start)
+    ;;
+  *)
+    fail "usage: ./start.sh [check|migrate|start]"
+    ;;
+esac

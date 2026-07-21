@@ -433,6 +433,13 @@ export const cancelOrder = async (req: AuthRequest, res: Response) => {
       });
     }
 
+    if (order.stripe_payment_intent_id || ['paid', 'succeeded', 'authorized'].includes(order.payment_status)) {
+      await client.query('ROLLBACK');
+      return res.status(409).json({
+        error: 'Paid orders require the governed cancellation and refund workflow',
+      });
+    }
+
     // Update order status
     await client.query(
       `UPDATE orders SET status = 'cancelled' WHERE id = $1`,
@@ -447,9 +454,6 @@ export const cancelOrder = async (req: AuthRequest, res: Response) => {
     );
 
     await client.query('COMMIT');
-
-    // Handle refund if payment was made (would integrate with Stripe here)
-    // This is a placeholder for actual refund logic
 
     // Send notification
     sendOrderNotification(req.user!.id, id, 'order_cancelled').catch(console.error);

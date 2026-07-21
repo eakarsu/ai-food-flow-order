@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
+    "test": "node --import tsx --test src/governed/*.test.ts",
+    "check": "npm run build && npm test",
     "start": "node dist/index.js",
     "migrate": "tsx src/migrations/run.ts",
-    "seed": "tsx src/migrations/seed.ts",
+    "demo:seed": "tsx src/migrations/seed.ts",
+    "create-admin": "tsx src/scripts/create-admin.ts",
     "seed:ai": "tsx src/migrations/seed-ai-features.ts"
   },
   "dependencies": {
