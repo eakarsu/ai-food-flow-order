@@ -53,8 +53,8 @@ export default function AdminLogin() {
   };
 
   const fillDemoCredentials = () => {
-    setValue('email', 'demo@orderlybite.com');
-    setValue('password', 'Demo123!');
+    setValue('email', import.meta.env.VITE_DEMO_EMAIL || '');
+    setValue('password', import.meta.env.VITE_DEMO_PASSWORD || '');
     toast.info('Demo credentials filled');
   };
 
