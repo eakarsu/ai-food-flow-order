@@ -24,7 +24,7 @@ const server=http.createServer(async(req,res)=>{
       if(!row)return json(res,401,{error:'Invalid credentials'});
       const [id,userEmail,passwordHash,displayName,role]=row.split('\t');if(!verify(password,passwordHash))return json(res,401,{error:'Invalid credentials'});
       const token=crypto.randomBytes(32).toString('hex');query(`INSERT INTO runtime_app_sessions(token_hash,user_id,expires_at) VALUES(${literal(sha(token))},${literal(id)}::uuid,NOW()+INTERVAL '24 hours')`);
-      return json(res,200,{token,user:{id,email:userEmail,name:displayName,role}});
+      return json(res,200,{token,accessToken:token,refreshToken:token,user:{id,email:userEmail,name:displayName,role}});
     }
     if(req.method==='GET'&&url.pathname==='/api/auth/me'){const user=actor(req);return user?json(res,200,{user}):json(res,401,{error:'Authentication required'});}
     if(req.method==='GET'&&url.pathname==='/api/ai/history'){
@@ -46,4 +46,3 @@ const server=http.createServer(async(req,res)=>{
   }catch(error){console.error(error.message);return json(res,500,{error:'Internal service error'});}
 });
 server.listen(port,'127.0.0.1',()=>console.log(`${project} runtime API listening on ${port}`));
-

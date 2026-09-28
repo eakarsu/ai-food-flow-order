@@ -143,7 +143,7 @@ export default function AdminLogin() {
               className="w-full"
               onClick={fillDemoCredentials}
             >
-              Fill Demo Credentials
+              Auto Fill Demo Credentials
             </Button>
           </div>
         </CardContent>
