@@ -173,7 +173,7 @@ export default function UpsellPage() {
     setCartItems(updated);
   };
 
-  const loadSampleCart = () => {
+  const loadSampleCart = (index: number) => {
     const sampleCarts = [
       [
         { name: 'Turkey Club Sandwich', price: 12.99 },
@@ -191,11 +191,9 @@ export default function UpsellPage() {
         { name: 'Tiramisu', price: 8.99 },
       ],
     ];
-    const randomCart = sampleCarts[Math.floor(Math.random() * sampleCarts.length)];
-    setCartItems(randomCart);
-    toast.success('Sample cart loaded - click Get Recommendations!');
+    setCartItems(sampleCarts[index]);
+    toast.success('Sample cart loaded. Confirm the restaurant before generating.');
   };
-
   const handleExportCSV = () => {
     const data = selectedCount > 0 ? sortedItems.filter((i) => selectedIds.has(i.id)) : sortedItems;
     exportToCSV(data, EXPORT_COLUMNS, 'upsell-recommendations');
@@ -331,14 +329,18 @@ export default function UpsellPage() {
                 <Sparkles className="h-5 w-5 text-purple-600" />
                 New Recommendation
               </h2>
-              <Button variant="outline" onClick={loadSampleCart}>
-                <Database className="h-4 w-4 mr-2" />
-                Load Sample Cart
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                {['Lunch', 'Light meal', 'Group order'].map((label, index) => (
+                  <Button key={label} type="button" variant="outline" onClick={() => loadSampleCart(index)} disabled={recommending}>
+                    <Database className="h-4 w-4 mr-2" /> Fill {label}
+                  </Button>
+                ))}
+              </div>
             </div>
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-gray-700">Restaurant ID</label>
+                <p className="text-xs text-gray-500">Keep the actual restaurant ID. Samples only change the items below.</p>
                 <Input
                   value={restaurantId}
                   onChange={(e) => setRestaurantId(e.target.value)}

@@ -193,7 +193,7 @@ export default function WaitTimePage() {
     setOrderItems(updated);
   };
 
-  const loadSampleOrder = () => {
+  const loadSampleOrder = (index: number) => {
     const sampleOrders = [
       [
         { name: 'Turkey Club Sandwich', quantity: 2 },
@@ -213,11 +213,9 @@ export default function WaitTimePage() {
         { name: 'Avocado Toast', quantity: 1 },
       ],
     ];
-    const randomOrder = sampleOrders[Math.floor(Math.random() * sampleOrders.length)];
-    setOrderItems(randomOrder);
-    toast.success('Sample order loaded - click Predict!');
+    setOrderItems(sampleOrders[index]);
+    toast.success('Sample order loaded. Confirm the restaurant before generating.');
   };
-
   const handleExportCSV = () => {
     const data = selectedCount > 0 ? sortedItems.filter((i) => selectedIds.has(i.id)) : sortedItems;
     exportToCSV(data, EXPORT_COLUMNS, 'wait-time-predictions');
@@ -371,14 +369,18 @@ export default function WaitTimePage() {
                 <Sparkles className="h-5 w-5 text-purple-600" />
                 New Prediction
               </h2>
-              <Button variant="outline" onClick={loadSampleOrder}>
-                <Database className="h-4 w-4 mr-2" />
-                Load Sample Order
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                {['Lunch', 'Light meal', 'Group order'].map((label, index) => (
+                  <Button key={label} type="button" variant="outline" onClick={() => loadSampleOrder(index)} disabled={predicting}>
+                    <Database className="h-4 w-4 mr-2" /> Fill {label}
+                  </Button>
+                ))}
+              </div>
             </div>
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-gray-700">Restaurant ID</label>
+                <p className="text-xs text-gray-500">Keep the actual restaurant ID. Samples only change the items below.</p>
                 <Input
                   value={restaurantId}
                   onChange={(e) => setRestaurantId(e.target.value)}

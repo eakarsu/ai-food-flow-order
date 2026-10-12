@@ -8,6 +8,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import Index from "./pages/Index";
+import AIStudio from "./pages/AIStudio";
 import NotFound from "./pages/NotFound";
 import Restaurants from "./pages/Restaurants";
 import About from "./pages/About";
@@ -87,6 +88,7 @@ const App = () => (
         <Route path="/codex/operations" element={<CodexOperationsFeature />} />
 
                 <Route path="/" element={<Index />} />
+                <Route path="/ai-studio" element={<AIStudio />} />
                 <Route path="/restaurants" element={<Restaurants />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />

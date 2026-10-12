@@ -102,16 +102,16 @@ const Navbar = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigate('/admin/dashboard')}
+                  onClick={() => navigate('/ai-studio')}
                   className={`rounded-xl font-medium transition-all duration-200 ${
                     isScrolled
                       ? 'text-purple-600 hover:text-purple-700 hover:bg-purple-50'
                       : 'text-white/90 hover:text-white hover:bg-white/10'
                   }`}
-                  title="AI Dashboard"
+                  title="AI Studio"
                 >
                   <Sparkles size={18} className="mr-1" />
-                  <span className="hidden sm:inline">AI Dashboard</span>
+                  <span className="hidden sm:inline">AI Studio</span>
                 </Button>
                 <Button
                   variant="ghost"
@@ -276,11 +276,11 @@ const Navbar = () => {
                 <>
                   <hr className="my-2 border-food-gray-200" />
                   <button
-                    onClick={() => handleNavigation('/admin/dashboard')}
+                    onClick={() => handleNavigation('/ai-studio')}
                     className="w-full text-left px-4 py-3 rounded-xl font-medium text-purple-600 hover:bg-purple-50 flex items-center gap-2"
                   >
                     <Sparkles size={18} />
-                    AI Dashboard
+                    AI Studio
                   </button>
                   <button
                     onClick={() => handleNavigation('/orders')}

@@ -52,10 +52,13 @@ export default function AdminLogin() {
     }
   };
 
+  const demoAvailable = import.meta.env.VITE_ENABLE_DEMO_CREDENTIAL_AUTOFILL === 'true' &&
+    Boolean(import.meta.env.VITE_DEMO_EMAIL && import.meta.env.VITE_DEMO_PASSWORD);
   const fillDemoCredentials = () => {
-    setValue('email', import.meta.env.VITE_DEMO_EMAIL || '');
-    setValue('password', import.meta.env.VITE_DEMO_PASSWORD || '');
-    toast.info('Demo credentials filled');
+    if (!demoAvailable) return;
+    setValue('email', import.meta.env.VITE_DEMO_EMAIL, { shouldValidate: true });
+    setValue('password', import.meta.env.VITE_DEMO_PASSWORD, { shouldValidate: true });
+    toast.info('Demo credentials filled. Select Sign In to continue.');
   };
 
   if (authLoading) {
@@ -142,9 +145,11 @@ export default function AdminLogin() {
               variant="outline"
               className="w-full"
               onClick={fillDemoCredentials}
+              disabled={!demoAvailable || isLoading}
             >
-              Auto Fill Demo Credentials
+              Fill Demo Credentials
             </Button>
+            {!demoAvailable && <p className="mt-2 text-center text-sm text-gray-500">Demo credentials are unavailable in this session. Ask an administrator for access.</p>}
           </div>
         </CardContent>
       </Card>

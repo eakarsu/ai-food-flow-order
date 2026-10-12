@@ -19,16 +19,10 @@ interface FeaturedItemsProps {
 
 const FeaturedItems = ({ items }: FeaturedItemsProps) => {
   const navigate = useNavigate();
-  const { addItem } = useCart();
+  const { addToCart } = useCart();
 
   const handleAddToCart = (item: FoodItemType) => {
-    addItem({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      quantity: 1,
-      imageUrl: item.imageUrl,
-    });
+    addToCart(item);
     toast.success(`${item.name} added to cart`);
   };
 

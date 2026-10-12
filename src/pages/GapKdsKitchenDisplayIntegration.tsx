@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AIResponseReport from '@/components/AIResponseReport';
 import { aiKitchenBatchPlan } from '../services/api/ai';
 
 // v0 scaffold for: No KDS (kitchen-display) integration
@@ -109,7 +110,7 @@ export default function KdsKitchenDisplayIntegrationPage() {
       </div>
       {error && <pre style={{ marginTop: '16px', color: '#c00', background: '#fee', padding: '12px' }}>{error}</pre>}
       {batchResult && <pre style={{ marginTop: '16px', background: '#ecfeff', padding: '12px', overflow: 'auto', maxHeight: '480px' }}>{JSON.stringify(batchResult, null, 2)}</pre>}
-      {result && <pre style={{ marginTop: '16px', background: '#f7f7f7', padding: '12px', overflow: 'auto', maxHeight: '480px' }}>{JSON.stringify(result, null, 2)}</pre>}
+      {result !== null && <AIResponseReport value={result} title="Analysis result" />}
     </div>
   );
 }

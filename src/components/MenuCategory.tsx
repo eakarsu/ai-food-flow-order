@@ -8,6 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useCart } from "@/context/CartContext";
 
 export interface MenuItem {
+  id?: string;
   name: string;
   price: number;
   description?: string;

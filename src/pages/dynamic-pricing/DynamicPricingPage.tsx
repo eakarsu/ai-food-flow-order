@@ -86,6 +86,13 @@ export default function DynamicPricingPage() {
           <CardTitle>Pricing Inputs</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="md:col-span-3 flex flex-wrap gap-2" aria-label="Pricing examples">
+            {[
+              { label: 'Quiet service', queue: 3, pressure: 0.1 },
+              { label: 'Lunch rush', queue: 22, pressure: 0.45 },
+              { label: 'Busy and low stock', queue: 38, pressure: 0.85 },
+            ].map(sample => <Button key={sample.label} type="button" variant="outline" disabled={loading} onClick={() => { setQueueSize(sample.queue); setInventoryPressure(sample.pressure); }}>{sample.label}</Button>)}
+          </div>
           <div>
             <Label>Current Queue Size</Label>
             <Input

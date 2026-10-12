@@ -1,8 +1,9 @@
 import { spawnSync } from 'node:child_process';
+import pg from 'pg';
 
 export function literal(value){return "'" + String(value).replaceAll("'", "''") + "'";}
 export function query(sql,{rows=false}={}){
-  const args=[process.env.DATABASE_URL,'-v','ON_ERROR_STOP=1'];
+  const args=[process.env.DATABASE_URL,'-q','-v','ON_ERROR_STOP=1'];
   if(rows)args.push('-At','-F','\t');
   args.push('-c',sql);
   const result=spawnSync('psql',args,{encoding:'utf8'});
@@ -14,3 +15,19 @@ export function executeScript(sql){
   if(result.status!==0)throw new Error((result.stderr||result.stdout||'database setup failed').trim());
 }
 
+export async function transaction(operation, { signal } = {}) {
+  signal?.throwIfAborted();
+  const client = new pg.Client({ connectionString: process.env.DATABASE_URL, connectionTimeoutMillis: 5000, statement_timeout: 10000 });
+  try {
+    await client.connect();
+    signal?.throwIfAborted();
+    await client.query('BEGIN');
+    const result = await operation(client);
+    signal?.throwIfAborted();
+    await client.query('COMMIT');
+    return result;
+  } catch (error) {
+    await client.query('ROLLBACK').catch(() => {});
+    throw error;
+  } finally { await client.end().catch(() => {}); }
+}

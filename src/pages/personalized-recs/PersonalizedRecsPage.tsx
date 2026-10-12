@@ -74,6 +74,13 @@ export default function PersonalizedRecsPage() {
         </CardHeader>
         <CardContent>
           <Label>Dietary Preferences (comma-separated)</Label>
+          <div className="mt-2 flex flex-wrap gap-2" aria-label="Preference examples">
+            {[
+              { label: 'Vegetarian', value: 'vegetarian, low sodium' },
+              { label: 'Dairy free', value: 'dairy free, nut free' },
+              { label: 'High protein', value: 'high protein, gluten free' },
+            ].map(sample => <Button key={sample.label} type="button" variant="outline" disabled={loading} onClick={() => setPrefsText(sample.value)}>{sample.label}</Button>)}
+          </div>
           <div className="flex gap-2 mt-2">
             <Input value={prefsText} onChange={(e) => setPrefsText(e.target.value)} />
             <Button onClick={load} disabled={loading}>

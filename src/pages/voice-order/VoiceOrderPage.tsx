@@ -125,6 +125,13 @@ export default function VoiceOrderPage() {
           </div>
           <div>
             <Label>Or type your order</Label>
+            <div className="my-2 flex flex-wrap gap-2" aria-label="Order text examples">
+              {[
+                { label: 'Lunch', value: 'I would like one turkey sandwich and a side salad. Please confirm availability.' },
+                { label: 'Family meal', value: 'Can I get two cheese pizzas and four waters? Please confirm sizes and availability.' },
+                { label: 'Breakfast', value: 'I would like two breakfast burritos and two coffees. Please confirm availability.' },
+              ].map(sample => <Button key={sample.label} type="button" variant="outline" disabled={loading || recording} onClick={() => setText(sample.value)}>{sample.label}</Button>)}
+            </div>
             <Input
               value={text}
               onChange={(e) => setText(e.target.value)}
