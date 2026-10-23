@@ -66,8 +66,12 @@ export RUNTIME_PROJECT_NAME=ai-food-flow-order RUNTIME_AI_ENDPOINT=/api/ai/order
 export RUNTIME_AI_SYSTEM_PROMPT='You are a restaurant order-flow operations assistant. Give practical queue, fulfillment, and customer communication guidance without inventing unavailable menu or order data.'
 export VITE_API_URL="http://127.0.0.1:$BACKEND_PORT/api"
 node "$PROJECT_DIR/runtime/setup.mjs"
+FRONTEND_ORIGIN="http://127.0.0.1:$FRONTEND_PORT"
+case ",${CORS_ORIGINS:-}," in *'*'*) echo "CORS_ORIGINS must not contain a wildcard" >&2;exit 1 ;; esac
+export CORS_ORIGIN="$FRONTEND_ORIGIN" CORS_ORIGINS="$FRONTEND_ORIGIN" CLIENT_URL="$FRONTEND_ORIGIN" BACKEND_HOST=127.0.0.1
+provision_output="$(cd "$PROJECT_DIR/server" && BOOTSTRAP_ACKNOWLEDGEMENT=create-initial-admin npx tsx src/scripts/create-admin.ts 2>&1)" && echo "$provision_output" || { case "$provision_output" in *"already exists"*|*"Refusing to overwrite"*) echo "Administrator already exists; skipping provisioning" ;; *) echo "$provision_output" >&2; exit 1 ;; esac; }
 CHILD_PIDS=()
-(cd "$PROJECT_DIR"&&exec node runtime/api.mjs)&CHILD_PIDS+=("$!")
+(cd "$PROJECT_DIR/server"&&exec node dist/index.js)&CHILD_PIDS+=("$!")
 (cd "$PROJECT_DIR"&&exec npm run dev -- --host 127.0.0.1 --port "$FRONTEND_PORT" --strictPort)&CHILD_PIDS+=("$!")
 cleanup(){ trap - EXIT INT TERM;for pid in "${CHILD_PIDS[@]}";do kill "$pid" 2>/dev/null||true;done;for pid in "${CHILD_PIDS[@]}";do wait "$pid" 2>/dev/null||true;done; }
 trap cleanup EXIT INT TERM

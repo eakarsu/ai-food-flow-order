@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "test": "node --import tsx --test src/governed/*.test.ts",
+    "test": "node --import tsx --test src/governed/*.test.ts src/featurePack.test.ts",
     "check": "npm run build && npm test",
     "start": "node dist/index.js",
     "migrate": "tsx src/migrations/run.ts",

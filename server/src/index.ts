@@ -30,6 +30,7 @@ import affiliateRoutes from './routes/affiliate.js';
 import sustainabilityRoutes from './routes/sustainability.js';
 import couponRoutes from './routes/coupons.js';
 import governedOrderRoutes from './routes/governedOrders.js';
+import featurePackRoutes from './routes/featurePack.js';
 import { handleWebhook as handleStripeWebhook } from './controllers/paymentController.js';
 
 // Import socket handler
@@ -104,6 +105,7 @@ app.use('/api/affiliate', apiLimiter, affiliateRoutes);
 app.use('/api/sustainability', apiLimiter, sustainabilityRoutes);
 app.use('/api/coupons', apiLimiter, couponRoutes);
 app.use('/api/governed-orders', apiLimiter, governedOrderRoutes);
+app.use('/api/feature-pack', apiLimiter, featurePackRoutes);
 
 // Twilio routes (without /api prefix - for TwiML App callbacks)
 app.use('/', twilioRoutes);

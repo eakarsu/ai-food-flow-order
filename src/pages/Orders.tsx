@@ -47,6 +47,11 @@ export default function Orders() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('active');
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [query, setQuery] = useState('');
+  const [insights, setInsights] = useState<any>(null);
+  useEffect(()=>{ if(!isAuthenticated) return; const t=localStorage.getItem('token'); fetch('/api/feature-pack/orders/insights',{headers:t?{Authorization:`Bearer ${t}`}:{}}).then(r=>r.ok?r.json():null).then(setInsights).catch(()=>{}); },[isAuthenticated]);
+  const visibleOrders = orders.filter(o=>{ const hay=[o.orderNumber,o.status,o.restaurantName||''].join(' ').toLowerCase(); return !query||hay.includes(query.toLowerCase()); });
+  async function exportOrders(format:string){ const t=localStorage.getItem('token'); const r=await fetch(`/api/feature-pack/orders/export?format=${format}`,{headers:t?{Authorization:`Bearer ${t}`}:{}}); if(!r.ok){toast.error('Export failed');return;} const b=await r.blob(); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=`orders.${format}`; a.click(); URL.revokeObjectURL(u); }
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -81,10 +86,10 @@ export default function Orders() {
     }
   };
 
-  const activeOrders = orders.filter(
+  const activeOrders = visibleOrders.filter(
     (o) => !['delivered', 'cancelled'].includes(o.status)
   );
-  const pastOrders = orders.filter((o) =>
+  const pastOrders = visibleOrders.filter((o) =>
     ['delivered', 'cancelled'].includes(o.status)
   );
 
@@ -164,6 +169,8 @@ export default function Orders() {
 
       <main className="flex-grow container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">My Orders</h1>
+        <div className="flex flex-wrap gap-2 mb-4"><label>Search orders <input aria-label="Search orders" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search order, restaurant, status" className="border rounded px-2 py-1" /></label><Button variant="outline" size="sm" onClick={()=>exportOrders('csv')}>Export CSV</Button><Button variant="outline" size="sm" onClick={()=>exportOrders('json')}>Export JSON</Button></div>
+        {insights && <section aria-label="Deterministic insights (not AI-generated)" className="mb-6"><h2 className="font-semibold">Deterministic insights — not AI-generated (aiGenerated: false)</h2><p className="text-sm text-muted-foreground">{insights.disclaimer}</p>{insights.insights.map((ins:any)=><article key={ins.id}><h3 className="font-medium">{ins.title}</h3><p>{ins.summary}</p>{ins.sections.map((sec:any,i:number)=><div key={i}><strong>{sec.title}:</strong> <span>{String(sec.detail)}</span></div>)}{ins.metrics.map((m:any,i:number)=><div key={i}><span>{m.label}: </span><strong>{String(m.value)}</strong></div>)}</article>)}</section>}
 
         {!isAuthenticated && !authLoading ? (
           <div className="text-center py-12">

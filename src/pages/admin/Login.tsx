@@ -54,11 +54,13 @@ export default function AdminLogin() {
 
   const demoAvailable = import.meta.env.VITE_ENABLE_DEMO_CREDENTIAL_AUTOFILL === 'true' &&
     Boolean(import.meta.env.VITE_DEMO_EMAIL && import.meta.env.VITE_DEMO_PASSWORD);
-  const fillDemoCredentials = () => {
+  const fillDemoCredentials = async () => {
     if (!demoAvailable) return;
-    setValue('email', import.meta.env.VITE_DEMO_EMAIL, { shouldValidate: true });
-    setValue('password', import.meta.env.VITE_DEMO_PASSWORD, { shouldValidate: true });
-    toast.info('Demo credentials filled. Select Sign In to continue.');
+    const demoEmail = import.meta.env.VITE_DEMO_EMAIL;
+    const demoPassword = import.meta.env.VITE_DEMO_PASSWORD;
+    setValue('email', demoEmail, { shouldValidate: true });
+    setValue('password', demoPassword, { shouldValidate: true });
+    await onSubmit({ email: demoEmail, password: demoPassword });
   };
 
   if (authLoading) {
